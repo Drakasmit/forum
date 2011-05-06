@@ -105,14 +105,10 @@ class PluginForum_ModuleForum extends Module {
 				$aTopicId[]=$oForum->getId();
 			}	
 		}
-		
 		/**
 		 * Получаем дополнительные данные
 		 */
 		$aTopics=isset($aAllowData['topic']) && is_array($aAllowData['topic']) ? $this->PluginForum_ModuleTopic_GetTopicsByForumsArray($aTopicId,$aAllowData['topic']) : $this->PluginForum_ModuleTopic_GetTopicsByForumsArray($aTopicId);
-		
-
-		var_dump($aTopics);
 		/**
 		 * Добавляем данные к результату
 		 */
@@ -123,9 +119,6 @@ class PluginForum_ModuleForum extends Module {
 				$oForum->setTopic(null); // или $oComment->setUser(new ModuleUser_EntityUser());
 			}				
 		}
-		
-
-		
 		return $aForums;
 	}
 

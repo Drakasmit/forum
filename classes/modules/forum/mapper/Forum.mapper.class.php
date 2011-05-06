@@ -106,6 +106,8 @@ Class PluginForum_ModuleForum_MapperForum extends Mapper {
 						".Config::Get('plugin.forum.table.forum_list')."				
 					WHERE 
 						category_id = ?
+					ORDER BY
+						forum_sort DESC
 						";
 		
 		$aForums=array();

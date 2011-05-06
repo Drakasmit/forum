@@ -9,8 +9,8 @@
 	</div>
 
 	<ul class="sv-tom_menu">
-		<li><a href="/forum/unread">Показать непрочитанные сообщения</a></li>
-		<li><a href="/forum/markread">Пометить все прочитанными</a></li>
+		<li><a href="#">{$aLang.not_reading}</a></li>
+		<li><a href="#">{$aLang.mark_all_read}</a></li>
 	</ul>
 
 	<div class="clear"></div>
@@ -21,9 +21,9 @@
 					<h2>{$oCategory.obj->getTitle()}</h2>
 				</div>
 				<div class="sv-right_bg">
-					<span class="sv-last_msg">последнее сообщение</span>
-					<span class="sv-answers">ответов</span>
-					<span class="sv-views">тем</span>
+					<span class="sv-last_msg">{$aLang.last_post}</span>
+					<span class="sv-answers">{$aLang.replies}</span>
+					<span class="sv-views">{$aLang.themes}</span>
 				</div>
 		</div>
 		

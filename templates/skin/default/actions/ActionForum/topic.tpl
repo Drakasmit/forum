@@ -7,15 +7,15 @@
 
 	<div class="forum-nav">
 		<h2>
-			<span><a href="{router page='forum'}">Форум</a></span> <span><a href="{router page='forum'}{$oForum->getUrl()}/">{$oForum->getTitle()}</a></span> {$oTopic->getTitle()}
+			<span><a href="{router page='forum'}">{$aLang.main_title}</a></span> <span><a href="{router page='forum'}{$oForum->getUrl()}/">{$oForum->getTitle()}</a></span> {$oTopic->getTitle()}
 		</h2>
 	</div>
 
 	<div class="sv-forum-block">
 
 		<ul class="sv-tom_menu">
-			<li class="sv-first"><a class="replyb" href="#">Ответить</a></li>
-			<li class="sv-first"><a class="newtopic" href="#">Создать новую тему</a></li>
+			<li class="sv-first"><a class="replyb" href="#">{$aLang.reply}</a></li>
+			<li><a class="newtopic" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>
 		</ul>
 
 
@@ -46,10 +46,10 @@
 					<div class="sv-personal">
 						<img alt="{$oUser->getUserLogin()}" src="{$oUser->getProfileAvatarPath(64)}" class="sv-avavtar" />
 						<span class="sv-nickname"><a href="{$oUser->getUserWebPath()}">{$oUser->getUserLogin()}</a></span>
-						<span class="sv-msg_count">Статей: <span>13</span></span>
-						<span class="sv-msg_count">Комментариев: <span>13</span></span>
-						<span class="sv-msg_count">Постов: <span>13</span></span>
-						<span class="sv-sbj_count">Тем: <span>13</span></span>
+						<span class="sv-msg_count">{$aLang.articles}: <span>13</span></span>
+						<span class="sv-msg_count">{$aLang.comments}: <span>13</span></span>
+						<span class="sv-msg_count">{$aLang.topics}: <span>13</span></span>
+						<span class="sv-sbj_count">{$aLang.posts}: <span>13</span></span>
 					</div>
 					<div class="sv-post_section">
 						<div class="sv-post_section1">
@@ -69,8 +69,8 @@
 		<div class="sv-shadow sv-shadow-posts_block"></div>
 
 		<ul class="sv-bottom_menu">
-			<li class="sv-first"><a class="replyb" href="#">Ответить</a></li>
-			<li class="sv-first"><a class="newtopic" href="#">Создать новую тему</a></li>
+			<li class="sv-first"><a class="replyb" href="#">{$aLang.reply}</a></li>
+			<li><a class="newtopic" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>
 		</ul>
 
 		<div class="sv-forum_nav">
@@ -87,7 +87,7 @@
 
 		<div class="sv-forum_header sv-forum_header-fast_answer">
 			<div class="sv-left_bg">
-				<h2>Быстрый ответ</h2>
+				<h2>{$aLang.fast_reply}</h2>
 			</div>
 			<div class="sv-right_bg"></div>
 		</div>

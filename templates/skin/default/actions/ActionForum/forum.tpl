@@ -4,14 +4,15 @@
 
 	<div class="forum-nav">
 		<h2>
-			<span><a href="{router page='forum'}">Форум</a></span> {$oForum->getTitle()}
+			<span><a href="{router page='forum'}">{$aLang.main_title}</a></span> {$oForum->getTitle()}
 		</h2>
 	</div>
 
 	<div class="sv-forum-block">
 
 		<ul class="sv-tom_menu">
-			<li><a class="newtopic" href="{router page='forum'}add/{$oForum->getId()}/">Создать новую тему</a></li>
+			<li><a class="newtopic" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>
+			<li><a class="notfresh" href="#">{$aLang.mark_all_read}</a></li>
 		</ul>
 
 
@@ -30,9 +31,9 @@
 		<div class="sv-forum_header sv-forum_header-section_page">
 			<div class="sv-left_bg"><h2>{$oForum->getTitle()}</h2></div>
 			<div class="sv-right_bg">
-				<span class="sv-answers">ответов</span>
-				<span class="sv-views">просмотров</span>
-				<span class="sv-last_msg">последнее сообщение</span>
+				<span class="sv-answers">{$aLang.replies}</span>
+				<span class="sv-views">{$aLang.views}</span>
+				<span class="sv-last_msg">{$aLang.last_post}</span>
 			</div>
 		</div>
 		
@@ -41,6 +42,7 @@
 			<table class="sv-forum_body sv-forum_body-section_page">
 				<tbody>
 					{foreach from=$aTopics item=oTopic}
+						{assign var="oUser" value=$oTopic->getUser()}
 						<tr>
 							<td class="sv-icon_col">
 								<a class="bbl" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html"></a>
@@ -48,19 +50,19 @@
 							<td class="sv-main_col">
 								<h3>
 									<a href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html">{$oTopic->getTitle()}</a>
-									<span class="sv-go_to_page">[ На страницу: 1, 2 ]</span>
+									<span class="sv-go_to_page">[ {$aLang.on_page}: 1, 2 ]</span>
 								</h3>
-								<span class="sv-author">Автор</span>
+								<span class="sv-author"><a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a></span>
 							</td>
 							<td class="sv-answers">17</td>
 							<td class="sv-views">1858</td>
 							<td class="sv-last_msg">
 								<span class="sv-date">04.05.2011, 19:48</span>
-								<span class="sv-author">от <a href="#">Автор</a></span>
+								<span class="sv-author">{$aLang.by} <a href="#">Автор</a></span>
 							</td>
 						</tr>
 					{foreachelse}
-						Сюда еще никто не успел написать 
+						{$aLang.nothing}
 					{/foreach}
 				</tbody>
 			</table>
@@ -78,8 +80,8 @@
 		</div>
 
 		<ul class="sv-bottom_menu">
-			<li><a class="newtopic" href="#">Создать новую тему</a></li>
-			<li><a class="notfresh" href="#">Отметить все темы как прочитанные</a></li>
+			<li><a class="newtopic" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>
+			<li><a class="notfresh" href="#">{$aLang.mark_all_read}</a></li>
 		</ul>
 
 	</div>

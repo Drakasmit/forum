@@ -123,9 +123,12 @@ class PluginForum_ModuleTopic extends Module {
 		/**
 		 * Получаем дополнительные данные
 		 */
-		$aUsers=isset($aAllowData['user']) && is_array($aAllowData['user']) ? $this->User_GetUsersAdditionalData($aUserId,$aAllowData['user']) : $this->User_GetUsersAdditionalData($aUserId);
-		$aForums=isset($aAllowData['forum']) && is_array($aAllowData['forum']) ? $this->PluginForum_ModuleTopic_GetTopicsAdditionalData($aForumId,$aAllowData['forum']) : $this->PluginForum_ModuleTopic_GetTopicsAdditionalData($aForumId);		
-		
+		if (isset($aAllowData['user'])) {
+			$aUsers=$this->User_GetUsersAdditionalData($aUserId);
+		}
+		if (isset($aAllowData['forum']) ) {
+			$aForums=$this->PluginForum_ModuleForum_GetForumsAdditionalData($aForumId);
+		}
 		/**
 		 * Добавляем данные к результату - списку топиков
 		 */
@@ -157,7 +160,7 @@ class PluginForum_ModuleTopic extends Module {
 			$data = array('collection'=>$this->oMapperTopic->GetTopicsByForumId($Id));
 			$this->Cache_Set($data, "topic_{$Id}", array('topic_update','topic_new'), 60*60*24*2);
 		}
-		$data['collection']=$this->GetTopicsByArrayId($data['collection']);
+		$data['collection']=$this->GetTopicsAdditionalData($data['collection']);
 		return $data;
 	}
 	

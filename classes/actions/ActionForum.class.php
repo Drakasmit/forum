@@ -55,17 +55,14 @@ class PluginForum_ActionForum extends ActionPlugin {
                     'forums'=>$aForums
             );
         }
-		
-		//$this->Viewer_Assign("aForums",$aForums);
+
 		$this->Viewer_Assign('aCategories', $aList);
 		
+		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
 		/**
 		 * Устанавливаем шаблон вывода
 		 */
 		$this->SetTemplateAction('index');	
-		
-		//$aResult=$this->PluginForum_ModuleForum_GetForumsByCategoryId('2');
-		//$aForums=$aResult['collection'];
 	}
 	
 	protected function EventShowForum() {
@@ -76,6 +73,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		
 		$aResult = $this->PluginForum_ModuleTopic_GetTopicsByForumId($oForum->getId());
 		$aTopics = $aResult['collection'];
+		
+		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
+		$this->Viewer_AddHtmlTitle($this->Lang_Get($oForum->getTitle()));
 		
 		$this->Viewer_Assign("aTopics",$aTopics);
 		$this->Viewer_Assign("oForum",$oForum);
@@ -106,6 +106,11 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->Viewer_Assign("oForum",$oForum);
 		$this->Viewer_Assign("aPost",$aPost);
 		$this->Viewer_Assign("oTopic",$oTopic);
+		
+		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
+		$this->Viewer_AddHtmlTitle($this->Lang_Get($oForum->getTitle()));
+		$this->Viewer_AddHtmlTitle($this->Lang_Get($oTopic->getTitle()));
+		
 		$this->SetTemplateAction('topic');
 	}
 	
