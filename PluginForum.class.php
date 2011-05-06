@@ -16,6 +16,12 @@ class PluginForum extends Plugin {
 	protected $sTemplatesUrl = "";
 
 	public function Activate() {
+		if (!$this->isTableExists('prefix_forum_list')) {
+			/**
+			 * При активации выполняем SQL дамп
+			 */
+			$this->ExportSQL(dirname(__FILE__).'/install.sql');
+		}
 		return true;
 	}
 
