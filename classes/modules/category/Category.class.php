@@ -18,14 +18,12 @@ class PluginForum_ModuleCategory extends Module {
 	
 	public function GetCategories() {
 		$data=$this->oMapperCategory->GetCategories();
-		
 		$data=$this->GetCategoriesByArrayId($data);
-
 		return $data;
 	}
 
 	/**
-	 * Список форумов по ID
+	 * Список категорий по ID
 	 *
 	 * @param array $aUserId
 	 */
@@ -84,6 +82,18 @@ class PluginForum_ModuleCategory extends Module {
 		 */
 		$aCategories=func_array_sort_by_keys($aCategories,$aCategoryId);
 		return $aCategories;		
+	}
+	
+	public function GetCategoryById($Id) {
+		return $this->oMapperCategory->GetCategoryById($Id);
+	}
+	
+	public function DeleteCategory($Id) {
+		/*if ($aResult=$this->PluginForum_ModuleForum_GetForumsByCategoryId($Id)) {
+			$aForums=$aResult['collection'];
+			$this->PluginForum_ModuleForum_DeleteForums($aForums);
+		}*/
+		return $this->oMapperCategory->DeleteCategory($Id);
 	}
 
 

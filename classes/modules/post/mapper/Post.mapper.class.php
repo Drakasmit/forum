@@ -17,15 +17,15 @@ Class PluginForum_ModulePost_MapperPost extends Mapper {
 
 	public function AddPost(PluginForum_ModulePost_EntityPost $oPost) {
 		$sql = "INSERT INTO ".Config::Get('plugin.forum.table.forum_posts')." 
-			(topic_id,
+			(forum_id,
+			topic_id,
 			user_id,
 			post_date,
 			post_text,
 			post_text_source
 			)
-			VALUES(?, ?, ?, ?, ?)
-		";			
-		if ($iId=$this->oDb->query($sql,$oPost->getTopicId(),$oPost->getUserId(),$oPost->getDate(),$oPost->getText(),$oPost->getTextSource())) {
+			VALUES(?, ?, ?, ?, ?, ?)";			
+		if ($iId=$this->oDb->query($sql,$oPost->getForumId(),$oPost->getTopicId(),$oPost->getUserId(),$oPost->getDate(),$oPost->getText(),$oPost->getTextSource())) {
 			$oPost->setId($iId);
 			return $iId;
 		}		
@@ -34,14 +34,14 @@ Class PluginForum_ModulePost_MapperPost extends Mapper {
 	
 	public function UpdatePost(PluginForum_ModulePost_EntityPost $oPost) {
 		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_posts')." 
-			SET topic_id = ?,
+			SET forum_id = ?,
+			topic_id = ?,
 			user_id = ?,
 			post_date = ?,
 			post_text = ?,
 			post_text_source = ?
-			WHERE post_id = ?d
-		";			
-		if ($this->oDb->query($sql,$oPost->getTopicId(),$oPost->getUserId(),$oPost->getDate(),$oPost->getText(),$oPost->getTextSource(),$oPost->getId())) 
+			WHERE post_id = ?d";			
+		if ($this->oDb->query($sql,$oPost->getForumId(),$oPost->getTopicId(),$oPost->getUserId(),$oPost->getDate(),$oPost->getText(),$oPost->getTextSource(),$oPost->getId())) 
 		{
 			return true;
 		}		
@@ -73,9 +73,7 @@ Class PluginForum_ModulePost_MapperPost extends Mapper {
 					FROM 
 						".Config::Get('plugin.forum.table.forum_posts')."				
 					WHERE 
-						topic_id = ?
-						";
-		
+						topic_id = ?";
 		$aPosts=array();
 		if ($aRows=$this->oDb->select($sql,$Id)) {
 			foreach ($aRows as $aPost) {

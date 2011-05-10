@@ -15,10 +15,24 @@
 class PluginForum_HookForum extends Hook {
 	public function RegisterHook() {
 		$this->AddHook('template_main_menu','Menu');
+		$this->AddHook('forum_topic_show','TopicShow');
 	}
 
 	public function Menu() {
 		return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__).'main_menu.tpl');
 	}
+	
+	public function TopicShow($aParams) {
+		$oTopic=$aParams['oTopic'];
+        $do_count_visits=(!$this->User_IsAuthorization());
+        if (!$do_count_visits) {
+			$oUser=$this->User_GetUserCurrent();
+			$do_count_visits=$oUser->getId()!=$oTopic->getUserId();
+		}
+		if ($do_count_visits) {
+			$this->PluginForum_ModuleTopic_SetCountViews($oTopic->getCountViews()+1,$oTopic->getId());
+		}
+	}
+	
 }
 ?>

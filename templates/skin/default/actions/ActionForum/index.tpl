@@ -33,6 +33,8 @@
 				<tbody>
 					{foreach from=$oCategory.forums item=oForum}
 						{assign var="oTopic" value=$oForum->getTopic()}
+						{assign var="oPost" value=$oForum->getPost()}
+						{assign var="oUser" value=$oForum->getUser()}
 						<tr>
 							<td class="sv-icon_col">
 								<a class="mrkread" href="{router page='forum'}{$oForum->getUrl()}/"></a>
@@ -42,12 +44,14 @@
 								<p class="sv-details">Описание</p>
 							</td>
 							<td class="sv-last_msg">
-								<a class="sv-subj" href="/forum/topic/353">{$oTopic->getTitle()}</a><br />
-								<a class="sv-author" href="/users/view/1936">Автор</a>
-								<span class="sv-date">@ 04.05.2011, 18:32</span>
+								{if $oTopic}
+								<a class="sv-subj" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html">{$oTopic->getTitle()}</a><br />
+								<a class="sv-author" href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a>
+								<span class="sv-date">@ {date_format date=$oPost->getDate()}</span>
+								{/if}
 							</td>
-							<td class="sv-answers">346</td>
-							<td class="sv-views">11</td>
+							<td class="sv-answers">{$oForum->getCountPosts()}</td>
+							<td class="sv-views">{$oForum->getCountTopics()}</td>
 						</tr>
 					{/foreach}
 				</tbody>

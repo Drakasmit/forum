@@ -15,18 +15,27 @@
 			<li><a class="notfresh" href="#">{$aLang.mark_all_read}</a></li>
 		</ul>
 
-
+		{if $aPaging and $aPaging.iCountPage>1}
 		<div class="sv-forum_nav">
 			<div class="sv-numbers">
-				<a class="sv-here" href="#">1</a>
-				<a href="#">2</a>
-				<a href="#">3</a>
-				<a href="#">4</a>
+					{if $aPaging.iCurrentPage>1}
+						<a href="{$aPaging.sBaseUrl}">&larr;</a>
+					{/if}
+					{foreach from=$aPaging.aPagesLeft item=iPage}
+						<a href="{$aPaging.sBaseUrl}/page{$iPage}">{$iPage}</a>
+					{/foreach}
+					{$aPaging.iCurrentPage}
+					{foreach from=$aPaging.aPagesRight item=iPage}
+						<a href="{$aPaging.sBaseUrl}/page{$iPage}">{$iPage}</a>
+					{/foreach}
+					{if $aPaging.iCurrentPage<$aPaging.iCountPage}
+						<a href="{$aPaging.sBaseUrl}/page{$aPaging.iCountPage}">{$aLang.paging_last}</a>
+					{/if}					
 			</div>
 		</div>
+		{/if}
 
 		<div class="clear"></div>
-
 
 		<div class="sv-forum_header sv-forum_header-section_page">
 			<div class="sv-left_bg"><h2>{$oForum->getTitle()}</h2></div>
@@ -43,6 +52,8 @@
 				<tbody>
 					{foreach from=$aTopics item=oTopic}
 						{assign var="oUser" value=$oTopic->getUser()}
+						{assign var="oPost" value=$oTopic->getPost()}
+						{assign var="oUserLast" value=$oTopic->getUserLast()}
 						<tr>
 							<td class="sv-icon_col">
 								<a class="bbl" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html"></a>
@@ -54,11 +65,13 @@
 								</h3>
 								<span class="sv-author"><a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a></span>
 							</td>
-							<td class="sv-answers">17</td>
-							<td class="sv-views">1858</td>
+							<td class="sv-answers">{$oTopic->getCountPosts()}</td>
+							<td class="sv-views">{$oTopic->getCountViews()}</td>
 							<td class="sv-last_msg">
-								<span class="sv-date">04.05.2011, 19:48</span>
-								<span class="sv-author">{$aLang.by} <a href="#">Автор</a></span>
+								{if $oPost}
+								<span class="sv-date">{date_format date=$oPost->getDate()}</span>
+								<span class="sv-author">{$aLang.by} <a href="{$oUserLast->getUserWebPath()}">{$oUserLast->getLogin()}</a></span>
+								{/if}
 							</td>
 						</tr>
 					{foreachelse}
@@ -70,14 +83,25 @@
 
 		<div class="sv-shadow"></div>
 
+		{if $aPaging and $aPaging.iCountPage>1}
 		<div class="sv-forum_nav">
 			<div class="sv-numbers">
-				<a class="sv-here" href="#">1</a>
-				<a href="#">2</a>
-				<a href="#">3</a>
-				<a href="#">4</a>
+					{if $aPaging.iCurrentPage>1}
+						<a href="{$aPaging.sBaseUrl}">&larr;</a>
+					{/if}
+					{foreach from=$aPaging.aPagesLeft item=iPage}
+						<a href="{$aPaging.sBaseUrl}/page{$iPage}">{$iPage}</a>
+					{/foreach}
+					{$aPaging.iCurrentPage}
+					{foreach from=$aPaging.aPagesRight item=iPage}
+						<a href="{$aPaging.sBaseUrl}/page{$iPage}">{$iPage}</a>
+					{/foreach}
+					{if $aPaging.iCurrentPage<$aPaging.iCountPage}
+						<a href="{$aPaging.sBaseUrl}/page{$aPaging.iCountPage}">{$aLang.paging_last}</a>
+					{/if}					
 			</div>
 		</div>
+		{/if}
 
 		<ul class="sv-bottom_menu">
 			<li><a class="newtopic" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>

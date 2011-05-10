@@ -30,6 +30,21 @@ class PluginForum_ModuleForum_EntityForum extends Entity {
     public function getSort() {
         return $this->_aData['forum_sort'];
     }
+    public function getPostId() {
+        return $this->_aData['post_id'];
+    }
+    public function getUserId() {
+        return $this->_aData['user_id'];
+    }
+    public function getTopicId() {
+        return $this->_aData['topic_id'];
+    }
+    public function getCountTopics() {
+        return $this->_aData['forum_count_topics'];
+    }
+    public function getCountPosts() {
+        return $this->_aData['forum_count_posts'];
+    }
     public function getTopic() {
         return $this->_aData['topic'];
     }
@@ -56,6 +71,21 @@ class PluginForum_ModuleForum_EntityForum extends Entity {
     }
 	public function setSort($data) {
         $this->_aData['forum_sort']=$data;
+    }
+	public function setPostId($data) {
+        $this->_aData['post_id']=$data;
+    }
+	public function setUserId($data) {
+        $this->_aData['user_id']=$data;
+    }
+	public function setTopicId($data) {
+        $this->_aData['topic_id']=$data;
+    }
+	public function setCountTopics($data) {
+        $this->_aData['forum_count_topics']=$data;
+    }
+	public function setCountPosts($data) {
+        $this->_aData['forum_count_posts']=$data;
     }
 	public function setTopic($data) {
         $this->_aData['topic']=$data;

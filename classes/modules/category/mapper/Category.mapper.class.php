@@ -70,7 +70,26 @@ Class PluginForum_ModuleCategory_MapperCategory extends Mapper {
 			}
 		}
 		return $aCategories;
-	}	
+	}
+	
+	public function GetCategoryById($Id) {
+		$sql = "SELECT 
+				b.*
+			FROM 
+				".Config::Get('plugin.forum.table.forum_category')." as b
+			WHERE 
+				b.category_id = ? 		
+				";
+		if ($aRow=$this->oDb->selectRow($sql,$Id)) {
+			return $aRow['category_id'];
+		}
+		return null;
+	}
+	
+	public function DeleteCategory($Id) {
+		$sql = "DELETE FROM ".Config::Get('plugin.forum.table.forum_category')." WHERE category_id = ?";
+		return $aRow=$this->oDb->selectRow($sql,$Id);
+	}
 
 }
 ?>

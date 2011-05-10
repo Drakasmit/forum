@@ -97,7 +97,7 @@ class PluginForum_ModuleTopic extends Module {
 		return $aTopics;		
 	}
 	
-	public function GetTopicsAdditionalData($aTopicId,$aAllowData=array('user'=>array(),'forum'=>array())) {
+	public function GetTopicsAdditionalData($aTopicId,$aAllowData=array('user'=>array(),'forum'=>array(),'post'=>array(),'userlast'=>array())) {
 		func_array_simpleflip($aAllowData);
 		if (!is_array($aTopicId)) {
 			$aTopicId=array($aTopicId);
@@ -133,32 +133,29 @@ class PluginForum_ModuleTopic extends Module {
 		 * Добавляем данные к результату - списку топиков
 		 */
 		foreach ($aTopics as $oTopic) {
-			if (isset($aUsers[$oTopic->getUserId()])) {
-				$oTopic->setUser($aUsers[$oTopic->getUserId()]);
-			} else {
-				$oTopic->setUser(null); // или $oTopic->setUser(new ModuleUser_EntityUser());
-			}
-			if (isset($aForums[$oTopic->getForumId()])) {
-				$oTopic->setForum($aForums[$oTopic->getForumId()]);
-			} else {
-				$oTopic->setForum(null); // или $oTopic->setBlog(new ModuleBlog_EntityBlog());
-			}					
+			$oTopic->setUser($aUsers[$oTopic->getUserId()]);
+			$oTopic->setForum($aForums[$oTopic->getForumId()]);
+			$oTopic->setPost($this->PluginForum_ModulePost_GetPostById($oTopic->getPostId()));
+			$oTopic->setUserLast($this->User_GetUserById($oTopic->getUserId()));
 		}
 		return $aTopics;
 	}
 	
 	public function GetTopicById($sTopicId) {
-		$aTopics=$this->GetTopicsByArrayId($sTopicId);
+		$aTopics=$this->GetTopicsByArrayId($sTopicId);		
 		if (isset($aTopics[$sTopicId])) {
 			return $aTopics[$sTopicId];
 		}
 		return null;
 	}
 	
-	public function GetTopicsByForumId($Id) {
-		if (false === ($data = $this->Cache_Get("topic_{$Id}"))) {			
-			$data = array('collection'=>$this->oMapperTopic->GetTopicsByForumId($Id));
-			$this->Cache_Set($data, "topic_{$Id}", array('topic_update','topic_new'), 60*60*24*2);
+	public function GetTopicsByForumId($Id,$iPage,$iPerPage) {
+		if (false === ($data = $this->Cache_Get("topic_{$Id}_{$iPage}_{$iPerPage}"))) {			
+			$data = array(
+				'collection'=>$this->oMapperTopic->GetTopicsByForumId($Id,$iCount,$iPage,$iPerPage),
+				'count'=>$iCount
+				);
+			$this->Cache_Set($data, "topic_{$Id}_{$iPage}_{$iPerPage}", array('topic_update','topic_new'), 60*60*24*2);
 		}
 		$data['collection']=$this->GetTopicsAdditionalData($data['collection']);
 		return $data;
@@ -175,13 +172,24 @@ class PluginForum_ModuleTopic extends Module {
 		return $this->GetTopicById($id);
 	}
 	
-	public function GetTopicsByForumsArray($aId=array()) {
+	public function GetTopicsByForumsArray($aId) {
+		if (!$aId) {
+			return null;
+		}
 		if (false === ($data = $this->Cache_Get("topic_{$aId}"))) {			
 			$data = array('collection'=>$this->oMapperTopic->GetTopicsByForumsArray($aId));
 			$this->Cache_Set($data, "topic_{$aId}", array('topic_update','topic_new'), 60*60*24*2);
 		}
 		$data['collection']=$this->GetTopicsByArrayId($data['collection']);
 		return $data;
+	}
+	
+	public function SetPostId($Id, $tId) {
+		return $this->oMapperTopic->SetPostId($Id, $tId);
+	}
+	
+	public function SetCountViews($iCount,$Id) {
+		return $this->oMapperTopic->SetCountViews($iCount,$Id);
 	}
 
 }

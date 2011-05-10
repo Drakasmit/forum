@@ -132,12 +132,6 @@ class PluginForum_ModulePost extends Module {
 		 * Получаем дополнительные данные
 		 */
 		$aUsers=isset($aAllowData['user']) && is_array($aAllowData['user']) ? $this->User_GetUsersAdditionalData($aUserId,$aAllowData['user']) : $this->User_GetUsersAdditionalData($aUserId);
-
-		require_once('/home/www/artemeff.ru/my/FirePHPCore/FirePHP.class.php');
-		$firephp = FirePHP::getInstance(true);
-		$firephp -> fb($aPosts,FirePHP::LOG);
-		
-		$firephp -> fb($aUsers,FirePHP::LOG);
 		
 		/**
 		 * Добавляем данные к результату

@@ -18,7 +18,7 @@ class PluginForum extends Plugin {
 	public function Activate() {
 		if (!$this->isTableExists('prefix_forum_list')) {
 			/**
-			 * Ïðè àêòèâàöèè âûïîëíÿåì SQL äàìï
+			 * ÐŸÑ€Ð¸ Ð°ÐºÑ‚Ð¸Ð²Ð°Ñ†Ð¸Ð¸ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÑÐµÐ¼ SQL Ð´Ð°Ð¼Ð¿
 			 */
 			$this->ExportSQL(dirname(__FILE__).'/install.sql');
 		}

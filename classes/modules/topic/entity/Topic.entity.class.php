@@ -12,7 +12,10 @@ class PluginForum_ModuleTopic_EntityTopic extends Entity {
 
     public function getId() {
         return $this->_aData['topic_id'];
-    }  
+    }
+    public function getPostId() {
+        return $this->_aData['post_id'];
+    }
     public function getForumId() {
         return $this->_aData['forum_id'];
     }
@@ -25,21 +28,24 @@ class PluginForum_ModuleTopic_EntityTopic extends Entity {
     public function getUrl() {
         return $this->_aData['topic_url'];
     }
-	public function getWebPath() {
-		return Router::GetPath('forum').$this->getForum()->getUrl().'/'.$this->getUrl().'.html';
-	}
     public function getDate() {
         return $this->_aData['topic_date'];
     }
     public function getStatus() {
         return $this->_aData['topic_status'];
     }
-
-
-
+    public function getCountViews() {
+        return $this->_aData['topic_views'];
+    }
+    public function getCountPosts() {
+        return $this->_aData['topic_count_posts'];
+    }
 
 	public function setId($data) {
         $this->_aData['topic_id']=$data;
+    }
+	public function setPostId($data) {
+        $this->_aData['post_id']=$data;
     }
 	public function setForumId($data) {
         $this->_aData['forum_id']=$data;
@@ -58,6 +64,12 @@ class PluginForum_ModuleTopic_EntityTopic extends Entity {
     }
 	public function setStatus($data) {
         $this->_aData['topic_status']=$data;
+    }
+	public function setCountViews($data) {
+        $this->_aData['topic_views']=$data;
+    }
+	public function setCountPosts($data) {
+        $this->_aData['topic_count_posts']=$data;
     }
 
 

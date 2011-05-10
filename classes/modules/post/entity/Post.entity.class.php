@@ -12,6 +12,9 @@ class PluginForum_ModulePost_EntityPost extends Entity {
     public function getId() {
         return $this->_aData['post_id'];
     }
+    public function getForumId() {
+        return $this->_aData['forum_id'];
+    }
     public function getTopicId() {
         return $this->_aData['topic_id'];
     }
@@ -35,6 +38,9 @@ class PluginForum_ModulePost_EntityPost extends Entity {
 
 	public function setId($data) {
         $this->_aData['post_id']=$data;
+    }
+	public function setForumId($data) {
+        $this->_aData['forum_id']=$data;
     }
 	public function setTopicId($data) {
         $this->_aData['topic_id']=$data;

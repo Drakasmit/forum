@@ -22,11 +22,13 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 			topic_title,
 			topic_url,
 			topic_date,
-			topic_status
+			topic_status,
+			topic_views,
+			topic_count_posts
 			)
-			VALUES(?, ?, ?, ?, ?, ?)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?)
 		";			
-		if ($iId=$this->oDb->query($sql,$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus())) {
+		if ($iId=$this->oDb->query($sql,$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getCountViews(),$oTopic->getCountPosts())) {
 			$oTopic->setId($iId);
 			return $iId;
 		}		
@@ -35,15 +37,18 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 	
 	public function UpdateTopic(PluginForum_ModuleTopic_EntityTopic $oTopic) {
 		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_topics')." 
-			SET forum_id = ?,
+			SET post_id = ?,
+			forum_id = ?,
 			user_id = ?,
 			topic_title = ?,
 			topic_url = ?,
 			topic_date = ?,
-			topic_status = ?
+			topic_status = ?,
+			topic_views = ?,
+			topic_count_posts = ?
 			WHERE topic_id = ?d
 		";			
-		if ($this->oDb->query($sql,$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getId())) 
+		if ($this->oDb->query($sql,$oTopic->getPostId(),$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getCountViews(),$oTopic->getCountPosts(),$oTopic->getId())) 
 		{
 			return true;
 		}		
@@ -69,22 +74,39 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 		return $aTopics;
 	}	
 	
-	public function GetTopicsByForumId($Id) {	
+	public function GetTopicsByForumId($Id,&$iCount,$iPage,$iPerPage) {	
 		$sql = "SELECT 		
 						topic_id										
 					FROM 
 						".Config::Get('plugin.forum.table.forum_topics')."				
 					WHERE 
 						forum_id = ?
-						";
+					ORDER BY topic_date DESC
+					LIMIT ?d, ?d";
 		
 		$aTopics=array();
-		if ($aRows=$this->oDb->select($sql,$Id)) {
+		if ($aRows=$this->oDb->selectPage($iCount,$sql,$Id,($iPage-1)*$iPerPage, $iPerPage)) {
 			foreach ($aRows as $aTopic) {
 				$aTopics[]=$aTopic['topic_id'];
 			}
 		}
 		return $aTopics;
+	}
+	
+	public function GetTopicByForumId($Id) {	
+		$sql = "SELECT 		
+						topic_id										
+					FROM 
+						".Config::Get('plugin.forum.table.forum_topics')."				
+					WHERE 
+						forum_id = ?
+					ORDER BY topic_date DESC
+						";
+		
+		if ($aRow=$this->oDb->selectRow($sql,$Id)) {
+			return $aRow['topic_id'];
+		}
+		return null;
 	}
 	
 	public function GetTopicByUrl($sUrl) {	
@@ -117,7 +139,28 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 		}
 		return $aTopics;
 	}
-
 	
+	public function SetPostId($Id,$tId) {	
+		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_topics')." 
+			SET post_id = ?
+			WHERE topic_id = ?d
+		";
+		if ($aRows=$this->oDb->select($sql,$Id,$tId)) {
+			return true;
+		}
+		return false;
+	}
+
+	public function SetCountViews($iCount,$Id) {	
+		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_topics')." 
+			SET topic_views = ?
+			WHERE topic_id = ?d
+		";
+		if ($aRows=$this->oDb->select($sql,$iCount,$Id)) {
+			return true;
+		}
+		return false;
+	}
+
 }
 ?>

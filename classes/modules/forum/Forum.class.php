@@ -87,7 +87,7 @@ class PluginForum_ModuleForum extends Module {
 	}
 	
 	
-	public function GetForumsAdditionalData($aForumId,$aAllowData=array('topic'=>array())) {
+	public function GetForumsAdditionalData($aForumId,$aAllowData=array('topic'=>array(),'user'=>array(),'post'=>array())) {
 		func_array_simpleflip($aAllowData);
 		if (!is_array($aForumId)) {
 			$aForumId=array($aForumId);
@@ -97,28 +97,14 @@ class PluginForum_ModuleForum extends Module {
 		 */
 		$aForums=$this->GetForumsByArrayId($aForumId);
 		/**
-		 * Формируем ID дополнительных данных, которые нужно получить
-		 */
-		$aTopicId=array();
-		foreach ($aForums as $oForum) {
-			if (isset($aAllowData['topic'])) {
-				$aTopicId[]=$oForum->getId();
-			}	
-		}
-		/**
-		 * Получаем дополнительные данные
-		 */
-		$aTopics=isset($aAllowData['topic']) && is_array($aAllowData['topic']) ? $this->PluginForum_ModuleTopic_GetTopicsByForumsArray($aTopicId,$aAllowData['topic']) : $this->PluginForum_ModuleTopic_GetTopicsByForumsArray($aTopicId);
-		/**
 		 * Добавляем данные к результату
 		 */
 		foreach ($aForums as $oForum) {
-			if (isset($aTopics[$oForum->getLastTopic()])) {
-				$oForum->setTopic($aTopics[$oForum->getLastTopic()]);
-			} else {
-				$oForum->setTopic(null); // или $oComment->setUser(new ModuleUser_EntityUser());
-			}				
+			$oForum->setTopic($this->PluginForum_ModuleTopic_GetTopicById($oForum->getTopicId()));
+			$oForum->setPost($this->PluginForum_ModulePost_GetPostById($oForum->getPostId()));		
+			$oForum->setUser($this->User_GetUserById($oForum->getUserId()));	
 		}
+		
 		return $aForums;
 	}
 
@@ -157,7 +143,7 @@ class PluginForum_ModuleForum extends Module {
 		}
 		return $this->GetForumById($id);
 	}
-
+	
 	public function GetForumsByCategoryId($Id) {
 		if (false === ($data = $this->Cache_Get("forum_cat_{$Id}"))) {			
 			$data = array('collection'=>$this->oMapperForum->GetForumsByCategoryId($Id));
@@ -165,6 +151,14 @@ class PluginForum_ModuleForum extends Module {
 		}
 		$data['collection']=$this->GetForumsAdditionalData($data['collection']);
 		return $data;		
+	}
+	
+	public function UpdateForumLatestData($Post,$Topic,$User,$Forum) {
+		return $this->oMapperForum->UpdateForumLatestData($Post,$Topic,$User,$Forum);
+	}
+	
+	public function UpdateCountTopics($iCount,$Forum) {
+		return $this->oMapperForum->UpdateCountTopics($iCount,$Forum);
 	}
 
 }
