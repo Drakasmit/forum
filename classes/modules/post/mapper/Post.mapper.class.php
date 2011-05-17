@@ -67,20 +67,46 @@ Class PluginForum_ModulePost_MapperPost extends Mapper {
 		return $aPosts;
 	}	
 	
-	public function GetPostsByTopicId($Id) {	
+	public function GetPostsByTopicId($Id,&$iCount,$iPage,$iPerPage) {	
 		$sql = "SELECT 		
 						post_id										
 					FROM 
-						".Config::Get('plugin.forum.table.forum_posts')."				
+						".Config::Get('plugin.forum.table.forum_posts')."
 					WHERE 
-						topic_id = ?";
+						topic_id = ?
+					LIMIT ?d, ?d";
 		$aPosts=array();
-		if ($aRows=$this->oDb->select($sql,$Id)) {
+		if ($aRows=$this->oDb->selectPage($iCount,$sql,$Id,($iPage-1)*$iPerPage, $iPerPage)) {
 			foreach ($aRows as $aPost) {
 				$aPosts[]=$aPost['post_id'];
 			}
 		}
 		return $aPosts;
+	}
+	
+	public function GetUserByPostId($Id) {	
+		$sql = "SELECT 
+						user_id
+					FROM 
+						".Config::Get('plugin.forum.table.forum_posts')."
+					WHERE 
+						post_id = ?";
+		if ($aRow=$this->oDb->selectRow($sql,$Id)) {
+			return $aRow['user_id'];
+		}
+		return null;
+	}
+	
+	public function GetCountPosts() {
+		$sql = "SELECT count(post_id) as count FROM ".Config::Get('plugin.forum.table.forum_posts');			
+		$result=$this->oDb->selectRow($sql);
+		return $result['count'];
+	}	
+	
+	public function GetCountToDayPosts($sDate) {
+		$sql = "SELECT count(post_id) as count FROM ".Config::Get('plugin.forum.table.forum_posts')." WHERE post_date >= ?";			
+		$result=$this->oDb->selectRow($sql,$sDate);
+		return $result['count'];
 	}
 	
 }

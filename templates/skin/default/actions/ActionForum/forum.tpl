@@ -10,10 +10,12 @@
 
 	<div class="sv-forum-block">
 
+		{if $oUserCurrent}
 		<ul class="sv-tom_menu">
-			<li><a class="newtopic" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>
-			<li><a class="notfresh" href="#">{$aLang.mark_all_read}</a></li>
+			<li><a class="topbutton" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>
+			<li><a class="topbutton" href="#">{$aLang.mark_all_read}</a></li>
 		</ul>
+		{/if}
 
 		{if $aPaging and $aPaging.iCountPage>1}
 		<div class="sv-forum_nav">
@@ -53,24 +55,25 @@
 					{foreach from=$aTopics item=oTopic}
 						{assign var="oUser" value=$oTopic->getUser()}
 						{assign var="oPost" value=$oTopic->getPost()}
-						{assign var="oUserLast" value=$oTopic->getUserLast()}
+						{assign var="oLastUser" value=$oTopic->getLastUser()}
+						{assign var="oLastPost" value=$oTopic->getLastPost()}
 						<tr>
 							<td class="sv-icon_col">
-								<a class="bbl" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html"></a>
+								<a class="bbl{if $oTopic->getPosition()==1} info{/if}{if $oTopic->getStatus()==1} close{/if}" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html"></a>
 							</td>
 							<td class="sv-main_col">
 								<h3>
-									<a href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html">{$oTopic->getTitle()}</a>
-									<span class="sv-go_to_page">[ {$aLang.on_page}: 1, 2 ]</span>
+									<a {if $oTopic->getDateRead()<=$oLastPost->getDate()}class="new"{/if} href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html">{$oTopic->getTitle()}</a>
+									<span class="sv-go_to_page">{hook run='topic_paging' topic=$oTopic forum=$oForum}</span>
 								</h3>
 								<span class="sv-author"><a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a></span>
 							</td>
 							<td class="sv-answers">{$oTopic->getCountPosts()}</td>
 							<td class="sv-views">{$oTopic->getCountViews()}</td>
 							<td class="sv-last_msg">
-								{if $oPost}
-								<span class="sv-date">{date_format date=$oPost->getDate()}</span>
-								<span class="sv-author">{$aLang.by} <a href="{$oUserLast->getUserWebPath()}">{$oUserLast->getLogin()}</a></span>
+								{if $oLastPost}
+								<span class="sv-date">{date_format date=$oLastPost->getDate()}</span>
+								<span class="sv-author">{$aLang.by} <a href="{$oLastUser->getUserWebPath()}">{$oLastUser->getLogin()}</a></span>
 								{/if}
 							</td>
 						</tr>
@@ -103,10 +106,12 @@
 		</div>
 		{/if}
 
+		{if $oUserCurrent}
 		<ul class="sv-bottom_menu">
-			<li><a class="newtopic" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>
-			<li><a class="notfresh" href="#">{$aLang.mark_all_read}</a></li>
+			<li><a class="topbutton" href="{router page='forum'}add/{$oForum->getId()}/">{$aLang.add_topic}</a></li>
+			<li><a class="topbutton" href="#">{$aLang.mark_all_read}</a></li>
 		</ul>
+		{/if}
 
 	</div>
 

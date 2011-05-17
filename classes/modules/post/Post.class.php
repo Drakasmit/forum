@@ -99,13 +99,27 @@ class PluginForum_ModulePost extends Module {
 		return null;
 	}
 	
-	public function GetPostsByTopicId($Id) {
-		if (false === ($data = $this->Cache_Get("topic_{$Id}"))) {			
-			$data = array('collection'=>$this->oMapperPost->GetPostsByTopicId($Id));
-			$this->Cache_Set($data, "topic_{$Id}", array('topic_update','topic_new'), 60*60*24*2);
+	public function GetPostsByTopicId($Id,$iPage,$iPerPage) {
+		if (false === ($data = $this->Cache_Get("topic_{$Id}_{$iPage}_{$iPerPage}"))) {			
+			$data = array(
+				'collection'=>$this->oMapperPost->GetPostsByTopicId($Id,$iCount,$iPage,$iPerPage),
+				'count'=>$iCount
+				);
+			$this->Cache_Set($data, "topic_{$Id}_{$iPage}_{$iPerPage}", array('topic_update','topic_new'), 60*60*24*2);
 		}
 		$data['collection']=$this->GetPostsAdditionalData($data['collection']);
 		return $data;
+	}
+	
+	public function GetUserByPostId($Id) {
+		if (false === ($id = $this->Cache_Get("post_user_{$Id}"))) {
+			if ($id = $this->oMapperPost->GetUserByPostId($Id)) {
+				$this->Cache_Set($id, "post_user_{$Id}", array("post_update_{$id}"), 60*60*24*2);
+			} else {
+				$this->Cache_Set(null, "post_user_{$Id}", array('post_update_','topic_new'), 60*60);
+			}
+		}
+		return $this->User_GetUserById($id);
 	}
 	
 	public function GetPostsAdditionalData($aPostId,$aAllowData=array('user'=>array())) {
@@ -145,6 +159,47 @@ class PluginForum_ModulePost extends Module {
 		}
 		
 		return $aPosts;
+	}
+	
+	public function GetNewPostsByTopicId($sId,$sIdPostLast) {
+		if (false === ($aPosts = $this->Cache_Get("post_{$sId}_{$sIdPostLast}"))) {			
+			$aPosts=$this->oMapperPost->GetNewPostsByTopicId($sId,$sIdPostLast);			
+			$this->Cache_Set($aPosts, "post_{$sId}_{$sIdPostLast}", array("post_new_{$sId}"), 60*60*24*1);
+		}		
+		
+		if (count($aPosts)==0) {
+			return array('posts'=>array(),'iMaxIdPost'=>0);
+		}
+		
+		$iMaxIdPost=max($aPosts);		
+		$aPsts=$this->GetPostsAdditionalData($aPosts);				
+		if (!class_exists('ModuleViewer')) {
+			require_once(Config::Get('path.root.engine')."/modules/viewer/Viewer.class.php");
+		}
+		$oViewerLocal=$this->Viewer_GetLocalViewer();
+		$oViewerLocal->Assign('oUserCurrent',$this->User_GetUserCurrent());
+		$oViewerLocal->Assign('bOneComment',true);
+
+		$aPst=array();
+		foreach ($aPsts as $oPost) {			
+			$oViewerLocal->Assign('oPost',$oPost);						
+			$sText=$oViewerLocal->Fetch("post.tpl");
+			$aPst[]=array(
+				'html' => $sText,
+				'obj'  => $oPost,
+			);			
+		}
+			
+		return array('posts'=>$aPst,'iMaxIdPost'=>$iMaxIdPost);		
+	}
+
+	public function GetCountPosts() {
+		return $this->oMapperPost->GetCountPosts();
+	}
+
+	public function GetCountToDayPosts() {
+		$sDate=date("Y-m-d H:00:00",time()-60*60*24*1);
+		return $this->oMapperPost->GetCountToDayPosts($sDate);
 	}
 
 }

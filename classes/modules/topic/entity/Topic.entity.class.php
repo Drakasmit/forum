@@ -31,8 +31,14 @@ class PluginForum_ModuleTopic_EntityTopic extends Entity {
     public function getDate() {
         return $this->_aData['topic_date'];
     }
+    public function getDateRead() {
+        return $this->_aData['date_read'];
+    }  
     public function getStatus() {
         return $this->_aData['topic_status'];
+    }
+    public function getPosition() {
+        return $this->_aData['topic_position'];
     }
     public function getCountViews() {
         return $this->_aData['topic_views'];
@@ -62,8 +68,14 @@ class PluginForum_ModuleTopic_EntityTopic extends Entity {
 	public function setDate($data) {
         $this->_aData['topic_date']=$data;
     }
+    public function setDateRead($data) {
+        $this->_aData['date_read']=$data;
+    }
 	public function setStatus($data) {
         $this->_aData['topic_status']=$data;
+    }
+	public function setPosition($data) {
+        $this->_aData['topic_position']=$data;
     }
 	public function setCountViews($data) {
         $this->_aData['topic_views']=$data;

@@ -32,75 +32,22 @@ class PluginForum_ActionForum extends ActionPlugin {
 				$this->oUserAdmin=true;
 			}
 		}
-
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            $this->sPageRef = $_SERVER['HTTP_REFERER'];
-        }
-
 	}
 
 	protected function RegisterEvent() {
 		$this->AddEvent('forums','EventForums');
-		$this->AddEvent('ajaxaddcomment','AjaxAddComment');
+		$this->AddEvent('addpost','EventAddPost');
 		$this->AddEvent('admin','EventAdmin');
 		
 		$this->AddEventPreg('/^add$/i','/^(\d+)$/i','EventAddTopic');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(page(\d+))?$/i','EventShowForum');
-		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)-(\w+)\.html$/i','/^(page(\d+))?$/i','EventShowTopic');
+		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)-([-a-z0-9]+)\.html$/i','/^(page(\d+))?$/i','EventShowTopic');
 	}
-	
-    protected function GoToBackPage() {
-        if ($this->sPageRef)
-            admHeaderLocation($this->sPageRef);
-        else
-            admHeaderLocation(Router::GetPath('admin'));
-    }
 
 	/**********************************************************************************
 	 ************************ РЕАЛИЗАЦИЯ ЭКШЕНА ***************************************
 	 **********************************************************************************
 	 */
-	 
-	protected function EventAdmin() {
-		if (!$this->oUserAdmin) {
-			return parent::EventNotFound();
-		}
-		
-		if ($this->GetParam(0)=='categories') {
-		
-			$aCategories=$this->PluginForum_ModuleCategory_GetCategories();
-			$aList = array();
-			foreach ($aCategories as $oCategory) {
-				$aResult=$this->PluginForum_ModuleForum_GetForumsByCategoryId($oCategory->getId());
-				$aForums=$aResult['collection'];
-				$aList[] = array(
-						'obj'=>$oCategory,
-						'forums'=>$aForums
-				);
-			}
-
-			$this->Viewer_Assign('aCategories', $aList);
-		
-			$this->SetTemplateAction('admin-categories');
-		}
-		
-		if ($this->GetParam(0)=='forums') {
-			$this->SetTemplateAction('admin-forums');
-		}
-		
-		if ($this->GetParam(0)=='topics') {
-			$this->SetTemplateAction('admin-topics');
-		}
-		
-		if (!$this->GetParam(0)) {
-			$this->SetTemplateAction('admin');
-		}
-		
-		if ($this->GetParam(0)=='categories' and $this->GetParam(1)=='delete') {
-			$this->EventCategoryDelete();
-		}
-		
-	}
 
 	protected function EventForums() {
 		/**
@@ -116,9 +63,9 @@ class PluginForum_ActionForum extends ActionPlugin {
                     'forums'=>$aForums
             );
         }
-
-		$this->Viewer_Assign('aCategories', $aList);
 		
+		$this->GetForumStats();
+		$this->Viewer_Assign('aCategories', $aList);
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
 		/**
 		 * Устанавливаем шаблон вывода
@@ -132,9 +79,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		
 		$oForum=$this->PluginForum_ModuleForum_GetForumByUrl($sUrl);
 		
-		if(!($iPage=$this->GetParamEventMatch(0,2))) {
-			$iPage=1;
-		}
+		if(!($iPage=$this->GetParamEventMatch(0,2))) $iPage=1;
 		
 		$aResult=$this->PluginForum_ModuleTopic_GetTopicsByForumId($oForum->getId(),$iPage,Config::Get('plugin.forum.topics.per_page'));
 		$aTopics=$aResult['collection'];
@@ -151,36 +96,72 @@ class PluginForum_ActionForum extends ActionPlugin {
 	}
 	
 	protected function EventShowTopic() {
-		// Получаем УРЛ форума, для редиректа
+		/**
+		 * Получаем URL форума из эвента
+		 */
 		$sForumUrl=$this->sCurrentEvent;
-		// Сущность форума из его УРЛа
+		/**
+		 * Получаем сущность форума из URL
+		 */
 		$oForum = $this->PluginForum_ModuleForum_GetForumByUrl($sForumUrl);
-		// Получаем УРЛ топика из ссылки
-		$sUrl=$this->GetParamEventMatch(0,1);
-		// Сущность топика
-		$oTopic = $this->PluginForum_ModuleTopic_GetTopicById($sUrl);
-		// Получаем из сущности УРЛ топика, для сравнения
-		$oTopicReallyUrl = $oTopic->getUrl();
-		// Получаем УРЛ топика, для сравнения
+		/**
+		 * Получаем ID топика из URL
+		 */
+		$sId=$this->GetParamEventMatch(0,1);
+		/**
+		 * Сущность из ID
+		 */
+		$oTopic = $this->PluginForum_ModuleTopic_GetTopicById($sId);
+		/**
+		 * Получаем URL топика из евента
+		 */
 		$sTitle=$this->GetParamEventMatch(0,2);
-		// Если они не совпадают, редиректим на валидный УРЛ
-		if ($sTitle != $oTopicReallyUrl) {
-			header('Location: '.Router::GetPath('forum').$sForumUrl.'/'.$sUrl.'-'.$oTopicReallyUrl.'.html');
+		/**
+		 * Если они не совпадают, редиректим на валидный УРЛ
+		 */
+		if ($sTitle != $oTopic->getUrl()) {
+			header('Location: '.Router::GetPath('forum').$sForumUrl.'/'.$sId.'-'.$oTopic->getUrl().'.html');
 		}
-		
+		/**
+		 * Хука для счетчиков
+		 */
 		$this->Hook_Run('forum_topic_show',array("oTopic"=>$oTopic));
-		
-		$aResult = $this->PluginForum_ModulePost_GetPostsByTopicId($oTopic->getId());
-		$aPost = $aResult['collection'];
-		
+		/**
+		 * Получаем номер страницы
+		 */
+		if(!($iPage=$this->GetParamEventMatch(1,2))) $iPage=1;
+		/**
+		 * Получаем топики
+		 */
+		$aResult=$this->PluginForum_ModulePost_GetPostsByTopicId($oTopic->getId(),$iPage,Config::Get('plugin.forum.posts.per_page'));
+		$aPost=$aResult['collection'];
+		/**
+		 * Пагинация
+		 */
+		$aPaging=$this->Viewer_MakePaging($aResult['count'],$iPage,Config::Get('plugin.forum.posts.per_page'),4,Router::GetPath('forum').$oForum->getUrl().'/'.$oTopic->getId().'-'.$oTopic->getUrl().'.html');
+		/**
+		 * Отмечаем дату прочтения топика
+		 */
+		if ($this->oUserCurrent) {
+			$oTopicRead=Engine::GetEntity('PluginForum_Topic_TopicRead');
+			$oTopicRead->setTopicId($oTopic->getId());
+			$oTopicRead->setUserId($this->oUserCurrent->getId());
+			$oTopicRead->setPostIdLast($oTopic->getLastPostId());
+			$oTopicRead->setDateRead(date("Y-m-d H:i:s"));
+			$this->PluginForum_ModuleTopic_SetTopicRead($oTopicRead);
+		}
+		/**
+		 * Теперь все в шаблон
+		 */
 		$this->Viewer_Assign("oForum",$oForum);
 		$this->Viewer_Assign("aPost",$aPost);
 		$this->Viewer_Assign("oTopic",$oTopic);
-		
+		$this->Viewer_Assign("aPaging",$aPaging);
+
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
 		$this->Viewer_AddHtmlTitle($this->Lang_Get($oForum->getTitle()));
 		$this->Viewer_AddHtmlTitle($this->Lang_Get($oTopic->getTitle()));
-		
+
 		$this->SetTemplateAction('topic');
 	}
 	
@@ -211,8 +192,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Определяем в какой форум делаем запись
 		 */
-		$sForumId = $this->GetParamEventMatch(0,1);
-		$oForum = $this->PluginForum_ModuleForum_GetForumById($sForumId);
+		$sForumId=$this->GetParamEventMatch(0,1);
+		$oForum=$this->PluginForum_ModuleForum_GetForumById($sForumId);
 		/**
 		 * Если форум не определен выдаем предупреждение
 		 */
@@ -242,10 +223,24 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$oTopic->setUserId($this->oUserCurrent->getId());
 		$oTopic->setTitle(getRequest('topic_title'));
 		$oTopic->setDate(date("Y-m-d H:i:s"));
-		$oTopic->setUrl('test');
-		$oTopic->setStatus('1');
+		$oTopic->setUrl($this->PluginForum_ModuleTopic_GenerateUrl(getRequest('topic_title')));
 		$oTopic->setCountViews('0');
 		$oTopic->setCountPosts('0');
+		
+		
+		$oTopic->setStatus(0);
+		if ($this->oUserCurrent->isAdministrator())	{
+			if (getRequest('topic_status')) {
+				$oTopic->setStatus(1);
+			}
+		}
+		
+		$oTopic->setPosition(0);
+		if ($this->oUserCurrent->isAdministrator())	{
+			if (getRequest('topic_position')) {
+				$oTopic->setPosition(1);
+			} 
+		}	
 
 		
 		$oPost=Engine::GetEntity('PluginForum_Post');
@@ -276,6 +271,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 				$this->PluginForum_ModuleTopic_SetPostId($oPost->getId(),$oTopic->getId());
 				$this->PluginForum_ModuleForum_UpdateForumLatestData($oPost->getId(),$oTopic->getId(),$this->oUserCurrent->getId(),$oForum->getId());
 				$this->PluginForum_ModuleForum_UpdateCountTopics($oForum->getCountTopics()+1,$oForum->getId());
+				$this->PluginForum_ModuleTopic_SetLastPostId($oPost->getId(),$oTopic->getId());
 				
 				header('Location: '.Router::GetPath('forum').$oForum->getUrl().'/'.$oTopic->getId().'-'.$oTopic->getUrl().'.html');
 			} else {
@@ -320,16 +316,19 @@ class PluginForum_ActionForum extends ActionPlugin {
 	}
 	
 	
-	protected function AjaxAddComment() {
-		$this->Viewer_SetResponseAjax();
-		$this->SubmitComment();
+	protected function EventAddPost() {
+		if (!$this->User_IsAuthorization()) {
+			return parent::EventNotFound();
+		}
+		$this->SetTemplateAction('addpost');
+		return $this->SubmitPost();
 	}	
 	/**
 	 * Обработка добавление поста к топику
 	 *	 
 	 * @return bool
 	 */
-	protected function SubmitComment() {
+	protected function SubmitPost() {
 		/**
 		 * Проверям авторизован ли пользователь
 		 */
@@ -337,35 +336,27 @@ class PluginForum_ActionForum extends ActionPlugin {
 			$this->Message_AddErrorSingle($this->Lang_Get('need_authorization'),$this->Lang_Get('error'));
 			return;
 		}
-
-		// Сущность топика
-		$oTopic = $this->PluginForum_ModuleTopic_GetTopicById(getRequest('post_topic_id'));
-		
-		/**
-		* Проверяем разрешено ли постить
-		*/
-		if (!$this->ACL_CanPostComment($this->oUserCurrent) and !$this->oUserCurrent->isAdministrator()) {			
-			$this->Message_AddErrorSingle($this->Lang_Get('topic_comment_acl'),$this->Lang_Get('error'));
+		// Сущность форума
+		if (!($oForum=$this->PluginForum_ModuleForum_GetForumById(getRequest('forum_id')))) {
+			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
 			return;
 		}
-		/**
-		* Проверяем разрешено ли постить по времени
-		*/
-		if (!$this->ACL_CanPostCommentTime($this->oUserCurrent) and !$this->oUserCurrent->isAdministrator()) {			
-			$this->Message_AddErrorSingle($this->Lang_Get('topic_comment_limit'),$this->Lang_Get('error'));
+		// Сущность топика
+		if (!($oTopic=$this->PluginForum_ModuleTopic_GetTopicById(getRequest('topic_id')))) {
+			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
 			return;
 		}
 		/**
 		* Проверяем запрет на добавления коммента автором топика или топик закрытый
 		*/
-		/*if ($oTopic->getForbidComment()) {
+		if ($oTopic->getStatus()==1 AND !$this->oUserAdmin) {
 			$this->Message_AddErrorSingle($this->Lang_Get('topic_comment_notallow'),$this->Lang_Get('error'));
 			return;
-		}	*/
+		}
 		/**
 		* Проверяем текст поста
 		*/
-		$sText=getRequest('comment_text');
+		$sText=getRequest('post_text');
 		if (!func_check($sText,'text',2,10000)) {			
 			$this->Message_AddErrorSingle($this->Lang_Get('topic_comment_add_text_error'),$this->Lang_Get('error'));
 			return;
@@ -374,19 +365,23 @@ class PluginForum_ActionForum extends ActionPlugin {
 		* Создаём
 		*/
 		$oPost=Engine::GetEntity('PluginForum_Post');
+		$oPost->setForumId($oForum->getId());
 		$oPost->setTopicId($oTopic->getId());
 		$oPost->setUserId($this->oUserCurrent->getId());		
-		$oPost->setText($sText);
+		$oPost->setText($this->Text_Parser($sText));
 		$oPost->setTextSource($sText);
 		$oPost->setDate(date("Y-m-d H:i:s"));
+		
+		$this->PluginForum_ModuleTopic_SetCountPosts($oTopic->getCountPosts()+1,$oTopic->getId());
 			
 		/**
 		* Добавляем
 		*/
-		
 		if ($this->PluginForum_ModulePost_AddPost($oPost)) {
-			
-			$this->Viewer_AssignAjax('sPostId',$oPost->getId());
+			//$this->PluginForum_ModuleTopic_SetPostId($oPost->getId(),$oTopic->getId());
+			$this->PluginForum_ModuleTopic_SetLastPostId($oPost->getId(),$oTopic->getId());
+			$this->PluginForum_ModuleForum_UpdateCountReplies($oForum->getCountPosts()+1,$oForum->getId());
+			header('refresh:3;url='.Router::GetPath('forum').$oForum->getUrl().'/'.$oTopic->getId().'-'.$oTopic->getUrl().'.html#post-'.$oPost->getId());
 		} else {
 			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
 		}
@@ -401,7 +396,7 @@ class PluginForum_ActionForum extends ActionPlugin {
      * @return <type>
      */
     protected function GetRequestCheck($sName, $default=null, $sType=null) {
-        $result = getRequest($sName, $default, $sType);
+        $result=getRequest($sName, $default, $sType);
 
         if (!is_null($result)) $this->Security_ValidateSendForm();
 
@@ -416,11 +411,63 @@ class PluginForum_ActionForum extends ActionPlugin {
         if (!$this->oUserAdmin) {
 			return parent::EventNotFound(); 
 		}
-		$iCategoryId = $this->GetRequestCheck('cat_id');
+		$iCategoryId=$this->GetRequestCheck('cat_id');
 		if ($iCategoryId && ($oCategory=$this->PluginForum_ModuleCategory_GetCategoryById($iCategoryId))) {
 			$this->PluginForum_ModuleCategory_DeleteCategory($iCategoryId);
 		}
-        $this->GoToBackPage();
+        header('Location: '.Router::GetPath('forum').'admin/categories/');
+	}
+	
+	public function GetForumStats() {
+		/**
+		 * Статистика
+		 */
+		$aForumStat=$this->PluginForum_ModuleForum_GetStatForums();		
+		/**
+		 * Загружаем переменные в шаблон
+		 */
+		$this->Viewer_Assign('aForumStat',$aForumStat);
+	}
+	
+	protected function EventAdmin() {
+		if (!$this->oUserAdmin) {
+			return parent::EventNotFound();
+		}
+		
+		if ($this->GetParam(0)=='categories') {
+		
+			$aCategories=$this->PluginForum_ModuleCategory_GetCategories();
+			$aList = array();
+			foreach ($aCategories as $oCategory) {
+				$aResult=$this->PluginForum_ModuleForum_GetForumsByCategoryId($oCategory->getId());
+				$aForums=$aResult['collection'];
+				$aList[] = array(
+						'obj'=>$oCategory,
+						'forums'=>$aForums
+				);
+			}
+
+			$this->Viewer_Assign('aCategories', $aList);
+		
+			$this->SetTemplateAction('admin-categories');
+		}
+		
+		if ($this->GetParam(0)=='forums') {
+			$this->SetTemplateAction('admin-forums');
+		}
+		
+		if ($this->GetParam(0)=='topics') {
+			$this->SetTemplateAction('admin-topics');
+		}
+		
+		if (!$this->GetParam(0)) {
+			$this->SetTemplateAction('admin');
+		}
+		
+		if ($this->GetParam(0)=='categories' and $this->GetParam(1)=='delete') {
+			$this->EventCategoryDelete();
+		}
+		
 	}
 
 	/**

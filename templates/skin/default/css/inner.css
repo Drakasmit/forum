@@ -20,7 +20,7 @@ table.sv-forum_body-section_page tr td.sv-last_msg img, .sv-main_col img { verti
 .sv-wiki-header .sv-weight { float :left; width :60px; text-align :center; }
 .sv-forum_header-section_page .sv-last_msg { float :left; width :160px; padding :0; text-align :center; }
 .sv-wiki-section-header .sv-weight { width:40px; }
-table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page { font-size:9px; }
+table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page { font-size:9px; cursor: default; }
 table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a { text-decoration:none}
 table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a:hover { text-decoration:underline}
 .sv-forum_nav { float :right; font-family :Arial,Helvetica,sans-serif; font-size :24px; height :30px; padding :10px 0 0 0; min-width:100px;}

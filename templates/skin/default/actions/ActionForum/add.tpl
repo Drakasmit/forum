@@ -106,7 +106,13 @@ tinyMCE.init({
 							<span class="sv-br"></span>
 							<textarea name="topic_text" id="topic_text">{$_aRequest.topic_text}</textarea>
 						</div>
-
+						
+						{if $oUserCurrent AND $oUserCurrent->isAdministrator()}
+						<p>
+							<label><input type="checkbox" name="topic_position" id="topic_position" />Закрепить?</label><br />
+							<label><input type="checkbox" name="topic_status" id="topic_status" />Закрыть?</label>
+						</p>
+						{/if}
 						
 						{hook run='form_add_topic_topic_end'}					
 						<p class="buttons">

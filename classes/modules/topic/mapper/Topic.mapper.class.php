@@ -23,12 +23,14 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 			topic_url,
 			topic_date,
 			topic_status,
+			topic_position,
 			topic_views,
-			topic_count_posts
+			topic_count_posts,
+			last_post_id
 			)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		";			
-		if ($iId=$this->oDb->query($sql,$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getCountViews(),$oTopic->getCountPosts())) {
+		if ($iId=$this->oDb->query($sql,$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getPosition(),$oTopic->getCountViews(),$oTopic->getCountPosts(),$oTopic->getLastPostId())) {
 			$oTopic->setId($iId);
 			return $iId;
 		}		
@@ -44,15 +46,81 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 			topic_url = ?,
 			topic_date = ?,
 			topic_status = ?,
+			topic_position = ?,
 			topic_views = ?,
-			topic_count_posts = ?
+			topic_count_posts = ?,
+			last_post_id = ?
 			WHERE topic_id = ?d
 		";			
-		if ($this->oDb->query($sql,$oTopic->getPostId(),$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getCountViews(),$oTopic->getCountPosts(),$oTopic->getId())) 
+		if ($this->oDb->query($sql,$oTopic->getPostId(),$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getPosition(),$oTopic->getCountViews(),$oTopic->getCountPosts(),$oTopic->getLastPostId(),$oTopic->getId())) 
 		{
 			return true;
 		}		
 		return false;
+	}
+	
+	public function UpdateTopicRead(PluginForum_ModuleTopic_EntityTopicRead $oTopicRead) {		
+		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_read')." 
+			SET 
+				post_id_last = ?,
+				date_read = ?
+			WHERE
+				topic_id = ?
+				AND				
+				user_id = ?
+		";			
+		return $this->oDb->query($sql,$oTopicRead->getPostIdLast(),$oTopicRead->getDateRead(),$oTopicRead->getTopicId(),$oTopicRead->getUserId());
+	}	
+
+	public function AddTopicRead(PluginForum_ModuleTopic_EntityTopicRead $oTopicRead) {		
+		$sql = "INSERT INTO ".Config::Get('plugin.forum.table.forum_read')." 
+			SET 
+				post_id_last = ?,
+				date_read = ?,
+				topic_id = ?,							
+				user_id = ? 
+		";			
+		return $this->oDb->query($sql,$oTopicRead->getPostIdLast(),$oTopicRead->getDateRead(),$oTopicRead->getTopicId(),$oTopicRead->getUserId());
+	}
+	/**
+	 * Удаляет записи о чтении записей по списку идентификаторов
+	 *
+	 * @param  array $aTopicId
+	 * @return bool
+	 */				
+	public function DeleteTopicReadByArrayId($aTopicId) {
+		$sql = "
+			DELETE FROM ".Config::Get('plugin.forum.table.forum_read')." 
+			WHERE
+				topic_id IN(?a)				
+		";			
+		if ($this->oDb->query($sql,$aTopicId)) {
+			return true;
+		}
+		return false;
+	}
+			
+	public function GetTopicsReadByArray($aArrayId,$sUserId) {
+		if (!is_array($aArrayId) or count($aArrayId)==0) {
+			return array();
+		}
+				
+		$sql = "SELECT 
+					*							 
+				FROM 
+					".Config::Get('plugin.forum.table.forum_read')."
+				WHERE 
+					topic_id IN(?a)
+					AND
+					user_id = ?d 
+				";
+		$aReads=array();
+		if ($aRows=$this->oDb->select($sql,$aArrayId,$sUserId)) {
+			foreach ($aRows as $aRow) {
+				$aReads[]=Engine::GetEntity('PluginForum_Topic_TopicRead',$aRow);
+			}
+		}		
+		return $aReads;
 	}
 	
 	public function GetTopicsByArrayId($aArrayId) {
@@ -60,11 +128,11 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 			return array();
 		}
 		$sql = "SELECT 
-					b.*
+					*
 				FROM 
-					".Config::Get('plugin.forum.table.forum_topics')." as b
+					".Config::Get('plugin.forum.table.forum_topics')."
 				WHERE
-					b.topic_id IN (?a)";
+					topic_id IN (?a)";
 		$aTopics=array();
 		if ($aRows=$this->oDb->select($sql,$aArrayId)) {
 			foreach ($aRows as $aTopic) {
@@ -81,9 +149,8 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 						".Config::Get('plugin.forum.table.forum_topics')."				
 					WHERE 
 						forum_id = ?
-					ORDER BY topic_date DESC
+					ORDER BY topic_position DESC, topic_date DESC
 					LIMIT ?d, ?d";
-		
 		$aTopics=array();
 		if ($aRows=$this->oDb->selectPage($iCount,$sql,$Id,($iPage-1)*$iPerPage, $iPerPage)) {
 			foreach ($aRows as $aTopic) {
@@ -111,11 +178,11 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 	
 	public function GetTopicByUrl($sUrl) {	
 		$sql = "SELECT 
-				b.topic_id
+				topic_id
 			FROM 
-				".Config::Get('plugin.forum.table.forum_topics')." as b
+				".Config::Get('plugin.forum.table.forum_topics')."
 			WHERE 
-				b.topic_url = ?
+				topic_url = ?
 				";
 		if ($aRow=$this->oDb->selectRow($sql,$sUrl)) {
 			return $aRow['topic_id'];
@@ -125,11 +192,11 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 	
 	public function GetTopicsByForumsArray($aId) {	
 		$sql = "SELECT 		
-						b.topic_id
+						topic_id
 					FROM 
-						".Config::Get('plugin.forum.table.forum_topics')." as b
+						".Config::Get('plugin.forum.table.forum_topics')."
 					WHERE 
-						b.forum_id IN (?a) 
+						forum_id IN (?a) 
 						";
 		$aTopics=array();
 		if ($aRows=$this->oDb->select($sql,$aId)) {
@@ -150,6 +217,17 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 		}
 		return false;
 	}
+	
+	public function SetLastPostId($Id,$tId) {	
+		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_topics')." 
+			SET last_post_id = ?
+			WHERE topic_id = ?d
+		";
+		if ($aRows=$this->oDb->select($sql,$Id,$tId)) {
+			return true;
+		}
+		return false;
+	}
 
 	public function SetCountViews($iCount,$Id) {	
 		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_topics')." 
@@ -160,6 +238,23 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 			return true;
 		}
 		return false;
+	}
+	
+	public function SetCountPosts($iCount,$Id) {	
+		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_topics')." 
+			SET topic_count_posts = ?
+			WHERE topic_id = ?d
+		";
+		if ($aRows=$this->oDb->select($sql,$iCount,$Id)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public function GetCountTopics() {
+		$sql = "SELECT count(topic_id) as count FROM ".Config::Get('plugin.forum.table.forum_topics');			
+		$result=$this->oDb->selectRow($sql);
+		return $result['count'];
 	}
 
 }

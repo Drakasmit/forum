@@ -37,11 +37,11 @@
 						{assign var="oUser" value=$oForum->getUser()}
 						<tr>
 							<td class="sv-icon_col">
-								<a class="mrkread" href="{router page='forum'}{$oForum->getUrl()}/"></a>
+								<a class="bbl" href="{router page='forum'}{$oForum->getUrl()}/"></a>
 							</td>
 							<td class="sv-main_col">
 								<h3><a href="{router page='forum'}{$oForum->getUrl()}/">{$oForum->getTitle()}</a></h3>
-								<p class="sv-details">Описание</p>
+								<p class="sv-details">{$oForum->getDescription()}</p>
 							</td>
 							<td class="sv-last_msg">
 								{if $oTopic}
@@ -60,6 +60,14 @@
 
 	{/foreach}
 	<div class="sv-shadow"></div>
+	
+	<div class="sv-forum_stats">
+		<h2>Статистика форума</h2>
+		<div class="sv-topics">
+			<span class="sv-now">Всего топиков/сообщений &mdash; <span class="sv-count">{$aForumStat.count_all_topics}/{$aForumStat.count_all_posts}</span></span>
+			<span class="sv-small">Сообщений за сегодня &ndash; <a href="#">{$aForumStat.count_today_posts}</a></span>
+		</div>
+	</div>
 
 </div>
 {include file='footer.tpl'}

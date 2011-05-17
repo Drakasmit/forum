@@ -21,6 +21,9 @@ class PluginForum_ModuleForum_EntityForum extends Entity {
     public function getTitle() {
         return $this->_aData['forum_title'];
     }
+    public function getDescription() {
+        return $this->_aData['forum_description'];
+    }
     public function getUrl() {
         return $this->_aData['forum_url'];
     }
@@ -62,6 +65,9 @@ class PluginForum_ModuleForum_EntityForum extends Entity {
     }
 	public function setTitle($data) {
         $this->_aData['forum_title']=$data;
+    }
+	public function setDescription($data) {
+        $this->_aData['forum_description']=$data;
     }
 	public function setUrl($data) {
         $this->_aData['forum_url']=$data;

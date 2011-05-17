@@ -153,12 +153,31 @@ class PluginForum_ModuleForum extends Module {
 		return $data;		
 	}
 	
+	/**
+	 * Получить статистику по форумам
+	 *
+	 * @return unknown
+	 */
+	public function GetStatForums() {
+		if (false === ($aStat = $this->Cache_Get("forum_stats"))) {
+			$aStat['count_all_topics']=$this->PluginForum_ModuleTopic_GetCountTopics();
+			$aStat['count_all_posts']=$this->PluginForum_ModulePost_GetCountPosts();
+			$aStat['count_today_posts']=$this->PluginForum_ModulePost_GetCountToDayPosts();
+			$this->Cache_Set($aStat, "forum_stats", array("forum_update","forum_new"), 60*60*24*4);
+		}
+		return $aStat;
+	}
+	
 	public function UpdateForumLatestData($Post,$Topic,$User,$Forum) {
 		return $this->oMapperForum->UpdateForumLatestData($Post,$Topic,$User,$Forum);
 	}
 	
 	public function UpdateCountTopics($iCount,$Forum) {
 		return $this->oMapperForum->UpdateCountTopics($iCount,$Forum);
+	}
+	
+	public function UpdateCountReplies($iCount,$Forum) {
+		return $this->oMapperForum->UpdateCountReplies($iCount,$Forum);
 	}
 
 }
