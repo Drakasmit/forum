@@ -103,17 +103,25 @@ class PluginForum_ModuleForum extends Module {
 			$oForum->setTopic($this->PluginForum_ModuleTopic_GetTopicById($oForum->getTopicId()));
 			$oForum->setPost($this->PluginForum_ModulePost_GetPostById($oForum->getPostId()));		
 			$oForum->setUser($this->User_GetUserById($oForum->getUserId()));	
+			$oForum->setCountTopics($this->PluginForum_ModuleForum_GetCountTopics($oForum->getId()));
+			$oForum->setCountPosts($this->PluginForum_ModuleForum_GetCountPosts($oForum->getId()));
 		}
 		
 		return $aForums;
 	}
+	
+	public function GetCountTopics($iForumId) {
+		return $this->oMapperForum->GetCountTopics($iForumId);
+	}
 
+	public function GetCountPosts($iForumId) {
+		return $this->oMapperForum->GetCountPosts($iForumId);
+	}
 	
 	/**
 	 * Получаем ID форумов
 	 *
 	 */
-
 	public function GetForums($bReturnIdOnly=false) {
 		$data=$this->oMapperForum->GetForums();
 		/**
@@ -147,7 +155,7 @@ class PluginForum_ModuleForum extends Module {
 	public function GetForumsByCategoryId($Id) {
 		if (false === ($data = $this->Cache_Get("forum_cat_{$Id}"))) {			
 			$data = array('collection'=>$this->oMapperForum->GetForumsByCategoryId($Id));
-			$this->Cache_Set($data, "forum_cat_{$Id}", array('topic_update','topic_new'), 60*60*24*2);
+			$this->Cache_Set($data, "forum_cat_{$Id}", array('forum_update','forum_new'), 60*60*24*2);
 		}
 		$data['collection']=$this->GetForumsAdditionalData($data['collection']);
 		return $data;		
@@ -170,14 +178,6 @@ class PluginForum_ModuleForum extends Module {
 	
 	public function UpdateForumLatestData($Post,$Topic,$User,$Forum) {
 		return $this->oMapperForum->UpdateForumLatestData($Post,$Topic,$User,$Forum);
-	}
-	
-	public function UpdateCountTopics($iCount,$Forum) {
-		return $this->oMapperForum->UpdateCountTopics($iCount,$Forum);
-	}
-	
-	public function UpdateCountReplies($iCount,$Forum) {
-		return $this->oMapperForum->UpdateCountReplies($iCount,$Forum);
 	}
 
 }

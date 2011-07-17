@@ -42,16 +42,9 @@ class PluginForum_ModuleForum_EntityForum extends Entity {
     public function getTopicId() {
         return $this->_aData['topic_id'];
     }
-    public function getCountTopics() {
-        return $this->_aData['forum_count_topics'];
-    }
-    public function getCountPosts() {
-        return $this->_aData['forum_count_posts'];
-    }
     public function getTopic() {
         return $this->_aData['topic'];
     }
-
 
 
 	public function setId($data) {
@@ -86,12 +79,6 @@ class PluginForum_ModuleForum_EntityForum extends Entity {
     }
 	public function setTopicId($data) {
         $this->_aData['topic_id']=$data;
-    }
-	public function setCountTopics($data) {
-        $this->_aData['forum_count_topics']=$data;
-    }
-	public function setCountPosts($data) {
-        $this->_aData['forum_count_posts']=$data;
     }
 	public function setTopic($data) {
         $this->_aData['topic']=$data;

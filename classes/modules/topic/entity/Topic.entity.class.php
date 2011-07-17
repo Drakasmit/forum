@@ -43,9 +43,6 @@ class PluginForum_ModuleTopic_EntityTopic extends Entity {
     public function getCountViews() {
         return $this->_aData['topic_views'];
     }
-    public function getCountPosts() {
-        return $this->_aData['topic_count_posts'];
-    }
 
 	public function setId($data) {
         $this->_aData['topic_id']=$data;
@@ -79,9 +76,6 @@ class PluginForum_ModuleTopic_EntityTopic extends Entity {
     }
 	public function setCountViews($data) {
         $this->_aData['topic_views']=$data;
-    }
-	public function setCountPosts($data) {
-        $this->_aData['topic_count_posts']=$data;
     }
 
 

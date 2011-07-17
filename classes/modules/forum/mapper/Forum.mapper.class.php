@@ -27,13 +27,11 @@ Class PluginForum_ModuleForum_MapperForum extends Mapper {
 			forum_sort,
 			post_id,
 			user_id,
-			topic_id,
-			forum_count_topics,
-			foru_count_posts
+			topic_id
 			)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
 		";			
-		if ($iId=$this->oDb->query($sql,$oForum->getId(),$oForum->getParentId(),$oForum->getCategoryId(),$oForum->getTitle(),$oForum->getDescription(),$oForum->getUrl(),$oForum->getModer(),$oForum->getSort(),$oForum->getPostId(),$oForum->getUserId(),$oForum->getTopicId(),$oForum->getCountTopics(),$oForum->getCountPosts())) {
+		if ($iId=$this->oDb->query($sql,$oForum->getId(),$oForum->getParentId(),$oForum->getCategoryId(),$oForum->getTitle(),$oForum->getDescription(),$oForum->getUrl(),$oForum->getModer(),$oForum->getSort(),$oForum->getPostId(),$oForum->getUserId(),$oForum->getTopicId())) {
 			return $iId;
 		}		
 		return false;
@@ -50,12 +48,10 @@ Class PluginForum_ModuleForum_MapperForum extends Mapper {
 			forum_sort = ?,
 			post_id = ?,
 			user_id = ?,
-			topic_id = ?,
-			forum_count_topics = ?,
-			foru_count_posts = ?
+			topic_id = ?
 			WHERE forum_id = ?d
 		";			
-		if ($this->oDb->query($sql,$oForum->getParentId(),$oForum->getCategoryId(),$oForum->getTitle(),$oForum->getDescription(),$oForum->getUrl(),$oForum->getModer(),$oForum->getSort(),$oForum->getPostId(),$oForum->getUserId(),$oForum->getTopicId(),$oForum->getCountTopics(),$oForum->getCountPosts(),$oForum->getId())) 
+		if ($this->oDb->query($sql,$oForum->getParentId(),$oForum->getCategoryId(),$oForum->getTitle(),$oForum->getDescription(),$oForum->getUrl(),$oForum->getModer(),$oForum->getSort(),$oForum->getPostId(),$oForum->getUserId(),$oForum->getTopicId(),$oForum->getId())) 
 		{
 			return true;
 		}		
@@ -144,26 +140,16 @@ Class PluginForum_ModuleForum_MapperForum extends Mapper {
 		return false;
 	}
 	
-	public function UpdateCountTopics($iCount,$Forum) {	
-		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_list')." 
-			SET	forum_count_topics = ?
-			WHERE forum_id = ?d
-		";
-		if ($aRows=$this->oDb->select($sql,$iCount,$Forum)) {
-			return true;
-		}
-		return false;
+	public function GetCountTopics($Id) {
+		$sql = "SELECT count(topic_id) as count FROM ".Config::Get('plugin.forum.table.forum_topics')."  WHERE forum_id = ?";			
+		$result=$this->oDb->selectRow($sql,$Id);
+		return $result['count'];
 	}
 	
-	public function UpdateCountReplies($iCount,$Forum) {	
-		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_list')." 
-			SET	forum_count_posts = ?
-			WHERE forum_id = ?d
-		";
-		if ($aRows=$this->oDb->select($sql,$iCount,$Forum)) {
-			return true;
-		}
-		return false;
+	public function GetCountPosts($Id) {
+		$sql = "SELECT count(post_id) as count FROM ".Config::Get('plugin.forum.table.forum_posts')."  WHERE forum_id = ?";			
+		$result=$this->oDb->selectRow($sql,$Id);
+		return $result['count'];
 	}
 
 }

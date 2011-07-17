@@ -59,11 +59,11 @@
 						{assign var="oLastPost" value=$oTopic->getLastPost()}
 						<tr>
 							<td class="sv-icon_col">
-								<a class="bbl{if $oTopic->getPosition()==1} info{/if}{if $oTopic->getStatus()==1} close{/if}" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html"></a>
+								<a class="bbl{if $oTopic->getDateRead()<=$oLastPost->getDate()} new{/if} {if $oTopic->getPosition()==1} info{/if}{if $oTopic->getStatus()==1} close{/if}" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html"></a>
 							</td>
 							<td class="sv-main_col">
 								<h3>
-									<a {if $oTopic->getDateRead()<=$oLastPost->getDate()}class="new"{/if} href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html">{$oTopic->getTitle()}</a>
+									<a href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html">{$oTopic->getTitle()}</a>
 									<span class="sv-go_to_page">{hook run='topic_paging' topic=$oTopic forum=$oForum}</span>
 								</h3>
 								<span class="sv-author"><a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a></span>

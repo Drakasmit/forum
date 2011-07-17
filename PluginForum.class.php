@@ -14,12 +14,14 @@ if (!class_exists('Plugin')) {
 
 class PluginForum extends Plugin {
 	protected $sTemplatesUrl = "";
+	
+	protected $aInherits=array(
+		'module' => array('ModuleUser'=>'PluginForum_ModuleUser')
+	);
+
 
 	public function Activate() {
 		if (!$this->isTableExists('prefix_forum_list')) {
-			/**
-			 * Ïğè àêòèâàöèè âûïîëíÿåì SQL äàìï
-			 */
 			$this->ExportSQL(dirname(__FILE__).'/install.sql');
 		}
 		return true;
@@ -32,7 +34,7 @@ class PluginForum extends Plugin {
 
 	public function Init() {
 		$sTemplatesUrl = Plugin::GetTemplatePath('PluginForum');
-		Config::Set('head.rules.multiupload_zoom', array(
+		Config::Set('head.rules.forum', array(
 			'path'=>'___path.root.web___/',
 			'css' => array(
 				'include' => array(

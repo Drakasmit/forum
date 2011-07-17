@@ -25,42 +25,45 @@ class PluginForum_ModuleTopic extends Module {
 	}
 	
 	public function GenerateUrl($sText) {
-			$aConverter=array(  
-				'а' => 'a',   'б' => 'b',   'в' => 'v',  
-				'г' => 'g',   'д' => 'd',   'е' => 'e',  
-				'ё' => 'e',   'ж' => 'zh',  'з' => 'z',  
-				'и' => 'i',   'й' => 'y',   'к' => 'k',  
-				'л' => 'l',   'м' => 'm',   'н' => 'n',  
-				'о' => 'o',   'п' => 'p',   'р' => 'r',  
-				'с' => 's',   'т' => 't',   'у' => 'u',  
-				'ф' => 'f',   'х' => 'h',   'ц' => 'c',  
-				'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',  
-				'ь' => "'",  'ы' => 'y',   'ъ' => "'",  
-				'э' => 'e',   'ю' => 'yu',  'я' => 'ya',  
-		  
-				'А' => 'a',   'Б' => 'b',   'В' => 'v',  
-				'Г' => 'g',   'Д' => 'd',   'Е' => 'e',  
-				'Ё' => 'e',   'Ж' => 'zh',  'З' => 'z',  
-				'И' => 'i',   'Й' => 'y',   'К' => 'k',  
-				'Л' => 'l',   'М' => 'm',   'Н' => 'n',  
-				'О' => 'o',   'П' => 'p',   'Р' => 'r',  
-				'С' => 's',   'Т' => 't',   'У' => 'u',  
-				'Ф' => 'f',   'Х' => 'h',   'Ц' => 'c',  
-				'Ч' => 'ch',  'Ш' => 'sh',  'Щ' => 'sch',  
-				'Ь' => "'",  'Ы' => 'y',   'Ъ' => "'",  
-				'Э' => 'e',   'Ю' => 'yu',  'Я' => 'ya', 
-				
-				" "=> "-", "."=> "", "/"=> "-" 
-			);  
-			$sRes=strtr($sText,$aConverter);
-			if ($sResIconv=@iconv("UTF-8", "ISO-8859-1//IGNORE//TRANSLIT", $sRes)) {
-				$sRes=$sResIconv;
-			}
-			if (preg_match('/[^A-Za-z0-9_\-]/', $sRes)) {    	
-				$sRes = preg_replace('/[^A-Za-z0-9_\-]/', '', $sRes);
-				$sRes = preg_replace('/\-+/', '-', $sRes);
-			}
-			return $sRes;
+		$sText=strtolower($sText);
+
+		$aConverter=array(  
+			'а' => 'a',   'б' => 'b',   'в' => 'v',  
+			'г' => 'g',   'д' => 'd',   'е' => 'e',  
+			'ё' => 'e',   'ж' => 'zh',  'з' => 'z',  
+			'и' => 'i',   'й' => 'y',   'к' => 'k',  
+			'л' => 'l',   'м' => 'm',   'н' => 'n',  
+			'о' => 'o',   'п' => 'p',   'р' => 'r',  
+			'с' => 's',   'т' => 't',   'у' => 'u',  
+			'ф' => 'f',   'х' => 'h',   'ц' => 'c',  
+			'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',  
+			'ь' => "'",  'ы' => 'y',   'ъ' => "'",  
+			'э' => 'e',   'ю' => 'yu',  'я' => 'ya',  
+		 
+			'А' => 'a',   'Б' => 'b',   'В' => 'v',  
+			'Г' => 'g',   'Д' => 'd',   'Е' => 'e',  
+			'Ё' => 'e',   'Ж' => 'zh',  'З' => 'z',  
+			'И' => 'i',   'Й' => 'y',   'К' => 'k',  
+			'Л' => 'l',   'М' => 'm',   'Н' => 'n',  
+			'О' => 'o',   'П' => 'p',   'Р' => 'r',  
+			'С' => 's',   'Т' => 't',   'У' => 'u',  
+			'Ф' => 'f',   'Х' => 'h',   'Ц' => 'c',  
+			'Ч' => 'ch',  'Ш' => 'sh',  'Щ' => 'sch',  
+			'Ь' => "'",  'Ы' => 'y',   'Ъ' => "'",  
+			'Э' => 'e',   'Ю' => 'yu',  'Я' => 'ya', 
+			
+			" " => "-", "." => "", "/" => "-",
+			"=" => "-"
+		);  
+		$sRes=strtr($sText,$aConverter);
+		if ($sResIconv=@iconv("UTF-8", "ISO-8859-1//IGNORE//TRANSLIT", $sRes)) {
+			$sRes=$sResIconv;
+		}
+		if (preg_match('/[^A-Za-z0-9_\-]/', $sRes)) {    	
+			$sRes = preg_replace('/[^A-Za-z0-9_\-]/', '', $sRes);
+			$sRes = preg_replace('/\-+/', '-', $sRes);
+		}
+		return $sRes;
 	}
 	
 	/**
@@ -73,7 +76,7 @@ class PluginForum_ModuleTopic extends Module {
 		if ($sId=$this->oMapperTopic->AddTopic($oTopic)) {
 			$oTopic->setId($sId);
 			//чистим зависимые кеши
-			$this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG,array('forum_topic_new',"forum_topic_update_user_{$oTopic->getUserId()}","forum_topic_new_forum_{$oTopic->getForumId()}"));						
+			$this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG,array('forum_topic_new',"forum_topic_update"));						
 			return $oTopic;
 		}
 		return false;
@@ -198,9 +201,14 @@ class PluginForum_ModuleTopic extends Module {
 				$oTopic->setDateRead($aTopicsRead[$oTopic->getId()]->getDateRead());
 			} else {
 				$oTopic->setDateRead(date("Y-m-d H:i:s"));
-			}	
+			}
+			$oTopic->setCountPosts($this->PluginForum_ModuleTopic_GetCountPosts($oTopic->getId()));
 		}
 		return $aTopics;
+	}
+	
+	public function GetCountPosts($iTopicId) {
+		return $this->oMapperTopic->GetCountPosts($iTopicId)-1;
 	}
 	
 	public function GetTopicById($sTopicId) {
@@ -212,12 +220,12 @@ class PluginForum_ModuleTopic extends Module {
 	}
 	
 	public function GetTopicsByForumId($Id,$iPage,$iPerPage) {
-		if (false === ($data = $this->Cache_Get("topic_{$Id}_{$iPage}_{$iPerPage}"))) {			
+		if (false === ($data = $this->Cache_Get("forum_topic_{$Id}_{$iPage}_{$iPerPage}"))) {			
 			$data = array(
 				'collection'=>$this->oMapperTopic->GetTopicsByForumId($Id,$iCount,$iPage,$iPerPage),
 				'count'=>$iCount
 				);
-			$this->Cache_Set($data, "topic_{$Id}_{$iPage}_{$iPerPage}", array('topic_update','topic_new'), 60*60*24*2);
+			$this->Cache_Set($data, "forum_topic_{$Id}_{$iPage}_{$iPerPage}", array('forum_topic_update','forum_topic_new'), 60*60*24*2);
 		}
 		$data['collection']=$this->GetTopicsAdditionalData($data['collection']);
 		return $data;
@@ -226,9 +234,9 @@ class PluginForum_ModuleTopic extends Module {
 	public function GetTopicByUrl($sUrl) {
 		if (false === ($id = $this->Cache_Get("topic_url_{$sUrl}"))) {
 			if ($id = $this->oMapperTopic->GetTopicByUrl($sUrl)) {
-				$this->Cache_Set($id, "topic_url_{$sUrl}", array("topic_update_{$id}"), 60*60*24*2);
+				$this->Cache_Set($id, "forum_topic_url_{$sUrl}", array("forum_topic_update_{$id}"), 60*60*24*2);
 			} else {
-				$this->Cache_Set(null, "topic_url_{$sUrl}", array('topic_update_','topic_new'), 60*60);
+				$this->Cache_Set(null, "forum_topic_url_{$sUrl}", array('forum_topic_update_','forum_topic_new'), 60*60);
 			}
 		}
 		return $this->GetTopicById($id);
@@ -240,7 +248,7 @@ class PluginForum_ModuleTopic extends Module {
 		}
 		if (false === ($data = $this->Cache_Get("topic_{$aId}"))) {			
 			$data = array('collection'=>$this->oMapperTopic->GetTopicsByForumsArray($aId));
-			$this->Cache_Set($data, "topic_{$aId}", array('topic_update','topic_new'), 60*60*24*2);
+			$this->Cache_Set($data, "forum_topic_{$aId}", array('forum_topic_update','forum_topic_new'), 60*60*24*2);
 		}
 		$data['collection']=$this->GetTopicsByArrayId($data['collection']);
 		return $data;
@@ -253,12 +261,12 @@ class PluginForum_ModuleTopic extends Module {
 	 */
 	public function SetTopicRead(PluginForum_ModuleTopic_EntityTopicRead $oTopicRead) {		
 		if ($this->GetTopicRead($oTopicRead->getTopicId(),$oTopicRead->getUserId())) {
-			$this->Cache_Delete("topic_read_{$oTopicRead->getTopicId()}_{$oTopicRead->getUserId()}");
-			$this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG,array("topic_read_user_{$oTopicRead->getUserId()}"));
+			$this->Cache_Delete("forum_topic_read_{$oTopicRead->getTopicId()}_{$oTopicRead->getUserId()}");
+			$this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG,array("forum_topic_read_user_{$oTopicRead->getUserId()}"));
 			$this->oMapperTopic->UpdateTopicRead($oTopicRead);
 		} else {
-			$this->Cache_Delete("topic_read_{$oTopicRead->getTopicId()}_{$oTopicRead->getUserId()}");
-			$this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG,array("topic_read_user_{$oTopicRead->getUserId()}"));
+			$this->Cache_Delete("forum_topic_read_{$oTopicRead->getTopicId()}_{$oTopicRead->getUserId()}");
+			$this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG,array("forum_topic_read_user_{$oTopicRead->getUserId()}"));
 			$this->oMapperTopic->AddTopicRead($oTopicRead);
 		}
 		return true;		
@@ -308,7 +316,7 @@ class PluginForum_ModuleTopic extends Module {
 		/**
 		 * Делаем мульти-запрос к кешу
 		 */
-		$aCacheKeys=func_build_cache_keys($aTopicId,'topic_read_','_'.$sUserId);
+		$aCacheKeys=func_build_cache_keys($aTopicId,'forum_topic_read_','_'.$sUserId);
 		if (false !== ($data = $this->Cache_Get($aCacheKeys))) {			
 			/**
 			 * проверяем что досталось из кеша
@@ -335,7 +343,7 @@ class PluginForum_ModuleTopic extends Module {
 				 * Добавляем к результату и сохраняем в кеш
 				 */
 				$aTopicsRead[$oTopicRead->getTopicId()]=$oTopicRead;
-				$this->Cache_Set($oTopicRead, "topic_read_{$oTopicRead->getTopicId()}_{$oTopicRead->getUserId()}", array(), 60*60*24*4);
+				$this->Cache_Set($oTopicRead, "forum_topic_read_{$oTopicRead->getTopicId()}_{$oTopicRead->getUserId()}", array(), 60*60*24*4);
 				$aTopicIdNeedStore=array_diff($aTopicIdNeedStore,array($oTopicRead->getTopicId()));
 			}
 		}
@@ -343,7 +351,7 @@ class PluginForum_ModuleTopic extends Module {
 		 * Сохраняем в кеш запросы не вернувшие результата
 		 */
 		foreach ($aTopicIdNeedStore as $sId) {
-			$this->Cache_Set(null, "topic_read_{$sId}_{$sUserId}", array(), 60*60*24*4);
+			$this->Cache_Set(null, "forum_topic_read_{$sId}_{$sUserId}", array(), 60*60*24*4);
 		}		
 		/**
 		 * Сортируем результат согласно входящему массиву
@@ -365,17 +373,16 @@ class PluginForum_ModuleTopic extends Module {
 		$aTopicId=array_unique($aTopicId);	
 		$aTopicsRead=array();	
 		$s=join(',',$aTopicId);
-		if (false === ($data = $this->Cache_Get("topic_read_{$sUserId}_id_{$s}"))) {			
+		if (false === ($data = $this->Cache_Get("forum_topic_read_{$sUserId}_id_{$s}"))) {			
 			$data = $this->oMapperTopic->GetTopicsReadByArray($aTopicId,$sUserId);
 			foreach ($data as $oTopicRead) {
 				$aTopicsRead[$oTopicRead->getTopicId()]=$oTopicRead;
 			}
-			$this->Cache_Set($aTopicsRead, "topic_read_{$sUserId}_id_{$s}", array("topic_read_user_{$sUserId}"), 60*60*24*1);
+			$this->Cache_Set($aTopicsRead, "forum_topic_read_{$sUserId}_id_{$s}", array("forum_topic_read_user_{$sUserId}"), 60*60*24*1);
 			return $aTopicsRead;
 		}		
 		return $data;
 	}
-
 
 
 

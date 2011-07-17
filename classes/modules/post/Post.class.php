@@ -26,9 +26,9 @@ class PluginForum_ModulePost extends Module {
 	
 	public function AddPost(PluginForum_ModulePost_EntityPost $oPost) {
 		if ($sId=$this->oMapperPost->AddPost($oPost)) {
-			$oPost->setId($sId);
 			//чистим зависимые кеши
-			$this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG,array('forum_topic_new',"forum_topic_update_user_{$oPost->getUserId()}","forum_topic_new_forum_{$oPost->getTopicId()}"));						
+			$this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG,array('forum_topic_new',"forum_topic_{$oPost->getTopicId()}",'topic_update','topic_new'));						
+			$oPost->setId($sId);
 			return $oPost;
 		}
 		return false;
@@ -103,13 +103,26 @@ class PluginForum_ModulePost extends Module {
 		if (false === ($data = $this->Cache_Get("topic_{$Id}_{$iPage}_{$iPerPage}"))) {			
 			$data = array(
 				'collection'=>$this->oMapperPost->GetPostsByTopicId($Id,$iCount,$iPage,$iPerPage),
-				'count'=>$iCount
+				'count'=>$iCount,
+				'lastPostId'=>$this->oMapperPost->GetLastPostByTopicId($Id)
 				);
 			$this->Cache_Set($data, "topic_{$Id}_{$iPage}_{$iPerPage}", array('topic_update','topic_new'), 60*60*24*2);
 		}
 		$data['collection']=$this->GetPostsAdditionalData($data['collection']);
 		return $data;
 	}
+	
+	/*public function GetNewPostsByTopicId($Id,$idPostLast) {
+		if (false === ($data = $this->Cache_Get("topic_{$Id}_{$idPostLast}"))) {			
+			$data = array(
+				'collection'=>$this->oMapperPost->GetNewPostsByTopicId($Id,$idPostLast),
+				'lastPostId'=>$this->oMapperPost->GetLastPostByTopicId($Id)
+				);
+			$this->Cache_Set($data, "topic_{$Id}_{$idPostLast}", array('topic_update','topic_new'), 60*60*24*2);
+		}
+		$data['collection']=$this->GetPostsAdditionalData($data['collection']);
+		return $data;
+	}*/
 	
 	public function GetUserByPostId($Id) {
 		if (false === ($id = $this->Cache_Get("post_user_{$Id}"))) {
@@ -172,7 +185,7 @@ class PluginForum_ModulePost extends Module {
 		}
 		
 		$iMaxIdPost=max($aPosts);		
-		$aPsts=$this->GetPostsAdditionalData($aPosts);				
+		$aPsts=$this->GetPostsAdditionalData($aPosts);
 		if (!class_exists('ModuleViewer')) {
 			require_once(Config::Get('path.root.engine')."/modules/viewer/Viewer.class.php");
 		}
@@ -182,8 +195,10 @@ class PluginForum_ModulePost extends Module {
 
 		$aPst=array();
 		foreach ($aPsts as $oPost) {			
-			$oViewerLocal->Assign('oPost',$oPost);						
-			$sText=$oViewerLocal->Fetch("post.tpl");
+			$oViewerLocal->Assign('oPost',$oPost);
+			$oViewerLocal->Assign('oTopic',$this->PluginForum_ModuleTopic_GetTopicById($oPost->getTopicId()));
+			$oViewerLocal->Assign('oForum',$this->PluginForum_ModuleForum_GetForumById($oPost->getForumId()));
+			$sText=$oViewerLocal->Fetch(Plugin::GetTemplatePath(__CLASS__).'/post.tpl');
 			$aPst[]=array(
 				'html' => $sText,
 				'obj'  => $oPost,
@@ -199,7 +214,11 @@ class PluginForum_ModulePost extends Module {
 
 	public function GetCountToDayPosts() {
 		$sDate=date("Y-m-d H:00:00",time()-60*60*24*1);
-		return $this->oMapperPost->GetCountToDayPosts($sDate);
+		if (false === ($data = $this->Cache_Get("post_count_{$sDate}"))) {			
+			$data = $this->oMapperPost->GetCountToDayPosts($sDate);
+			$this->Cache_Set($data, "post_count_{$sDate}", array('post_update','post_new'), 60*60*24*2);
+		}
+		return $data;
 	}
 
 }

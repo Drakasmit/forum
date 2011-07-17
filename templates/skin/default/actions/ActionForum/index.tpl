@@ -37,7 +37,7 @@
 						{assign var="oUser" value=$oForum->getUser()}
 						<tr>
 							<td class="sv-icon_col">
-								<a class="bbl" href="{router page='forum'}{$oForum->getUrl()}/"></a>
+								<a class="bbl{if $oTopic AND $oTopic->getDateRead()<=$oPost->getDate()} new{/if}" href="{router page='forum'}{$oForum->getUrl()}/"></a>
 							</td>
 							<td class="sv-main_col">
 								<h3><a href="{router page='forum'}{$oForum->getUrl()}/">{$oForum->getTitle()}</a></h3>
@@ -61,11 +61,16 @@
 	{/foreach}
 	<div class="sv-shadow"></div>
 	
+	<div class="sv-forum_stats right">
+		<span class="sv-small">lsBB by <span class="sv-count"><a href="http://artemeff.ru">artemeff</a></span></span>
+		<span class="sv-small">sources on <a href="https://github.com/artemeff/forum">github</a></span>
+	</div>
+	
 	<div class="sv-forum_stats">
 		<h2>Статистика форума</h2>
 		<div class="sv-topics">
 			<span class="sv-now">Всего топиков/сообщений &mdash; <span class="sv-count">{$aForumStat.count_all_topics}/{$aForumStat.count_all_posts}</span></span>
-			<span class="sv-small">Сообщений за сегодня &ndash; <a href="#">{$aForumStat.count_today_posts}</a></span>
+			<span class="sv-small">Сообщений за сегодня &mdash; {$aForumStat.count_today_posts}</span>
 		</div>
 	</div>
 

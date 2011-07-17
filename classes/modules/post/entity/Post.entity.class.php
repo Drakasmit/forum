@@ -57,9 +57,6 @@ class PluginForum_ModulePost_EntityPost extends Entity {
 	public function setTextSource($data) {
         $this->_aData['post_text_source']=$data;
     }
-    public function setUser($data) {
-        $this->_aData['user']=$data;
-    }
 
 
 }

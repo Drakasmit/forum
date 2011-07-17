@@ -24,9 +24,9 @@ Class PluginForum_ModulePost_MapperPost extends Mapper {
 			post_text,
 			post_text_source
 			)
-			VALUES(?, ?, ?, ?, ?, ?)";			
+			VALUES(?d, ?d, ?d, ?, ?, ?)";			
 		if ($iId=$this->oDb->query($sql,$oPost->getForumId(),$oPost->getTopicId(),$oPost->getUserId(),$oPost->getDate(),$oPost->getText(),$oPost->getTextSource())) {
-			$oPost->setId($iId);
+			//$oPost->setId($iId);
 			return $iId;
 		}		
 		return false;
@@ -77,6 +77,42 @@ Class PluginForum_ModulePost_MapperPost extends Mapper {
 					LIMIT ?d, ?d";
 		$aPosts=array();
 		if ($aRows=$this->oDb->selectPage($iCount,$sql,$Id,($iPage-1)*$iPerPage, $iPerPage)) {
+			foreach ($aRows as $aPost) {
+				$aPosts[]=$aPost['post_id'];
+			}
+		}
+		return $aPosts;
+	}
+	
+	public function GetLastPostByTopicId($Id) {
+		$sql = "SELECT 		
+						post_id										
+					FROM 
+						".Config::Get('plugin.forum.table.forum_posts')."
+					WHERE 
+						topic_id = ?
+					ORDER BY
+						post_date DESC
+					LIMIT 1";
+		if ($aRow=$this->oDb->selectRow($sql,$Id)) {
+			return $aRow['post_id'];
+		}
+		return null;
+	}
+
+	public function GetNewPostsByTopicId($Id,$idPostLast) {	
+		$sql = "SELECT 		
+						post_id										
+					FROM 
+						".Config::Get('plugin.forum.table.forum_posts')."
+					WHERE 
+						topic_id = ?
+					AND
+						post_id > ?
+					ORDER BY
+						post_date ASC";
+		$aPosts=array();
+		if ($aRows=$this->oDb->select($sql,$Id,$idPostLast)) {
 			foreach ($aRows as $aPost) {
 				$aPosts[]=$aPost['post_id'];
 			}

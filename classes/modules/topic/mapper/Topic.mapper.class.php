@@ -25,12 +25,11 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 			topic_status,
 			topic_position,
 			topic_views,
-			topic_count_posts,
 			last_post_id
 			)
-			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
 		";			
-		if ($iId=$this->oDb->query($sql,$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getPosition(),$oTopic->getCountViews(),$oTopic->getCountPosts(),$oTopic->getLastPostId())) {
+		if ($iId=$this->oDb->query($sql,$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getPosition(),$oTopic->getCountViews(),$oTopic->getLastPostId())) {
 			$oTopic->setId($iId);
 			return $iId;
 		}		
@@ -48,11 +47,10 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 			topic_status = ?,
 			topic_position = ?,
 			topic_views = ?,
-			topic_count_posts = ?,
 			last_post_id = ?
 			WHERE topic_id = ?d
 		";			
-		if ($this->oDb->query($sql,$oTopic->getPostId(),$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getPosition(),$oTopic->getCountViews(),$oTopic->getCountPosts(),$oTopic->getLastPostId(),$oTopic->getId())) 
+		if ($this->oDb->query($sql,$oTopic->getPostId(),$oTopic->getForumId(),$oTopic->getUserId(),$oTopic->getTitle(),$oTopic->getUrl(),$oTopic->getDate(),$oTopic->getStatus(),$oTopic->getPosition(),$oTopic->getCountViews(),$oTopic->getLastPostId(),$oTopic->getId())) 
 		{
 			return true;
 		}		
@@ -149,7 +147,7 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 						".Config::Get('plugin.forum.table.forum_topics')."				
 					WHERE 
 						forum_id = ?
-					ORDER BY topic_position DESC, topic_date DESC
+					ORDER BY topic_position DESC, last_post_id DESC, topic_date DESC
 					LIMIT ?d, ?d";
 		$aTopics=array();
 		if ($aRows=$this->oDb->selectPage($iCount,$sql,$Id,($iPage-1)*$iPerPage, $iPerPage)) {
@@ -240,15 +238,10 @@ Class PluginForum_ModuleTopic_MapperTopic extends Mapper {
 		return false;
 	}
 	
-	public function SetCountPosts($iCount,$Id) {	
-		$sql = "UPDATE ".Config::Get('plugin.forum.table.forum_topics')." 
-			SET topic_count_posts = ?
-			WHERE topic_id = ?d
-		";
-		if ($aRows=$this->oDb->select($sql,$iCount,$Id)) {
-			return true;
-		}
-		return false;
+	public function GetCountPosts($Id) {
+		$sql = "SELECT count(post_id) as count FROM ".Config::Get('plugin.forum.table.forum_posts')."  WHERE topic_id = ?";			
+		$result=$this->oDb->selectRow($sql,$Id);
+		return $result['count'];
 	}
 	
 	public function GetCountTopics() {

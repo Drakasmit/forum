@@ -36,8 +36,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 
 	protected function RegisterEvent() {
 		$this->AddEvent('forums','EventForums');
-		$this->AddEvent('addpost','EventAddPost');
 		$this->AddEvent('admin','EventAdmin');
+		$this->AddEvent('ajaxaddpost','EventAddPost');
+		$this->AddEvent('ajaxresponsepost','EventResponsePost');
 		
 		$this->AddEventPreg('/^add$/i','/^(\d+)$/i','EventAddTopic');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(page(\d+))?$/i','EventShowForum');
@@ -77,7 +78,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 	
 		$sUrl=$this->sCurrentEvent;
 		
-		$oForum=$this->PluginForum_ModuleForum_GetForumByUrl($sUrl);
+		if(!($oForum=$this->PluginForum_ModuleForum_GetForumByUrl($sUrl))) {
+			return parent::EventNotFound();
+		}
 		
 		if(!($iPage=$this->GetParamEventMatch(0,2))) $iPage=1;
 		
@@ -87,7 +90,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$aPaging=$this->Viewer_MakePaging($aResult['count'],$iPage,Config::Get('plugin.forum.topics.per_page'),4,Router::GetPath('forum').$oForum->getUrl());
 		
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
-		$this->Viewer_AddHtmlTitle($this->Lang_Get($oForum->getTitle()));
+		$this->Viewer_AddHtmlTitle($oForum->getTitle());
 		
 		$this->Viewer_Assign("aTopics",$aTopics);
 		$this->Viewer_Assign("aPaging",$aPaging);
@@ -103,7 +106,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Получаем сущность форума из URL
 		 */
-		$oForum = $this->PluginForum_ModuleForum_GetForumByUrl($sForumUrl);
+		$oForum=$this->PluginForum_ModuleForum_GetForumByUrl($sForumUrl);
 		/**
 		 * Получаем ID топика из URL
 		 */
@@ -111,7 +114,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Сущность из ID
 		 */
-		$oTopic = $this->PluginForum_ModuleTopic_GetTopicById($sId);
+		$oTopic=$this->PluginForum_ModuleTopic_GetTopicById($sId);
 		/**
 		 * Получаем URL топика из евента
 		 */
@@ -119,7 +122,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Если они не совпадают, редиректим на валидный УРЛ
 		 */
-		if ($sTitle != $oTopic->getUrl()) {
+		if ($sTitle!=$oTopic->getUrl()) {
 			header('Location: '.Router::GetPath('forum').$sForumUrl.'/'.$sId.'-'.$oTopic->getUrl().'.html');
 		}
 		/**
@@ -135,6 +138,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 */
 		$aResult=$this->PluginForum_ModulePost_GetPostsByTopicId($oTopic->getId(),$iPage,Config::Get('plugin.forum.posts.per_page'));
 		$aPost=$aResult['collection'];
+		$iMaxIdPost=$aResult['lastPostId'];	
 		/**
 		 * Пагинация
 		 */
@@ -157,10 +161,11 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->Viewer_Assign("aPost",$aPost);
 		$this->Viewer_Assign("oTopic",$oTopic);
 		$this->Viewer_Assign("aPaging",$aPaging);
+		$this->Viewer_Assign("iMaxIdPost",$iMaxIdPost);
 
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
-		$this->Viewer_AddHtmlTitle($this->Lang_Get($oForum->getTitle()));
-		$this->Viewer_AddHtmlTitle($this->Lang_Get($oTopic->getTitle()));
+		$this->Viewer_AddHtmlTitle($oForum->getTitle());
+		$this->Viewer_AddHtmlTitle($oTopic->getTitle());
 
 		$this->SetTemplateAction('topic');
 	}
@@ -270,7 +275,6 @@ class PluginForum_ActionForum extends ActionPlugin {
 				$oPost=$this->PluginForum_ModulePost_GetPostById($oPost->getId());
 				$this->PluginForum_ModuleTopic_SetPostId($oPost->getId(),$oTopic->getId());
 				$this->PluginForum_ModuleForum_UpdateForumLatestData($oPost->getId(),$oTopic->getId(),$this->oUserCurrent->getId(),$oForum->getId());
-				$this->PluginForum_ModuleForum_UpdateCountTopics($oForum->getCountTopics()+1,$oForum->getId());
 				$this->PluginForum_ModuleTopic_SetLastPostId($oPost->getId(),$oTopic->getId());
 				
 				header('Location: '.Router::GetPath('forum').$oForum->getUrl().'/'.$oTopic->getId().'-'.$oTopic->getUrl().'.html');
@@ -317,31 +321,25 @@ class PluginForum_ActionForum extends ActionPlugin {
 	
 	
 	protected function EventAddPost() {
-		if (!$this->User_IsAuthorization()) {
-			return parent::EventNotFound();
-		}
-		$this->SetTemplateAction('addpost');
-		return $this->SubmitPost();
-	}	
-	/**
-	 * Обработка добавление поста к топику
-	 *	 
-	 * @return bool
-	 */
-	protected function SubmitPost() {
-		/**
-		 * Проверям авторизован ли пользователь
-		 */
-		if (!$this->User_IsAuthorization()) {
+	
+		$this->Viewer_SetResponseAjax();
+		
+		if ($this->User_IsAuthorization()) {
+			$this->oUserCurrent=$this->User_GetUserCurrent();
+		} else {
 			$this->Message_AddErrorSingle($this->Lang_Get('need_authorization'),$this->Lang_Get('error'));
-			return;
+			return;	
 		}
-		// Сущность форума
+		/**
+		 * Сущность форума
+		 */
 		if (!($oForum=$this->PluginForum_ModuleForum_GetForumById(getRequest('forum_id')))) {
 			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
 			return;
 		}
-		// Сущность топика
+		/**
+		 * Сущность топика
+		 */
 		if (!($oTopic=$this->PluginForum_ModuleTopic_GetTopicById(getRequest('topic_id')))) {
 			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
 			return;
@@ -356,11 +354,12 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		* Проверяем текст поста
 		*/
-		$sText=getRequest('post_text');
+		$sText=$this->Text_Parser(getRequest('form_post_text'));
 		if (!func_check($sText,'text',2,10000)) {			
 			$this->Message_AddErrorSingle($this->Lang_Get('topic_comment_add_text_error'),$this->Lang_Get('error'));
 			return;
 		}
+		
 		/**
 		* Создаём
 		*/
@@ -368,25 +367,81 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$oPost->setForumId($oForum->getId());
 		$oPost->setTopicId($oTopic->getId());
 		$oPost->setUserId($this->oUserCurrent->getId());		
-		$oPost->setText($this->Text_Parser($sText));
-		$oPost->setTextSource($sText);
+		$oPost->setText($sText);
+		$oPost->setTextSource(getRequest('form_post_text'));
 		$oPost->setDate(date("Y-m-d H:i:s"));
 		
-		$this->PluginForum_ModuleTopic_SetCountPosts($oTopic->getCountPosts()+1,$oTopic->getId());
+		//$this->PluginForum_ModuleTopic_SetCountPosts($oTopic->getCountPosts()+1,$oTopic->getId());
 			
 		/**
 		* Добавляем
 		*/
 		if ($this->PluginForum_ModulePost_AddPost($oPost)) {
-			//$this->PluginForum_ModuleTopic_SetPostId($oPost->getId(),$oTopic->getId());
 			$this->PluginForum_ModuleTopic_SetLastPostId($oPost->getId(),$oTopic->getId());
-			$this->PluginForum_ModuleForum_UpdateCountReplies($oForum->getCountPosts()+1,$oForum->getId());
-			header('refresh:3;url='.Router::GetPath('forum').$oForum->getUrl().'/'.$oTopic->getId().'-'.$oTopic->getUrl().'.html#post-'.$oPost->getId());
+			$this->PluginForum_ModuleForum_UpdateForumLatestData($oPost->getId(),$oTopic->getId(),$this->oUserCurrent->getId(),$oForum->getId());
+			$this->Message_AddNoticeSingle('notice','notice');
 		} else {
 			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
 		}
+
 	}
-	
+
+	public function EventResponsePost() {
+
+		$this->Viewer_SetResponseAjax();
+
+		if (!$this->oUserCurrent) {
+			$this->Message_AddErrorSingle($this->Lang_Get('need_authorization'),$this->Lang_Get('error'));
+			return;
+		}
+		/**
+		 * Сущность форума
+		 */
+		if (!($oForum=$this->PluginForum_ModuleForum_GetForumById(getRequest('idTargetForum')))) {
+			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
+			return;
+		}
+		/**
+		 * Сущность топика
+		 */
+		if (!($oTopic=$this->PluginForum_ModuleTopic_GetTopicById(getRequest('idTargetTopic')))) {
+			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
+			return;
+		}
+
+		$idPostLast=getRequest('idPostLast',null,'post');
+
+		$aPosts=array();
+		$aReturn=$this->PluginForum_ModulePost_GetNewPostsByTopicId($oTopic->getId(),$idPostLast);
+		$iMaxIdPost=$aReturn['iMaxIdPost'];
+
+		/**
+		 * Отмечаем дату прочтения топика
+		 */
+		if ($this->oUserCurrent) {
+			$oTopicRead=Engine::GetEntity('PluginForum_Topic_TopicRead');
+			$oTopicRead->setTopicId($oTopic->getId());
+			$oTopicRead->setUserId($this->oUserCurrent->getId());
+			$oTopicRead->setPostIdLast($oTopic->getLastPostId());
+			$oTopicRead->setDateRead(date("Y-m-d H:i:s"));
+			$this->PluginForum_ModuleTopic_SetTopicRead($oTopicRead);
+		}
+
+		$aPsts=$aReturn['posts'];
+		if ($aPsts and is_array($aPsts)) {
+			foreach ($aPsts as $aPst) {
+				$aPosts[]=array(
+					'html' => $aPst['html'],
+					'idParent' => $aPst['obj']->getPid(),
+					'id' => $aPst['obj']->getId(),
+				);
+			}
+		}
+
+		$this->Viewer_AssignAjax('iMaxIdPost',$iMaxIdPost);
+		$this->Viewer_AssignAjax('aPosts',$aPosts);
+	}
+
     /**
      * Получение REQUEST-переменной с проверкой "ключа секретности"
      *
@@ -418,7 +473,7 @@ class PluginForum_ActionForum extends ActionPlugin {
         header('Location: '.Router::GetPath('forum').'admin/categories/');
 	}
 	
-	public function GetForumStats() {
+	protected function GetForumStats() {
 		/**
 		 * Статистика
 		 */
@@ -475,7 +530,10 @@ class PluginForum_ActionForum extends ActionPlugin {
 	 *
 	 */
 	public function EventShutdown() {
-
+		$sTemplatePath=Plugin::GetTemplatePath(__CLASS__);
+		$sTemplateWebPath=Plugin::GetTemplateWebPath(__CLASS__);
+		$this->Viewer_Assign('sTP',$sTemplatePath);
+		$this->Viewer_Assign('sTWP',$sTemplateWebPath);
 	}
 }
 ?>
