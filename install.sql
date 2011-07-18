@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `prefix_forum_category` (
   `category_title` varchar(255) NOT NULL,
   PRIMARY KEY  (`category_id`),
   KEY `category_id` (`category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=3 ;
 
 
 INSERT INTO `prefix_forum_category` (`category_id`, `category_title`) VALUES
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `prefix_forum_list` (
   `forum_sort` int(11) NOT NULL,
   PRIMARY KEY  (`forum_id`),
   KEY `forum_id` (`forum_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=5 ;
 
 
 INSERT INTO `prefix_forum_list` (`forum_id`, `forum_parent_id`, `category_id`, `forum_title`, `forum_url`, `forum_moder`, `forum_sort`) VALUES
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `prefix_forum_posts` (
   `post_text` text NOT NULL,
   `post_text_source` text NOT NULL,
   PRIMARY KEY  (`post_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=52 ;
 
 INSERT INTO `prefix_forum_posts` (`post_id`, `topic_id`, `user_id`, `post_date`, `post_text`, `post_text_source`) VALUES
 (40, 48, 1, '2011-05-05 09:29:57', 'Сейчас он должен добавиться так, как надо, иначе я застрелюсь.', 'Сейчас он должен добавиться так, как надо, иначе я застрелюсь.'),
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `prefix_forum_topics` (
   `topic_status` int(11) unsigned NOT NULL,
   PRIMARY KEY  (`topic_id`),
   KEY `forum_id` (`forum_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=59 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=59 ;
 
 INSERT INTO `prefix_forum_topics` (`topic_id`, `forum_id`, `user_id`, `topic_title`, `topic_url`, `topic_date`, `topic_status`) VALUES
 (49, 2, 1, 'Для теста вывода последних тем', 'test', '2011-05-05 00:00:00', 1),
