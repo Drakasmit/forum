@@ -13,10 +13,12 @@ class PluginForum_ActionForum extends ActionPlugin {
 	 * Текущий юзер
 	 *
 	 * @var ModuleUser_EntityUser
+	 *
+	 *	Проверка принадлежности прав администратора
+	 *
 	 */
 	protected $oUserCurrent=null;
 	protected $oUserAdmin=false;
-	protected $sPageRef = '';
 
 	/**
 	 * Инициализация
