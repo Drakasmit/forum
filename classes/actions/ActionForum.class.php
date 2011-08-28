@@ -13,17 +13,12 @@ class PluginForum_ActionForum extends ActionPlugin {
 	 * Текущий юзер
 	 *
 	 * @var ModuleUser_EntityUser
-	 *
-	 *	Проверка принадлежности прав администратора
-	 *
 	 */
 	protected $oUserCurrent=null;
 	protected $oUserAdmin=false;
 
 	/**
-	 * Инициализация
-	 *
-	 * @return null
+	 * Инициализация экшена
 	 */
 	public function Init() {
 		$this->SetDefaultEvent('forums');
@@ -35,7 +30,10 @@ class PluginForum_ActionForum extends ActionPlugin {
 			}
 		}
 	}
-
+	
+	/**
+	 *	Регистрация эвентов
+	 */
 	protected function RegisterEvent() {
 		$this->AddEvent('forums','EventForums');
 		$this->AddEvent('admin','EventAdmin');
@@ -47,15 +45,14 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)-([-a-z0-9]+)\.html$/i','/^(page(\d+))?$/i','EventShowTopic');
 	}
 
-	/**********************************************************************************
-	 ************************ РЕАЛИЗАЦИЯ ЭКШЕНА ***************************************
-	 **********************************************************************************
+	/**
+	 *	Реализация экшена
 	 */
 
+	/**
+	 *	Главная страница
+	 */
 	protected function EventForums() {
-		/**
-		 * Получаем список категорий
-		 */
         $aCategories=$this->PluginForum_ModuleCategory_GetCategories();
         $aList = array();
         foreach ($aCategories as $oCategory) {
@@ -70,20 +67,26 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->GetForumStats();
 		$this->Viewer_Assign('aCategories', $aList);
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
-		/**
-		 * Устанавливаем шаблон вывода
-		 */
 		$this->SetTemplateAction('index');	
 	}
 	
+	/**
+	 *	Показ ветки форума
+	 */
 	protected function EventShowForum() {
-	
+		/**
+		 * Получаем URL форума из эвента
+		 */
 		$sUrl=$this->sCurrentEvent;
-		
+		/**
+		 * Объект форума
+		 */
 		if(!($oForum=$this->PluginForum_ModuleForum_GetForumByUrl($sUrl))) {
 			return parent::EventNotFound();
 		}
-		
+		/**
+		 * Получаем страницу
+		 */
 		if(!($iPage=$this->GetParamEventMatch(0,2))) $iPage=1;
 		
 		$aResult=$this->PluginForum_ModuleTopic_GetTopicsByForumId($oForum->getId(),$iPage,Config::Get('plugin.forum.topics.per_page'));
