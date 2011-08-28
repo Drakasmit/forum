@@ -88,7 +88,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 * Получаем страницу
 		 */
 		if(!($iPage=$this->GetParamEventMatch(0,2))) $iPage=1;
-		
+		/**
+		 * Получаем топики
+		 */
 		$aResult=$this->PluginForum_ModuleTopic_GetTopicsByForumId($oForum->getId(),$iPage,Config::Get('plugin.forum.topics.per_page'));
 		$aTopics=$aResult['collection'];
 		
