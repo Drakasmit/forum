@@ -93,7 +93,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 */
 		$aResult=$this->PluginForum_ModuleTopic_GetTopicsByForumId($oForum->getId(),$iPage,Config::Get('plugin.forum.topics.per_page'));
 		$aTopics=$aResult['collection'];
-		
+		/**
+		 *	Постраничность
+		 */
 		$aPaging=$this->Viewer_MakePaging($aResult['count'],$iPage,Config::Get('plugin.forum.topics.per_page'),4,Router::GetPath('forum').$oForum->getUrl());
 		
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
@@ -105,6 +107,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->SetTemplateAction('forum');	
 	}
 	
+	/**
+	 *	Просмотр топика
+	 */
 	protected function EventShowTopic() {
 		/**
 		 * Получаем URL форума из эвента
@@ -177,6 +182,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->SetTemplateAction('topic');
 	}
 	
+	/**
+	 *	Добавление топика
+	 */
 	public function EventAddTopic() {
 		if (!$this->User_IsAuthorization()) {
 			return parent::EventNotFound();
@@ -188,6 +196,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		return $this->SubmitAdd();
 	}
 	
+	/**
+	 *	Сабмит формы добавления топика
+	 */
 	protected function SubmitAdd() {
 		/**
 		 * Проверяем отправлена ли форма с данными(хотяб одна кнопка)
@@ -215,18 +226,14 @@ class PluginForum_ActionForum extends ActionPlugin {
 		}		
 		/**
 		 * Проверяем права на постинг в форум
-		 */
-		/*if (!$this->ACL_IsAllowBlog($oBlog,$this->oUserCurrent)) {
+		 * Скоро будут права на молчание в определенных форумах
+
+		if (!$this->ACL_IsAllowBlog($oBlog,$this->oUserCurrent)) {
 			$this->Message_AddErrorSingle($this->Lang_Get('topic_create_blog_error_noallow'),$this->Lang_Get('error'));
 			return false;
-		}				*/	
-		/**
-		 * Проверяем разрешено ли постить топик по времени
-		 */
-		/*if (isPost('submit_topic_publish') and !$this->ACL_CanPostTopicTime($this->oUserCurrent)) {			
-			$this->Message_AddErrorSingle($this->Lang_Get('topic_time_limit'),$this->Lang_Get('error'));
-			return;
-		}*/
+		}
+		*/
+
 		/**
 		 * Теперь можно смело добавлять топик к форуму
 		 */
@@ -239,7 +246,11 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$oTopic->setCountViews('0');
 		$oTopic->setCountPosts('0');
 		
-		
+		/**
+		 *	Статус:
+		 *	0 - открыт
+		 * 1 - закрыт
+		 */
 		$oTopic->setStatus(0);
 		if ($this->oUserCurrent->isAdministrator())	{
 			if (getRequest('topic_status')) {
@@ -247,6 +258,11 @@ class PluginForum_ActionForum extends ActionPlugin {
 			}
 		}
 		
+		/**
+		 *	Позиция в ветке
+		 *	0 - обычно
+		 * 1- прикреплен
+		 */
 		$oTopic->setPosition(0);
 		if ($this->oUserCurrent->isAdministrator())	{
 			if (getRequest('topic_position')) {
@@ -326,11 +342,17 @@ class PluginForum_ActionForum extends ActionPlugin {
 		return $bOk;
 	}
 	
-	
+	/**
+	 *	Добавление поста
+	 */
 	protected function EventAddPost() {
-	
+		/**
+		 *	Проверка формы
+		 */
 		$this->Viewer_SetResponseAjax();
-		
+		/**
+		 * Проверка авторизации пользователя
+		 */
 		if ($this->User_IsAuthorization()) {
 			$this->oUserCurrent=$this->User_GetUserCurrent();
 		} else {
@@ -366,7 +388,6 @@ class PluginForum_ActionForum extends ActionPlugin {
 			$this->Message_AddErrorSingle($this->Lang_Get('topic_comment_add_text_error'),$this->Lang_Get('error'));
 			return;
 		}
-		
 		/**
 		* Создаём
 		*/
@@ -377,9 +398,6 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$oPost->setText($sText);
 		$oPost->setTextSource(getRequest('form_post_text'));
 		$oPost->setDate(date("Y-m-d H:i:s"));
-		
-		//$this->PluginForum_ModuleTopic_SetCountPosts($oTopic->getCountPosts()+1,$oTopic->getId());
-			
 		/**
 		* Добавляем
 		*/
@@ -393,10 +411,17 @@ class PluginForum_ActionForum extends ActionPlugin {
 
 	}
 
+	/**
+	 *	Получение новых постов
+	 */
 	public function EventResponsePost() {
-
+		/**
+		 *	Проверка запроса
+		 */
 		$this->Viewer_SetResponseAjax();
-
+		/**
+		 *	Проверка авторизации
+		 */
 		if (!$this->oUserCurrent) {
 			$this->Message_AddErrorSingle($this->Lang_Get('need_authorization'),$this->Lang_Get('error'));
 			return;
@@ -464,8 +489,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 
         return $result;
     }
-	
-	
+
     /**
      * Проверяем существует ли Категория, если да то удаляем
      */
@@ -480,6 +504,9 @@ class PluginForum_ActionForum extends ActionPlugin {
         header('Location: '.Router::GetPath('forum').'admin/categories/');
 	}
 	
+	/**
+	 *	Фкнция для получения статистики активности форума
+	 */
 	protected function GetForumStats() {
 		/**
 		 * Статистика
@@ -491,6 +518,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->Viewer_Assign('aForumStat',$aForumStat);
 	}
 	
+	/**
+	 *	Админка, пока только заготовка
+	 */
 	protected function EventAdmin() {
 		if (!$this->oUserAdmin) {
 			return parent::EventNotFound();
@@ -533,8 +563,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	}
 
 	/**
-	 * Завершение работы Action`a
-	 *
+	 * Завершение работы экшена
 	 */
 	public function EventShutdown() {
 		$sTemplatePath=Plugin::GetTemplatePath(__CLASS__);
