@@ -1,19 +1,9 @@
---
--- Table structure `prefix_forum_category`
---
-
 CREATE TABLE IF NOT EXISTS `prefix_forum_category` (
   `category_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `category_title` varchar(255) NOT NULL,
   PRIMARY KEY (`category_id`),
   KEY `category_id` (`category_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure `prefix_forum_list`
---
 
 CREATE TABLE IF NOT EXISTS `prefix_forum_list` (
   `forum_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -31,12 +21,6 @@ CREATE TABLE IF NOT EXISTS `prefix_forum_list` (
   KEY `forum_id` (`forum_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Table structure `prefix_forum_posts`
---
-
 CREATE TABLE IF NOT EXISTS `prefix_forum_posts` (
   `post_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `forum_id` int(11) unsigned NOT NULL,
@@ -48,24 +32,12 @@ CREATE TABLE IF NOT EXISTS `prefix_forum_posts` (
   PRIMARY KEY (`post_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
---
--- Table structure `prefix_forum_read`
---
-
 CREATE TABLE IF NOT EXISTS `prefix_forum_read` (
   `topic_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `date_read` datetime NOT NULL,
   `post_id_last` int(11) unsigned DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure `prefix_forum_topics`
---
 
 CREATE TABLE IF NOT EXISTS `prefix_forum_topics` (
   `topic_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
