@@ -42,6 +42,11 @@ class PluginForum extends Plugin {
 					Plugin::GetTemplateWebPath(__CLASS__)."css/inner.css",
 				)
 			),
+			'js' => array(
+				'include' => array(
+					Plugin::GetTemplateWebPath(__CLASS__)."js/posts.js"
+				)
+			)
 		));
 	}
 

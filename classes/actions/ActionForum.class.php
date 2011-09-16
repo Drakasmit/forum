@@ -35,38 +35,53 @@ class PluginForum_ActionForum extends ActionPlugin {
 	 *	Регистрация эвентов
 	 */
 	protected function RegisterEvent() {
-		$this->AddEvent('forums','EventForums');
+		// Админка
 		$this->AddEvent('admin','EventAdmin');
+		// Обработчики ajax запросов
 		$this->AddEvent('ajaxaddpost','EventAddPost');
 		$this->AddEvent('ajaxresponsepost','EventResponsePost');
-		
+		// Пользовательская часть
+		$this->AddEvent('forums','EventForums');
 		$this->AddEventPreg('/^add$/i','/^(\d+)$/i','EventAddTopic');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(page(\d+))?$/i','EventShowForum');
-		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)-([-a-z0-9]+)\.html$/i','/^(page(\d+))?$/i','EventShowTopic');
+		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)-(.*)\.html$/i','/^(page(\d+))?$/i','EventShowTopic');
 	}
-
-	/**
-	 *	Реализация экшена
-	 */
 
 	/**
 	 *	Главная страница
 	 */
 	protected function EventForums() {
+		/**
+		 *	Получаем категории
+		 */
         $aCategories=$this->PluginForum_ModuleCategory_GetCategories();
-        $aList = array();
+		/**
+		 *	Задаем листинг категория-форум
+		 */
+        $aList=array();
         foreach ($aCategories as $oCategory) {
 			$aResult=$this->PluginForum_ModuleForum_GetForumsByCategoryId($oCategory->getId());
 			$aForums=$aResult['collection'];
-            $aList[] = array(
+            $aList[]=array(
                     'obj'=>$oCategory,
                     'forums'=>$aForums
             );
         }
-		
+		/**
+		 *	Получаем статистику
+		 */
 		$this->GetForumStats();
-		$this->Viewer_Assign('aCategories', $aList);
+		/**
+		 *	Передаем переменную в шаблон
+		 */
+		$this->Viewer_Assign('aCategories',$aList);
+		/**
+		 *	Задаем title
+		 */
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
+		/**
+		 *	Задаем шаблон
+		 */
 		$this->SetTemplateAction('index');	
 	}
 	
@@ -97,13 +112,20 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 *	Постраничность
 		 */
 		$aPaging=$this->Viewer_MakePaging($aResult['count'],$iPage,Config::Get('plugin.forum.topics.per_page'),4,Router::GetPath('forum').$oForum->getUrl());
-		
+		/**
+		 *	Тайтлы
+		 */
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
 		$this->Viewer_AddHtmlTitle($oForum->getTitle());
-		
+		/**
+		 *	Передаем переменные в шаблон
+		 */
 		$this->Viewer_Assign("aTopics",$aTopics);
 		$this->Viewer_Assign("aPaging",$aPaging);
 		$this->Viewer_Assign("oForum",$oForum);
+		/**
+		 *	Задаем шаблон
+		 */
 		$this->SetTemplateAction('forum');	
 	}
 	
@@ -174,11 +196,15 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->Viewer_Assign("oTopic",$oTopic);
 		$this->Viewer_Assign("aPaging",$aPaging);
 		$this->Viewer_Assign("iMaxIdPost",$iMaxIdPost);
-
+		/**
+		 *	Загаловки
+		 */
 		$this->Viewer_AddHtmlTitle($this->Lang_Get('main_title'));
 		$this->Viewer_AddHtmlTitle($oForum->getTitle());
 		$this->Viewer_AddHtmlTitle($oTopic->getTitle());
-
+		/**
+		 *	Задаем шаблон
+		 */
 		$this->SetTemplateAction('topic');
 	}
 	
@@ -349,7 +375,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 *	Проверка формы
 		 */
-		$this->Viewer_SetResponseAjax();
+		$this->Viewer_SetResponseAjax('json');
 		/**
 		 * Проверка авторизации пользователя
 		 */
@@ -404,6 +430,10 @@ class PluginForum_ActionForum extends ActionPlugin {
 		if ($this->PluginForum_ModulePost_AddPost($oPost)) {
 			$this->PluginForum_ModuleTopic_SetLastPostId($oPost->getId(),$oTopic->getId());
 			$this->PluginForum_ModuleForum_UpdateForumLatestData($oPost->getId(),$oTopic->getId(),$this->oUserCurrent->getId(),$oForum->getId());
+			
+			$this->Viewer_AssignAjax('idPostLast',getRequest('last_post'));
+			$this->Viewer_AssignAjax('idForum',$oForum->getId());
+			
 			$this->Message_AddNoticeSingle('notice','notice');
 		} else {
 			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
@@ -418,7 +448,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 *	Проверка запроса
 		 */
-		$this->Viewer_SetResponseAjax();
+		$this->Viewer_SetResponseAjax('json');
 		/**
 		 *	Проверка авторизации
 		 */

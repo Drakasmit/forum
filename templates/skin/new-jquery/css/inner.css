@@ -1,0 +1,128 @@
+/* FORUM_SECTION page (begin) */
+textarea#post-content, textarea#topic_text { background: #f7f8f9; }
+.sv-forum_header .sv-forum_list_link { font-family :Arial,Helvetica,sans-serif; font-size :14px; color :#fff; line-height :40px; float :left; margin :0 5px 0 0; }
+.sv-forum_header .sv-forum_list_link a { font-size :12px; color :#fff; margin :0 5px 0 0; }
+table.sv-forum_body tr td.sv-info { background-image:url(../images/sv-icon_info.png)}
+table.sv-forum_body-section_page tr td.sv-fresh { background-image:url(../images/sv-icon_bubble-fresh.png)}
+table.sv-forum_body-section_page tr td.sv-notfresh { background-image:url(../images/sv-icon_bubble-notfresh.png)}
+table.sv-forum_body-section_page tr td.sv-main_col h3 { font-size:12px; }
+table.sv-forum_body-section_page tr td.sv-main_col .sv-author { display:block; font-size:9px; }
+table.sv-forum_body-section_page tr td.sv-views { width:90px; }
+table.sv-forum_body-section_page tr td.sv-last_msg { width :123px; padding :0 17px 0 0; }
+table.sv-wiki-section-page tr td.sv-weight { width :40px !important; padding :0 17px 0 0; }
+table.sv-forum_body-section_page tr td.sv-last_msg .sv-date { display:block; }
+table.sv-forum_body-section_page tr td.sv-last_msg .sv-author { font-size:10px; }
+table.sv-forum_body-section_page tr td.sv-last_msg img, .sv-main_col img { vertical-align:middle; }
+.sv-forum_header-section_page .sv-answers { float :left; width :90px; padding :0 25px 0 0; text-align :right; }
+.sv-forum_header-section_page .sv-views { float :left; width :73px; text-align :center; }
+.sv-wiki-header .sv-views { width:90px; }
+.sv-wiki-header .sv-answers { width:70px; padding :0; text-align :center; }
+.sv-wiki-header .sv-weight { float :left; width :60px; text-align :center; }
+.sv-forum_header-section_page .sv-last_msg { float :left; width :160px; padding :0; text-align :center; }
+.sv-wiki-section-header .sv-weight { width:40px; }
+table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page { font-size:9px; cursor: default; }
+table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a { text-decoration:none}
+table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a:hover { text-decoration:underline}
+.sv-forum_nav { float :right; font-family :Arial,Helvetica,sans-serif; font-size :24px; height :30px; padding :10px 0 0 0; min-width:100px;}
+.sv-forum_nav .sv-larr,
+.sv-forum_nav .sv-rarr,
+.sv-forum_nav .sv-back,
+.sv-forum_nav .sv-forward { float:left; display:inline; padding:0 5px; }
+.sv-forum_nav .sv-numbers { float :left; font-size :12px; vertical-align :text-top; line-height :30px; padding :0 3px; }
+.sv-forum_nav .sv-numbers a { padding :1px 4px 2px 4px; }
+.sv-forum_nav .sv-numbers .sv-here { background :#000; text-decoration :none; color :#fff; font-weight :bold; }
+.sv-forum_nav .sv-larr,
+.sv-forum_nav .sv-rarr { width :22px; margin :9px 0 0 0; padding :0; height :11px; background :url(../images/sv-arrows.png) no-repeat; font-size :1px; }
+.sv-forum_nav a.sv-larr { background-position:0 -11px; }
+.sv-forum_nav span.sv-larr { background-position:0 0; }
+.sv-forum_nav a.sv-rarr { background-position:-22px -11px; }
+.sv-forum_nav span.sv-rarr { background-position:-22px 0; }
+.sv-rnd_corners { position :relative; width:100%}
+.sv-rnd_corners span { position :absolute; width :8px; height :8px; background :url(../images/rnd-corners.png) no-repeat; }
+.sv-rnd_corners span.sv-bl { top:-3px; left:9px; background-position :0 -8px; }
+.sv-rnd_corners span.sv-br { top:-3px; right:9px; background-position :-8px -8px; }
+.sv-rnd_corners span.sv-tl { top:-5px; left:9px; background-position :0 0; }
+.sv-rnd_corners span.sv-tr { top:-5px; right:9px; background-position :-8px 0px; }
+.sv-bottom_menu { white-space:nowrap}
+ul.sv-bottom_menu,
+ul.sv-bottom_menu li { margin :0; padding :0; list-style :none !important; }
+ul.sv-bottom_menu { float :left; margin :10px 0 14px 15px; height :25px; font-family :Arial,Helvetica,sans-serif; font-size :11px; }
+ul.sv-bottom_menu li { float :left; height :25px; padding :0 16px; line-height :25px; }
+ul.sv-bottom_menu li a { color:#000; }
+ul.sv-bottom_menu li a:hover { color:#1083aa; }
+ul.sv-bottom_menu li.sv-delim { width :1px; height :25px; padding :0; margin :0; font-size :1px; background :url(../images/sv-dotted.png) repeat-y; }
+ul.sv-bottom_menu li img { float :left; margin :-5px 5px 0 0; }
+/* FORUM_SECTION page (end) */
+/* FORUM_SUBJECT page (begin) */
+.sv-forum_header-subject_page { padding-right:250px; }
+.sv-forum_header-subject_page .sv-right_bg { width :250px; margin-right :-250px; }
+.sv-posts_block { margin :-5px 10px -5px 10px; padding :5px 6px 0 6px; border :1px solid #d6dbcf; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; font-size :12px; line-height :1.3; }
+.sv-posts_block .sv-post { border-radius: 7px 7px 7px 7px; margin :0 0 7px 0; border :1px solid #d6dbcf; position :relative; clear:both; }
+.sv-posts_block .sv-post.new { background: #e5ffe2; }
+.sv-posts_block .sv-post .sv-personal { float :left; width :128px; padding :7px 0 30px 9px; font-family :Arial,Helvetica,sans-serif; border-right:1px solid #D6DBCF; text-align:center;}
+.sv-posts_block .sv-post .sv-personal .sv-nickname { font-weight :bold; display :block; margin :0 0 0px 0; }
+.sv-posts_block .sv-post .sv-personal .sv-status { font-weight :bold; display :block; margin :0 0 7px 0; } 
+.sv-posts_block .sv-post .sv-personal .sv-avavtar { display :block; margin :0 auto 5px auto; }
+.sv-posts_block .sv-post .sv-personal .sv-msg_count,
+.sv-posts_block .sv-post .sv-personal .sv-sbj_count { display :block; font-size :11px; }
+
+div.forum-rate { float:none; display:inline-block; margin:0 auto 4px auto; }
+div.forum-rate ul { padding:0; }
+
+.sv-posts_block .sv-post .sv-personal .sv-sbj_count span,
+.sv-posts_block .sv-post .sv-personal .sv-msg_count span { color:#666666; }
+.sv-posts_block .sv-post .sv-post_section { padding:0 0 0 138px; }
+.sv-posts_block .sv-post .sv-post_section1 { border-left :1px solid #d6dbcf; padding :5px 14px 20px 25px; margin-left:-1px; }
+.sv-posts_block .sv-post .signature { margin-top:20px !important; }
+.sv-posts_block .sv-post .signature div.signature-line { background: none; border-top:1px solid #CCCCCC; width:50px; position: static; height: 3px; }
+.sv-posts_block .sv-post .sv-post_section .sv-post_date { float :left; font-size :11px; }
+.sv-posts_block .sv-post .sv-post_section .sv-post_date a { text-decoration :none; font-size :14px; }
+.sv-posts_block .sv-post .sv-post_section .sv-quotation { float :right; font-size :11px; margin-left :10px; }
+.sv-posts_block .sv-post .sv-post_section .sv-nick { float :right; font-size :11px; margin-left :10px; }
+.sv-posts_block .sv-post .sv-post_section .sv-edit { float :right; font-size :11px; margin-left :10px; }
+.sv-posts_block .sv-post .sv-post_section .sv-delete { float :right; font-size :11px; margin-left :10px; }
+.sv-posts_block .sv-post .sv-post_section .sv-post_body { padding:35px 20px 0 0; }
+.sv-posts_block .sv-post .sv-post_section .sv-post_body p { margin:0 0 10px 0; }
+.sv-posts_block .sv-post .sv-post_section .sv-edited { margin :15px 0 0 0; font-weight :bold; font-style :italic; font-size :10px; }
+.sv-posts_block .sv-post .sv-post_section .sv-edited .sv-author { font-size:12px; }
+.sv-posts_block .sv-post .sv-clear { border-top :1px solid #d6dbcf; height :8px; }
+.sv-posts_block-rnd_corners span.sv-bl { left:10px; }
+.sv-posts_block-rnd_corners span.sv-br { right:10px; }
+.sv-forum_header-fast_answer { margin:40px 0 0 0; padding-top:5px; }
+.sv-fast_answer { margin :-5px 10px -5px 10px; padding :5px 6px 10px 6px; border :1px solid #d6dbcf; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; font-size :12px; line-height :1.3; }
+.sv-fast_answer .sv-smiles { float :left; width :170px; }
+table.smiles-list img { cursor:pointer; }
+table.smiles-list { width:170px; text-align:center; padding:5px 15px 10px 15px !important; vertical-align:middle}
+table.smiles-list tr td { padding:0px !important; margin:0px !important; }
+table.smiles-list tr td.hidden { display:none; }
+#smiles-list-show-all,#smiles-list-hide-all { display :block; clear :both; text-align :center; padding :7px 10px 0 0; font-size :12px; font-family :Arial,Helvetica,sans-serif; }
+.sv-fast_answer .sv-fast_answer_form { padding: 20px; }
+.sv-fast_answer .sv-fast_answer_form fieldset { border:none; }
+
+.editor-panel a { float :left; border :1px solid #cecece; height :16px; margin :0 4px 0 0; padding :0 10px; font-size :11px; color :#222; zoom :1; }
+.editor-panel a.sv-button-bold { background:url(../images/sv-form-icon-bold.png) no-repeat center}
+.editor-panel a.sv-button-italic { background:url(../images/sv-form-icon-italic.png) no-repeat center}
+.editor-panel a.sv-button-underline { background:url(../images/sv-form-icon-underline.png) no-repeat center}
+.editor-panel a.sv-button-link { background:url(../images/sv-form-icon-link.png) no-repeat center}
+.editor-panel a.sv-button-media { background:url(../images/sv-form-icon-media.png) no-repeat center}
+.editor-panel a.sv-button-youtube { background :url(../images/sv-form-icon-youtube.png) no-repeat 5px 0; padding-left :35px; }
+.editor-panel a.sv-button-upload { background :url(../images/sv-form-icon-upload.png) no-repeat 7px 0; padding-left :26px; }
+
+.sv-fast_answer .sv-fast_answer_form .sv-top_panel a.sv-button-voting { background :url(../images/sv-form-icon-voting.png) no-repeat 7px 0; padding-left :28px; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea { margin :0 0 5px 0; position :relative; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea span { position :absolute; width:8px; height:8px; background :url(../images/rnd-corners.png) no-repeat; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea span.sv-tl { top:-1px; left:-1px; background-position :0 0; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea span.sv-tr { top:-1px; right:-1px; background-position :-8px 0; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea span.sv-bl { bottom:-1px; left:-1px; background-position :0 -8px; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea span.sv-br { bottom:-1px; right:-1px; background-position :-8px -8px; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea { padding :7px; border :1px solid #d6dbcf; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea textarea { width :100%; height :125px; font-size :12px; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; overflow :auto; border: none; }
+.sv-fast_answer .sv-fast_answer_form .sv-textarea textarea:focus { outline:none; }
+.sv-fast_answer .sv-fast_answer_form label.sv-checkbox { float :left; padding :12px 0 0 0; font-family :Arial,Helvetica,sans-serif; font-size :12px; line-height :12px; font-weight:normal; width:auto; }
+.sv-fast_answer .sv-fast_answer_form label.sv-checkbox input { margin:0 10px 0 10px; float:left; width:auto; }
+.sv-subject_nav { float :right; height :20px; margin :12px 0 0 0; font-size :10px; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; }
+.sv-subject_nav * { float :left; margin-left :4px; }
+.sv-subject_nav .sv-delim { height :20px; width :1px; background :url(../images/sv-subject_nav-delim.png) no-repeat; margin :0 4px 0 8px; }
+.sv-rnd_corners-fast_answer span.sv-bl { left:10px; }
+.sv-rnd_corners-fast_answer span.sv-br { right:10px; }
+/* FORUM_SUBJECT page (end) */
