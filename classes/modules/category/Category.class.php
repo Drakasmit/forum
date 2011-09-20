@@ -96,6 +96,13 @@ class PluginForum_ModuleCategory extends Module {
 		return $this->oMapperCategory->DeleteCategory($Id);
 	}
 
+	public function AddCategory(PluginForum_ModuleCategory_EntityCategory $oCategory) {		
+		if ($sId=$this->oMapperCategory->AddCategory($oCategory)) {
+			$oCategory->setId($sId);						
+			return $oCategory;
+		}
+		return false;
+	}
 
 }
 ?>
