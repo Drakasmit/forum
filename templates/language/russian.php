@@ -32,6 +32,7 @@ return array(
 	'topics' => 'Топиков',
 	'posts' => 'Постов',
 
+	'category_create_submit_save_ok' => 'Новая категория добавлена',
 );
 
 ?>
