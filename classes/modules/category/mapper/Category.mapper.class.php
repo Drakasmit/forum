@@ -13,12 +13,12 @@ Class PluginForum_ModuleCategory_MapperCategory extends Mapper {
 	
 	public function AddCategory(PluginForum_ModuleCategory_EntityCategory $oCategory) {
 		$sql = "INSERT INTO ".Config::Get('plugin.forum.table.forum_category')." 
-			(category_id,
+			(
 			category_title	
 			)
-			VALUES(?, ?)
+			VALUES(?)
 		";			
-		if ($iId=$this->oDb->query($sql,$oCategory->getId(),$oCategory->getTitle())) {
+		if ($iId=$this->oDb->query($sql,$oCategory->getTitle())) {
 			return $iId;
 		}		
 		return false;
