@@ -574,6 +574,17 @@ class PluginForum_ActionForum extends ActionPlugin {
 			$this->SetTemplateAction('admin-categories');
 		}
 		
+		if ($this->GetParam(0)=='categories' and isPost('category_title')) {
+			$oCategory=Engine::GetEntity('PluginForum_Category');
+			$oCategory->setTitle(getRequest('category_title',null,'post'));
+			if($this->PluginForum_Category_AddCategory($oCategory)) {
+				$this->Message_AddNotice($this->Lang_Get('category_create_submit_save_ok'));
+				$this->SetParam(0,null);
+			} else {
+				$this->Message_AddError($this->Lang_Get('system_error'));
+			}
+		}
+		
 		if ($this->GetParam(0)=='forums') {
 			$this->SetTemplateAction('admin-forums');
 		}
