@@ -16,7 +16,7 @@ Class PluginForum_ModuleCategory_MapperCategory extends Mapper {
 			(
 			category_title	
 			)
-			VALUES(?, ?)
+			VALUES(?)
 		";			
 		if ($iId=$this->oDb->query($sql,$oCategory->getTitle())) {
 			return $iId;
