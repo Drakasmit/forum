@@ -8,6 +8,7 @@
 	</author>
 	<homepage>http://artemeff.ru</homepage>
 	<version>0.1a</version>
+	<settings>{forum}admin/</settings>
 	<requires>
 		<livestreet>0.4.2</livestreet>
 		<plugins>
