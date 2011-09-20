@@ -115,7 +115,7 @@ Class PluginForum_ModuleForum_MapperForum extends Mapper {
 					WHERE 
 						category_id = ?
 					ORDER BY
-						forum_sort DESC
+						forum_sort ASC
 						";
 		
 		$aForums=array();
