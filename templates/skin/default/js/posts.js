@@ -1,100 +1,61 @@
-var ForumPostClass = new Class({
-
-	make: function(){
-		var thisObj = this;
-	},
-
-	addComment: function(formObj,targetId) {
-		var thisObj=this;
-		formObj=$(formObj);
-		JsHttpRequest.query(
-        	'POST '+aRouter.forum+'ajaxaddpost/',
-        	{ params: formObj, security_ls_key: LIVESTREET_SECURITY_KEY },
-        	function(result, errors) {
-            	if (!result) {
-                	msgErrorBox.alert('Error','Please try again later');
-					msgErrorBox.alert('/'+result+'/',result);
-                	return;
-        		}
-        		if (result.bStateError) {
-                	msgErrorBox.alert(result.sMsgTitle,result.sMsg);
-        		} else {
-        			//msgErrorBox.alert('Yahoo!','...');
-					thisObj.responseNewComment(targetId);
-        		}
-	        },
-        	true
-      	);
-      	$('form_post_text').addClass('loader');
-      	$('form_post_text').setProperty('readonly',true);
-	},
-
-	responseNewComment: function(idTarget) {
-		var thisObj=this;	
-
-		var idPostLast=this.idPostLast;
-		var idForum=this.idForum;
-		(function(){		
-		JsHttpRequest.query(        	
-        	'POST '+aRouter.forum+'ajaxresponsepost/',
-        	{ idPostLast: idPostLast, idTargetTopic: idTarget, idTargetForum: idForum, security_ls_key: LIVESTREET_SECURITY_KEY },
-        	function(result, errors) {
-            	if (!result) {
-                	msgErrorBox.alert('Error','Please try again later');           
-        		}      
-        		if (result.bStateError) {
-                	msgErrorBox.alert(result.sMsgTitle,result.sMsg);
-        		} else {   
-        			var aPst=result.aPosts;         			
-        			if (aPst.length>0 && result.iMaxIdPost) {
-        				//thisObj.setidPostLast(result.iMaxIdPost);
-        				//var countComments=$('count-comments');
-        				//countComments.set('text',parseInt(countComments.get('text'))+aPst.length);
-        			}
-        			/*if (bNotFlushNew) {		      	       			       			
-        				iCountOld=thisObj.countNewComment;        				
-        			} else {
-        				thisObj.aCommentNew=[];
-        			}*/
-        			/*if (selfIdComment) {
-        				thisObj.setCountNewComment(aPst.length-1+iCountOld);
-        				thisObj.hideCommentForm(thisObj.iCurrentShowFormComment); 
-        			} else {
-        				thisObj.setCountNewComment(aPst.length+iCountOld);
-        			}*/
-        			aPst.each(function(item,index) {
-        				thisObj.injectPost(item.id,item.html);
-        			});
-        		}                           
-	        },
-        	true
-       );
-       }).delay(1000);
-	},
-	
-	injectPost: function(idPost,sHtml) {		
-		var newPost = new Element('div',{'class':'sv-post-new'});
-		newPost.set('html',sHtml);		
-		var divChildren = $('post_id_new');
-		newPost.inject(divChildren,'before');
-	},	
-
-	setIdPostLast: function(id) {
-		this.idPostLast=id;
-	},
-	
-	setIdForum: function(id) {
-		this.idForum=id;
-	},
-
-	preview: function() {
-		ajaxTextPreview('form_post_text',false,'post_preview');
+function fAddComment(formObj,targetId) {
+	if (tinyMCE) {
+		$('#'+formObj+' textarea').val(tinyMCE.activeEditor.getContent());
 	}
-});
+	formObj=$('#'+formObj);
 
+	ls.ajax(aRouter['forum']+'ajaxaddpost/', formObj.serializeJSON(), function(result){
+		$('#form_post_text').addClass('loader').attr('readonly',true);
+		if (!result) {
+			ls.msg.error('Error','Please try again later');
+		}
+		if (result.bStateError) {
+			ls.msg.error(null,result.sMsg);
+		} else {
+			fResponseNewComment(targetId, result.idPostLast, result.idForum);
+			ls.msg.notice(null,result.sMsg);
+			$('#form_post_text').removeClass('loader').attr('readonly',false).val('');
+		}
+	}.bind(this));
+}
 
-var ForumPost;
+function fResponseNewComment(idTarget, idPostLast, idForum ) {
 
-window.addEvent('domready', function() {
-    ForumPost = new ForumPostClass();
-});
+	var params = {idPostLast: idPostLast, idTargetForum: idForum, idTargetTopic: idTarget};
+	
+	ls.ajax(aRouter['forum']+'ajaxresponsepost/', params, function(result){
+		if (!result) {
+			ls.msg.error('Error','Please try again later');
+		}
+		if (result.bStateError) {
+			ls.msg.error(null,result.sMsg);
+		} else {
+			var aPst=result.aPosts;
+			$.each(aPst, function(index, item) {
+				fInjectPost(item.id,item.html);
+			});
+		}
+	}.bind(this));
+}
+
+function fInjectPost(idPost,sHtml) {
+	var newPost=$('<div>', {'class': 'sv-post-new', id: 'post_id_'+idPost}).html(sHtml);
+	$('#post_id_new').append(newPost);
+}
+
+function fSetIdPostLast(id) {
+	this.idPostLast=id;
+}
+
+function fSetIdForum(id) {
+	this.idForum=id;
+}
+
+function fPreview() {
+	if (tinyMCE) {
+		$("#form_post_text").val(tinyMCE.activeEditor.getContent());
+	}
+	if ($("#form_post_text").val() == '') return;
+	$("#post_preview").css('display', 'block');
+	ls.tools.textPreview('form_post_text', false, 'post_preview');
+}

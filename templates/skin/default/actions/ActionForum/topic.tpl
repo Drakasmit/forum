@@ -1,8 +1,6 @@
 {assign var="noSidebar" value=true}
 {include file='header.tpl'}
 
-<script type="text/javascript" src="{$sTWP}js/posts.js"></script>
-
 <div id="forum">
 
 	<div class="forum-nav">

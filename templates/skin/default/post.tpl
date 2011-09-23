@@ -1,10 +1,8 @@
 				{assign var="oUser" value=$oPost->getUser()}
-				<div class="sv-post" id="post_id_{$oPost->getId()}">
+				<div class="sv-post{if $oTopic->getDateRead()<=$oPost->getDate()} new{/if}" id="post_id_{$oPost->getId()}">
 					<span class="sv-corners sv-tl"></span>
 					<span class="sv-corners sv-tr"></span>
 					<div class="sv-personal">
-						{if $oTopic->getDateRead()<=$oPost->getDate()}newest post{else}readed post{/if}<br />
-						/{$oTopic->getDateRead()}\
 						<img alt="{$oUser->getUserLogin()}" src="{$oUser->getProfileAvatarPath(100)}" class="sv-avavtar" />
 						<span class="sv-nickname"><a href="{$oUser->getUserWebPath()}">{$oUser->getUserLogin()}</a></span>
 						<span class="sv-msg_count">{$aLang.articles}: <span>{$oUser->getCountArticles()}</span></span>

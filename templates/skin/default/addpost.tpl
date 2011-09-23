@@ -1,21 +1,15 @@
 		{literal}
 		<script language="JavaScript" type="text/javascript">
-			window.addEvent('domready', function() {
+			jQuery(document).ready(function(){
 				{/literal}
-				ForumPost.setIdPostLast({$iMaxIdPost});
-				ForumPost.setIdForum({$oForum->getId()});
+				fSetIdPostLast({$iMaxIdPost});
+				fSetIdForum({$oForum->getId()});
 				{literal}
 			});					
 		</script>
 		{/literal}
 
-		<div class="comment">
-			<div class="content">
-				<div class="text" id="post_preview" style="display: none;">
-
-				</div>
-			</div>
-		</div>
+		<div class="comment" id="post_preview" style="display: none;"></div>
 
 		<div class="sv-forum_header sv-forum_header-fast_answer">
 			<div class="sv-left_bg">
@@ -27,18 +21,14 @@
 		<div class="sv-fast_answer">
 			<div class="sv-fast_answer_form">
 				<div class="sv-top_panel">
-					{if !$oConfig->GetValue('view.tinymce')}
-            			<div class="panel_form" style="background: #eaecea; margin-top: 2px;">       	 
-	 						<a href="#" onclick="lsPanel.putTagAround('form_post_text','b'); return false;" class="button"><img src="{cfg name='path.static.skin'}/images/panel/bold_ru.gif" width="20" height="20" title="{$aLang.panel_b}"></a>
-	 						<a href="#" onclick="lsPanel.putTagAround('form_post_text','i'); return false;" class="button"><img src="{cfg name='path.static.skin'}/images/panel/italic_ru.gif" width="20" height="20" title="{$aLang.panel_i}"></a>	 			
-	 						<a href="#" onclick="lsPanel.putTagAround('form_post_text','u'); return false;" class="button"><img src="{cfg name='path.static.skin'}/images/panel/underline_ru.gif" width="20" height="20" title="{$aLang.panel_u}"></a>	 			
-	 						<a href="#" onclick="lsPanel.putTagAround('form_post_text','s'); return false;" class="button"><img src="{cfg name='path.static.skin'}/images/panel/strikethrough.gif" width="20" height="20" title="{$aLang.panel_s}"></a>	 			
-	 						&nbsp;
-	 						<a href="#" onclick="lsPanel.putTagUrl('form_post_text','{$aLang.panel_url_promt}'); return false;" class="button"><img src="{cfg name='path.static.skin'}/images/panel/link.gif" width="20" height="20"  title="{$aLang.panel_url}"></a>
-	 						<a href="#" onclick="lsPanel.putQuote('form_post_text'); return false;" class="button"><img src="{cfg name='path.static.skin'}/images/panel/quote.gif" width="20" height="20" title="{$aLang.panel_quote}"></a>
-	 						<a href="#" onclick="lsPanel.putTagAround('form_post_text','code'); return false;" class="button"><img src="{cfg name='path.static.skin'}/images/panel/code.gif" width="30" height="20" title="{$aLang.panel_code}"></a>
-	 					</div>
-					{/if}
+					{include file='window_load_img.tpl' sToLoad='form_post_text'}
+					<script type="text/javascript">
+					jQuery(document).ready(function($){
+						ls.lang.load({lang_load name="panel_b,panel_i,panel_u,panel_s,panel_url,panel_url_promt,panel_code,panel_video,panel_image,panel_cut,panel_quote,panel_list,panel_list_ul,panel_list_ol,panel_title,panel_clear_tags,panel_video_promt,panel_list_li,panel_image_promt"});
+						// Подключаем редактор
+						$('#form_post_text').markItUp(getMarkitupCommentSettings());
+					});
+					</script>
 				</div>
 				<form action="" method="post" id="form_post" onsubmit="return false;" enctype="multipart/form-data">
 					<fieldset>
@@ -47,9 +37,9 @@
 							<span class="sv-br"></span>
 							<textarea name="form_post_text" id="form_post_text"></textarea>
 						</div>
-						<input type="submit" name="submit_preview" value="{$aLang.comment_preview}" onclick="ForumPost.preview($('form_post_reply').getProperty('value')); return false;" />&nbsp;
-						<input type="submit" name="submit_post" value="{$aLang.comment_add}"  onclick="ForumPost.addComment('form_post',{$oTopic->getId()}); return false;" />    	
-						<input type="hidden" name="reply" value="" id="form_post_reply" />
+						<input type="submit" name="submit_preview" value="{$aLang.comment_preview}" onclick="fPreview();" />&nbsp;
+						<input type="submit" name="submit_post" value="{$aLang.comment_add}"  onclick="fAddComment('form_post',{$oTopic->getId()}); return false;" />    	
+						<input type="hidden" name="last_post" value="{$iMaxIdPost}" id="form_post_lastpost" />
 						<input type="hidden" name="topic_id" value="{$oTopic->getId()}" />
 						<input type="hidden" name="forum_id" value="{$oForum->getId()}" />
 					</fieldset>

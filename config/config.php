@@ -8,8 +8,8 @@
  *	license: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *--------------------------------------------------------------------------------------*/
  
-$config['topics']['per_page'] = 10; // Количество топиков на страницу
-$config['posts']['per_page'] = 20; // Количество топиков на страницу
+$config['topics']['per_page'] = 10; // РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕРїРёРєРѕРІ РЅР° СЃС‚СЂР°РЅРёС†Сѓ
+$config['posts']['per_page'] = 20; // РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕРїРёРєРѕРІ РЅР° СЃС‚СЂР°РЅРёС†Сѓ
  
 $config['table']['forum_list'] = '___db.table.prefix___forum_list';
 $config['table']['forum_category'] = '___db.table.prefix___forum_category';
