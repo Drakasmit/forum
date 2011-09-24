@@ -50,6 +50,6 @@ CREATE TABLE IF NOT EXISTS `prefix_forum_topic` (
 CREATE TABLE IF NOT EXISTS `prefix_forum_read` (
   `topic_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
-  `date_read` datetime NOT NULL,
+  `read_date` datetime NOT NULL,
   `post_id_last` int(11) unsigned DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
