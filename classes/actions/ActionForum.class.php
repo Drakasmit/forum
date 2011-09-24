@@ -45,16 +45,17 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Пользовательская часть
 		 */
-		$this->AddEvent('forums','EventForums');
+		$this->AddEvent('unread','EventUnread');
 		$this->AddEventPreg('/^add$/i','/^(\d+)$/i','EventAddTopic');
+		$this->AddEventPreg('/^forums$/i','/^(page(\d+))?$/i','EventForums');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(page(\d+))?$/i','EventShowForum');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)-(.*)\.html$/i','/^(page(\d+))?$/i','EventShowTopic');
 	}
-
+	
 	/**
 	 *	Главная страница
 	 */
-	protected function EventForums() {
+	public function EventForums() {
 		/**
 		 *	Получаем категории
 		 */
@@ -91,7 +92,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 *	Показ ветки форума
 	 */
-	protected function EventShowForum() {
+	public function EventShowForum() {
 		/**
 		 * Получаем URL форума из эвента
 		 */
@@ -105,7 +106,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Получаем страницу
 		 */
-		if(!($iPage=$this->GetParamEventMatch(0,2))) $iPage=1;
+		$iPage=$this->GetParamEventMatch(0,2) ? $this->GetParamEventMatch(0,2) : 1;	
 		/**
 		 * Получаем топики
 		 */
@@ -135,7 +136,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 *	Просмотр топика
 	 */
-	protected function EventShowTopic() {
+	public function EventShowTopic() {
 		/**
 		 * Получаем URL форума из эвента
 		 */
@@ -170,7 +171,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Получаем номер страницы
 		 */
-		if(!($iPage=$this->GetParamEventMatch(1,2))) $iPage=1;
+		$iPage=$this->GetParamEventMatch(1,2) ? $this->GetParamEventMatch(1,2) : 1;	
 		/**
 		 * Получаем топики
 		 */
@@ -222,6 +223,31 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->SetTemplateAction('topic');
 	}
 	
+	public function EventUnread() {
+		/**
+		 *	Если пользователь не залогинен, отдаем ему 404
+		 */
+		if (!$this->oUserCurrent) {
+			return parent::EventNotFound();
+		}
+		/**
+		 * Получаем страницу
+		 */
+		$iPage=$this->GetParamEventMatch(1,2) ? $this->GetParamEventMatch(1,2) : 1;
+		/**
+		 *	Получаем непрочтенные топики
+		 */
+		$aTopics=null;
+		/**
+		 * В шаблон
+		 */
+		$this->Viewer_Assign("aTopics",$aTopics);
+		/**
+		 *	Задаем шаблон
+		 */
+		$this->SetTemplateAction('unread');
+	}
+	
 	/**
 	 *	Добавление топика
 	 */
@@ -239,7 +265,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 *	Сабмит формы добавления топика
 	 */
-	protected function SubmitAdd() {
+	public function SubmitAdd() {
 		/**
 		 * Проверяем отправлена ли форма с данными(хотяб одна кнопка)
 		 */		
@@ -360,7 +386,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	 *
 	 * @return unknown
 	 */
-	protected function checkTopicFields() {
+	public function checkTopicFields() {
 		$this->Security_ValidateSendForm();
 		
 		$bOk=true;
@@ -389,7 +415,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 *	Добавление поста
 	 */
-	protected function EventAddPost() {
+	public function EventAddPost() {
 		/**
 		 *	Проверка формы
 		 */
@@ -451,6 +477,10 @@ class PluginForum_ActionForum extends ActionPlugin {
 			$oForum->setTopicId($oTopic->getId());
 			$oForum->setUserId($this->oUserCurrent->getId());
 			$oForum->Update();
+			
+			$oTopic->setPostId($oPost->getId());
+			$oTopic->setUserId($this->oUserCurrent->getId());
+			$oTopic->Update();
 			
 			$this->Viewer_AssignAjax('idPostLast',getRequest('last_post'));
 			$this->Viewer_AssignAjax('idForum',$oForum->getId());
@@ -561,7 +591,7 @@ class PluginForum_ActionForum extends ActionPlugin {
     /**
      * Проверяем существует ли Категория, если да то удаляем
      */
-	protected function EventCategoryDelete() {
+	public function EventCategoryDelete() {
         if (!$this->oUserAdmin) {
 			return parent::EventNotFound(); 
 		}
@@ -575,7 +605,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 *	Фкнция для получения статистики активности форума
 	 */
-	protected function GetForumStats() {
+	public function GetForumStats() {
 		/**
 		 * Статистика
 		 */
@@ -595,7 +625,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 *	Админка, пока только заготовка
 	 */
-	protected function EventAdmin() {
+	public function EventAdmin() {
 		if (!$this->oUserAdmin) {
 			return parent::EventNotFound();
 		}

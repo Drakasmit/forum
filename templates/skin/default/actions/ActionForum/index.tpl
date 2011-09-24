@@ -1,15 +1,14 @@
-{assign var="noSidebar" value=true}
-{include file='header.tpl'}
+{include file='header.tpl' noSidebar=true}
 <div id="forum">
 
 	<div class="forum-nav">
 		<h2>
-			Форум
+			{$aLang.main_title}
 		</h2>
 	</div>
 
 	<ul class="sv-tom_menu">
-		<li><a href="#">{$aLang.not_reading}</a></li>
+		<li><a href="{router page='forum'}unread/">{$aLang.not_reading}</a></li>
 		<li><a href="#">{$aLang.mark_all_read}</a></li>
 	</ul>
 
