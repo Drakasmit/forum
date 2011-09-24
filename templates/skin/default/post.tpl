@@ -1,5 +1,5 @@
 				{assign var="oUser" value=$oPost->getUser()}
-				<div class="sv-post{if $oTopic->getDateRead()<=$oPost->getDate()} new{/if}" id="post_id_{$oPost->getId()}">
+				<div class="sv-post{if $oRead and $oRead->getDate()<=$oPost->getDate() or $bAjax} new{/if}" id="post_id_{$oPost->getId()}">
 					<span class="sv-corners sv-tl"></span>
 					<span class="sv-corners sv-tr"></span>
 					<div class="sv-personal">
@@ -12,7 +12,7 @@
 					</div>
 					<div class="sv-post_section">
 						<div class="sv-post_section1">
-							<span class="sv-post_date"><a {if $oTopic->getDateRead()<=$oPost->getDate()}class="new"{/if} href="#post-{$oPost->getId()}" name="post-{$oPost->getId()}">#</a> {date_format date=$oPost->getDate()}</span>
+							<span class="sv-post_date">{date_format date=$oRead->getDate()}<a {if $oTopic->getDateRead()<=$oPost->getDate()}class="new"{/if} href="#post-{$oPost->getId()}" name="post-{$oPost->getId()}">#</a> {date_format date=$oPost->getDate()}</span>
 							<div class="sv-post_body">
 								{$oPost->getText()}
 							</div>

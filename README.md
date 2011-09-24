@@ -20,3 +20,7 @@ To install forum of latest build do this:
 ### More details...
 
 My future plans is to fully use of the full potential the 0.5 version LiveStreet, and transfer it to jQuery.
+
+### License
+
+[CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/ "CC BY-SA 3.0")

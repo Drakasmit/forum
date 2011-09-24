@@ -7,10 +7,10 @@
 		<lang name="default">artemeff</lang>
 	</author>
 	<homepage>http://artemeff.ru</homepage>
-	<version>0.1a</version>
+	<version>0.2b</version>
 	<settings>{forum}admin/</settings>
 	<requires>
-		<livestreet>0.4.2</livestreet>
+		<livestreet>0.5</livestreet>
 		<plugins>
 		</plugins>
 	</requires>

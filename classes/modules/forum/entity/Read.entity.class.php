@@ -5,10 +5,8 @@
  *	author site: http://artemeff.ru/
  *	license: CC BY-SA 3.0, http://creativecommons.org/licenses/by-sa/3.0/
  *--------------------------------------------------------------------------------------*/
- 
-return array(
 
+class PluginForum_ModuleForum_EntityRead extends EntityORM {
 
-	);
-
+}
 ?>

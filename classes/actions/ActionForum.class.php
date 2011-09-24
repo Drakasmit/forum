@@ -1,11 +1,9 @@
 <?php
 /*---------------------------------------------------------------------------------------
  *	author: Artemev Yurii
- *	livestreet version: 0.4.2
  *	plugin: Forum
- *	version: 0.1a
  *	author site: http://artemeff.ru/
- *	license: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *	license: CC BY-SA 3.0, http://creativecommons.org/licenses/by-sa/3.0/
  *--------------------------------------------------------------------------------------*/
 
 class PluginForum_ActionForum extends ActionPlugin {
@@ -32,15 +30,21 @@ class PluginForum_ActionForum extends ActionPlugin {
 	}
 	
 	/**
-	 *	Регистрация эвентов
+	 * Регистрация эвентов
 	 */
 	protected function RegisterEvent() {
-		// Админка
+		/**
+		 * Админка
+		 */
 		$this->AddEvent('admin','EventAdmin');
-		// Обработчики ajax запросов
+		/**
+		 * Обработчики ajax запросов
+		 */
 		$this->AddEvent('ajaxaddpost','EventAddPost');
 		$this->AddEvent('ajaxresponsepost','EventResponsePost');
-		// Пользовательская часть
+		/**
+		 * Пользовательская часть
+		 */
 		$this->AddEvent('forums','EventForums');
 		$this->AddEventPreg('/^add$/i','/^(\d+)$/i','EventAddTopic');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(page(\d+))?$/i','EventShowForum');
@@ -54,14 +58,13 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 *	Получаем категории
 		 */
-        $aCategories=$this->PluginForum_ModuleCategory_GetCategories();
+        $aCategories=$this->PluginForum_ModuleForum_GetCategoryItemsAll();
 		/**
 		 *	Задаем листинг категория-форум
 		 */
         $aList=array();
         foreach ($aCategories as $oCategory) {
-			$aResult=$this->PluginForum_ModuleForum_GetForumsByCategoryId($oCategory->getId());
-			$aForums=$aResult['collection'];
+			$aForums=$this->PluginForum_ModuleForum_GetForumItemsByCategoryId($oCategory->getId());
             $aList[]=array(
                     'obj'=>$oCategory,
                     'forums'=>$aForums
@@ -106,7 +109,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Получаем топики
 		 */
-		$aResult=$this->PluginForum_ModuleTopic_GetTopicsByForumId($oForum->getId(),$iPage,Config::Get('plugin.forum.topics.per_page'));
+		$aResult=$this->PluginForum_ModuleForum_GetTopicItemsByForumId($oForum->getId(),array('#order'=>array('topic_position'=>'desc', 'post_id'=>'desc', 'topic_date'=>'desc'),'#page' => array($iPage,Config::Get('plugin.forum.topics.per_page'))));
 		$aTopics=$aResult['collection'];
 		/**
 		 *	Постраничность
@@ -148,7 +151,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Сущность из ID
 		 */
-		$oTopic=$this->PluginForum_ModuleTopic_GetTopicById($sId);
+		$oTopic=$this->PluginForum_ModuleForum_GetTopicById($sId);
 		/**
 		 * Получаем URL топика из евента
 		 */
@@ -170,9 +173,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Получаем топики
 		 */
-		$aResult=$this->PluginForum_ModulePost_GetPostsByTopicId($oTopic->getId(),$iPage,Config::Get('plugin.forum.posts.per_page'));
+		$aResult=$this->PluginForum_ModuleForum_GetPostItemsByTopicId($oTopic->getId(), array('#page'=>array($iPage,Config::Get('plugin.forum.posts.per_page'))));
 		$aPost=$aResult['collection'];
-		$iMaxIdPost=$aResult['lastPostId'];	
+		$iMaxIdPost=$aResult['collection'][count($aResult['collection'])-1]->getId();
 		/**
 		 * Пагинация
 		 */
@@ -181,12 +184,21 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 * Отмечаем дату прочтения топика
 		 */
 		if ($this->oUserCurrent) {
-			$oTopicRead=Engine::GetEntity('PluginForum_Topic_TopicRead');
-			$oTopicRead->setTopicId($oTopic->getId());
-			$oTopicRead->setUserId($this->oUserCurrent->getId());
-			$oTopicRead->setPostIdLast($oTopic->getLastPostId());
-			$oTopicRead->setDateRead(date("Y-m-d H:i:s"));
-			$this->PluginForum_ModuleTopic_SetTopicRead($oTopicRead);
+			if ($oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId())) {
+				$oRead->setTopicId($oTopic->getId());
+				$oRead->setUserId($this->oUserCurrent->getId());
+				$oRead->setPostIdLast($iMaxIdPost);
+				$oRead->setDate(date("Y-m-d H:i:s"));
+				$oRead->Update();
+			} else {
+				$oRead=LS::Ent('PluginForum_ModuleForum_EntityRead');
+				$oRead->setTopicId($oTopic->getId());
+				$oRead->setUserId($this->oUserCurrent->getId());
+				$oRead->setPostIdLast($iMaxIdPost);
+				$oRead->setDate(date("Y-m-d H:i:s"));
+				$oRead->Add();
+			}
+			$oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId());
 		}
 		/**
 		 * Теперь все в шаблон
@@ -194,6 +206,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->Viewer_Assign("oForum",$oForum);
 		$this->Viewer_Assign("aPost",$aPost);
 		$this->Viewer_Assign("oTopic",$oTopic);
+		$this->Viewer_Assign("oRead",$oRead);
 		$this->Viewer_Assign("aPaging",$aPaging);
 		$this->Viewer_Assign("iMaxIdPost",$iMaxIdPost);
 		/**
@@ -212,11 +225,11 @@ class PluginForum_ActionForum extends ActionPlugin {
 	 *	Добавление топика
 	 */
 	public function EventAddTopic() {
-		if (!$this->User_IsAuthorization()) {
+		if (!$this->oUserCurrent) {
 			return parent::EventNotFound();
 		}
-		$sForumId = $this->GetParamEventMatch(0,1);
-		$oForum = $this->PluginForum_ModuleForum_GetForumById($sForumId);
+		$sForumId=$this->GetParamEventMatch(0,1);
+		$oForum=$this->PluginForum_ModuleForum_GetForumById($sForumId);
 		
 		$this->Viewer_Assign("oForum",$oForum);
 		return $this->SubmitAdd();
@@ -253,7 +266,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Проверяем права на постинг в форум
 		 * Скоро будут права на молчание в определенных форумах
-
+		 *
 		if (!$this->ACL_IsAllowBlog($oBlog,$this->oUserCurrent)) {
 			$this->Message_AddErrorSingle($this->Lang_Get('topic_create_blog_error_noallow'),$this->Lang_Get('error'));
 			return false;
@@ -263,14 +276,13 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Теперь можно смело добавлять топик к форуму
 		 */
-		$oTopic=Engine::GetEntity('PluginForum_Topic');
+		$oTopic=LS::Ent('PluginForum_ModuleForum_EntityTopic');
 		$oTopic->setForumId($oForum->getId());
 		$oTopic->setUserId($this->oUserCurrent->getId());
 		$oTopic->setTitle(getRequest('topic_title'));
 		$oTopic->setDate(date("Y-m-d H:i:s"));
-		$oTopic->setUrl($this->PluginForum_ModuleTopic_GenerateUrl(getRequest('topic_title')));
-		$oTopic->setCountViews('0');
-		$oTopic->setCountPosts('0');
+		$oTopic->setUrl($this->PluginForum_ModuleForum_GenerateUrl(getRequest('topic_title')));
+		$oTopic->setViews('0');
 		
 		/**
 		 *	Статус:
@@ -297,7 +309,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		}	
 
 		
-		$oPost=Engine::GetEntity('PluginForum_Post');
+		$oPost=LS::Ent('PluginForum_ModuleForum_EntityPost');
 		$oPost->setUserId($this->oUserCurrent->getId());
 		$oPost->setDate(date("Y-m-d H:i:s"));
 		$oPost->setForumId($oForum->getId());
@@ -308,23 +320,28 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Добавляем топик
 		 */		
-		if ($this->PluginForum_ModuleTopic_AddTopic($oTopic)) {
+		if ($oTopic->Add()) {
 			/**
-			 * Получаем топик, чтоб подцепить связанные данные
+			 * Получаем топик, чтобы подцепить связанные данные
 			 */
-			$oTopic=$this->PluginForum_ModuleTopic_GetTopicById($oTopic->getId());
+			$oTopic=$this->PluginForum_ModuleForum_GetTopicById($oTopic->getId());
 			$oPost->setTopicId($oTopic->getId());
 			/**
 			 * Добавляет первый пост
 			 */
-			if ($this->PluginForum_ModulePost_AddPost($oPost)) {
+			if ($oPost->Add()) {
 				/**
 				 * Получаем пост, чтоб подцепить связанные данные
 				 */
-				$oPost=$this->PluginForum_ModulePost_GetPostById($oPost->getId());
-				$this->PluginForum_ModuleTopic_SetPostId($oPost->getId(),$oTopic->getId());
-				$this->PluginForum_ModuleForum_UpdateForumLatestData($oPost->getId(),$oTopic->getId(),$this->oUserCurrent->getId(),$oForum->getId());
-				$this->PluginForum_ModuleTopic_SetLastPostId($oPost->getId(),$oTopic->getId());
+				$oPost=$this->PluginForum_ModuleForum_GetPostById($oPost->getId());
+				$oTopic->setPostId($oPost->getId());
+				$oTopic->Update();
+
+				$oForum->setPostId($oPost->getId());
+				$oForum->setTopicId($oTopic->getId());
+				$oForum->setUserId($this->oUserCurrent->getId());
+				$oForum->Update();
+
 				
 				header('Location: '.Router::GetPath('forum').$oForum->getUrl().'/'.$oTopic->getId().'-'.$oTopic->getUrl().'.html');
 			} else {
@@ -395,7 +412,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Сущность топика
 		 */
-		if (!($oTopic=$this->PluginForum_ModuleTopic_GetTopicById(getRequest('topic_id')))) {
+		if (!($oTopic=$this->PluginForum_ModuleForum_GetTopicById(getRequest('topic_id')))) {
 			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
 			return;
 		}
@@ -417,7 +434,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		* Создаём
 		*/
-		$oPost=Engine::GetEntity('PluginForum_Post');
+		$oPost=LS::Ent('PluginForum_ModuleForum_EntityPost');
 		$oPost->setForumId($oForum->getId());
 		$oPost->setTopicId($oTopic->getId());
 		$oPost->setUserId($this->oUserCurrent->getId());		
@@ -427,9 +444,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		* Добавляем
 		*/
-		if ($this->PluginForum_ModulePost_AddPost($oPost)) {
-			$this->PluginForum_ModuleTopic_SetLastPostId($oPost->getId(),$oTopic->getId());
-			$this->PluginForum_ModuleForum_UpdateForumLatestData($oPost->getId(),$oTopic->getId(),$this->oUserCurrent->getId(),$oForum->getId());
+		if ($oPost->Add()) {
+			//$this->PluginForum_ModuleForum_SetLastPostId($oPost->getId(),$oTopic->getId());
+			//$this->PluginForum_ModuleForum_UpdateForumLatestData($oPost->getId(),$oTopic->getId(),$this->oUserCurrent->getId(),$oForum->getId());
 			
 			$this->Viewer_AssignAjax('idPostLast',getRequest('last_post'));
 			$this->Viewer_AssignAjax('idForum',$oForum->getId());
@@ -466,7 +483,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Сущность топика
 		 */
-		if (!($oTopic=$this->PluginForum_ModuleTopic_GetTopicById(getRequest('idTargetTopic')))) {
+		if (!($oTopic=$this->PluginForum_ModuleForum_GetTopicById(getRequest('idTargetTopic')))) {
 			$this->Message_AddErrorSingle($this->Lang_Get('system_error'),$this->Lang_Get('error'));
 			return;
 		}
@@ -474,34 +491,51 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$idPostLast=getRequest('idPostLast',null,'post');
 
 		$aPosts=array();
-		$aReturn=$this->PluginForum_ModulePost_GetNewPostsByTopicId($oTopic->getId(),$idPostLast);
-		$iMaxIdPost=$aReturn['iMaxIdPost'];
+		$aResult=$this->PluginForum_ModuleForum_GetPostItemsByTopicId($oTopic->getId(), array('#where'=>array('post_id > ?d' => array($idPostLast))));
+		$iMaxIdPost=$aResult[count($aResult)-1]->getId();
 
 		/**
 		 * Отмечаем дату прочтения топика
 		 */
 		if ($this->oUserCurrent) {
-			$oTopicRead=Engine::GetEntity('PluginForum_Topic_TopicRead');
-			$oTopicRead->setTopicId($oTopic->getId());
-			$oTopicRead->setUserId($this->oUserCurrent->getId());
-			$oTopicRead->setPostIdLast($oTopic->getLastPostId());
-			$oTopicRead->setDateRead(date("Y-m-d H:i:s"));
-			$this->PluginForum_ModuleTopic_SetTopicRead($oTopicRead);
+			if ($oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId())) {
+				$oRead->setTopicId($oTopic->getId());
+				$oRead->setUserId($this->oUserCurrent->getId());
+				$oRead->setPostIdLast($oTopic->getLastPostId());
+				$oRead->setDate(date("Y-m-d H:i:s"));
+				$oRead->Update();
+			} else {
+				$oRead=LS::Ent('PluginForum_ModuleForum_EntityRead');
+				$oRead->setTopicId($oTopic->getId());
+				$oRead->setUserId($this->oUserCurrent->getId());
+				$oRead->setPostIdLast($oTopic->getLastPostId());
+				$oRead->setDate(date("Y-m-d H:i:s"));
+				$oRead->Add();
+			}
+			$oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId());
 		}
+		
+		$oViewerLocal=$this->Viewer_GetLocalViewer();
+		$oViewerLocal->Assign('oUserCurrent',$this->oUserCurrent);
+		$oViewerLocal->Assign('oTopic',$oTopic);
+		$oViewerLocal->Assign('oForum',$oForum);
+		$oViewerLocal->Assign('oRead',$oRead);
+		$oViewerLocal->Assign('bAjax',true);
 
-		$aPsts=$aReturn['posts'];
-		if ($aPsts and is_array($aPsts)) {
-			foreach ($aPsts as $aPst) {
+		if ($aResult and is_array($aResult)) {
+			foreach ($aResult as $oPost) {
+				$oViewerLocal->Assign('oPost',$oPost);
+				$sHtml=$oViewerLocal->Fetch(Plugin::GetTemplatePath(__CLASS__).'/post.tpl');
 				$aPosts[]=array(
-					'html' => $aPst['html'],
-					'idParent' => $aPst['obj']->getPid(),
-					'id' => $aPst['obj']->getId(),
+					'id' => $oPost->getId(),
+					'html' => $sHtml,
 				);
 			}
 		}
 
 		$this->Viewer_AssignAjax('iMaxIdPost',$iMaxIdPost);
 		$this->Viewer_AssignAjax('aPosts',$aPosts);
+		$this->Viewer_AssignAjax('oRead',$oRead);
 	}
 
     /**
@@ -541,11 +575,17 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Статистика
 		 */
-		$aForumStat=$this->PluginForum_ModuleForum_GetStatForums();		
+		$aTopics=$this->PluginForum_ModuleForum_GetTopicItemsAll(array('#page'=>array(1,1)));
+		$aStat['count_all_topics']=$aTopics['count'];
+		$aPosts=$this->PluginForum_ModuleForum_GetPostItemsAll(array('#page'=>array(1,1)));
+		$aStat['count_all_posts']=$aPosts['count'];
+		$sDate=date("Y-m-d H:00:00",time()-60*60*24*1);
+		$aToDayPosts=$this->PluginForum_ModuleForum_GetPostItemsAll(array('#where'=>array('post_date >= ?' => array($sDate)), '#page'=>array(1,1)));
+		$aStat['count_today_posts']=$aPosts['count'];
 		/**
 		 * Загружаем переменные в шаблон
 		 */
-		$this->Viewer_Assign('aForumStat',$aForumStat);
+		$this->Viewer_Assign('aForumStat',$aStat);
 	}
 	
 	/**

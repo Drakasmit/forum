@@ -5,10 +5,12 @@
  *	author site: http://artemeff.ru/
  *	license: CC BY-SA 3.0, http://creativecommons.org/licenses/by-sa/3.0/
  *--------------------------------------------------------------------------------------*/
- 
-return array(
 
-
+class PluginForum_ModuleForum_EntityTopic extends EntityORM {
+	protected $aRelations = array(
+		'user'=>array('belongs_to','ModuleUser_EntityUser','user_id'),
+		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','post_id'),
+		'forum'=>array('belongs_to','PluginForum_ModuleForum_EntityForum','forum_id')
 	);
-
+}
 ?>

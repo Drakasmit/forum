@@ -1,11 +1,9 @@
 <?php
 /*---------------------------------------------------------------------------------------
  *	author: Artemev Yurii
- *	livestreet version: 0.4.2
  *	plugin: Forum
- *	version: 0.1a
  *	author site: http://artemeff.ru/
- *	license: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ *	license: CC BY-SA 3.0, http://creativecommons.org/licenses/by-sa/3.0/
  *--------------------------------------------------------------------------------------*/
 
 /**
@@ -31,7 +29,7 @@ class PluginForum_HookForum extends Hook {
 			$do_count_visits=$oUser->getId()!=$oTopic->getUserId();
 		}
 		if ($do_count_visits) {
-			$this->PluginForum_ModuleTopic_SetCountViews($oTopic->getCountViews()+1,$oTopic->getId());
+			$this->PluginForum_ModuleForum_SetCountViews($oTopic->getCountViews()+1,$oTopic->getId());
 		}
 	}
 	
@@ -39,7 +37,7 @@ class PluginForum_HookForum extends Hook {
 		$oTopic=$aParams['topic'];
 		$oForum=$aParams['forum'];
 
-		$aResult=$this->PluginForum_ModulePost_GetPostsByTopicId($oTopic->getId(),1,Config::Get('plugin.forum.posts.per_page'));
+		/*$aResult=$this->PluginForum_ModuleForum_GetPostItemsByTopicId($oTopic->getId(),1,Config::Get('plugin.forum.posts.per_page'));
 		$aPaging=$this->Viewer_MakePaging($aResult['count'],1,Config::Get('plugin.forum.posts.per_page'),4,Router::GetPath('forum').$oForum->getUrl().'/'.$oTopic->getId().'-'.$oTopic->getUrl().'.html');
 
 		if ($aResult['count']>Config::Get('plugin.forum.posts.per_page')) {
@@ -55,7 +53,7 @@ class PluginForum_HookForum extends Hook {
 			}
 			$oPages.=' ]';
 			return $oPages;
-		}
+		}*/
 	}
 	
 }

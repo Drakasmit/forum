@@ -2,8 +2,8 @@
 		<script language="JavaScript" type="text/javascript">
 			jQuery(document).ready(function(){
 				{/literal}
-				fSetIdPostLast({$iMaxIdPost});
-				fSetIdForum({$oForum->getId()});
+				forum.post.setIdPostLast({$iMaxIdPost});
+				forum.post.setIdForum({$oForum->getId()});
 				{literal}
 			});					
 		</script>
@@ -37,8 +37,8 @@
 							<span class="sv-br"></span>
 							<textarea name="form_post_text" id="form_post_text"></textarea>
 						</div>
-						<input type="submit" name="submit_preview" value="{$aLang.comment_preview}" onclick="fPreview();" />&nbsp;
-						<input type="submit" name="submit_post" value="{$aLang.comment_add}"  onclick="fAddComment('form_post',{$oTopic->getId()}); return false;" />    	
+						<input type="submit" name="submit_preview" value="{$aLang.comment_preview}" onclick="forum.post.preview();" />&nbsp;
+						<input type="submit" name="submit_post" value="{$aLang.comment_add}"  onclick="forum.post.addComment('form_post',{$oTopic->getId()}); return false;" />    	
 						<input type="hidden" name="last_post" value="{$iMaxIdPost}" id="form_post_lastpost" />
 						<input type="hidden" name="topic_id" value="{$oTopic->getId()}" />
 						<input type="hidden" name="forum_id" value="{$oForum->getId()}" />

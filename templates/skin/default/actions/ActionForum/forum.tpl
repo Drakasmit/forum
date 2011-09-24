@@ -55,11 +55,11 @@
 					{foreach from=$aTopics item=oTopic}
 						{assign var="oUser" value=$oTopic->getUser()}
 						{assign var="oPost" value=$oTopic->getPost()}
-						{assign var="oLastUser" value=$oTopic->getLastUser()}
+						{assign var="oLastUser" value=$oPost->getUser()}
 						{assign var="oLastPost" value=$oTopic->getLastPost()}
 						<tr>
 							<td class="sv-icon_col">
-								<a class="bbl{if $oTopic->getDateRead()<=$oLastPost->getDate()} new{/if} {if $oTopic->getPosition()==1} info{/if}{if $oTopic->getStatus()==1} close{/if}" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html"></a>
+								<a class="bbl{if $oTopic->getDateRead()<=$oPost->getDate()} new{/if} {if $oTopic->getPosition()==1} info{/if}{if $oTopic->getStatus()==1} close{/if}" href="{router page='forum'}{$oForum->getUrl()}/{$oTopic->getId()}-{$oTopic->getUrl()}.html"></a>
 							</td>
 							<td class="sv-main_col">
 								<h3>
@@ -71,8 +71,8 @@
 							<td class="sv-answers">{$oTopic->getCountPosts()}</td>
 							<td class="sv-views">{$oTopic->getCountViews()}</td>
 							<td class="sv-last_msg">
-								{if $oLastPost}
-								<span class="sv-date">{date_format date=$oLastPost->getDate()}</span>
+								{if $oPost}
+								<span class="sv-date">{date_format date=$oPost->getDate() format='d.m.Y H:i'}</span>
 								<span class="sv-author">{$aLang.by} <a href="{$oLastUser->getUserWebPath()}">{$oLastUser->getLogin()}</a></span>
 								{/if}
 							</td>
