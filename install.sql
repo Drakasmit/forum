@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS `prefix_forum_topic` (
   `topic_status` int(11) NOT NULL DEFAULT '0',
   `topic_position` int(11) NOT NULL DEFAULT '0',
   `topic_views` int(11) NOT NULL,
-  `last_post_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`topic_id`),
   KEY `forum_id` (`forum_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
