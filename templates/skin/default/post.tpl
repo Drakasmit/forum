@@ -12,7 +12,7 @@
 					</div>
 					<div class="sv-post_section">
 						<div class="sv-post_section1">
-							<span class="sv-post_date">{date_format date=$oRead->getDate()}<a {if $oTopic->getDateRead()<=$oPost->getDate()}class="new"{/if} href="#post-{$oPost->getId()}" name="post-{$oPost->getId()}">#</a> {date_format date=$oPost->getDate()}</span>
+							<span class="sv-post_date"><a {if $oTopic->getDateRead()<=$oPost->getDate()}class="new"{/if} href="#post-{$oPost->getId()}" name="post-{$oPost->getId()}">#</a> {date_format date=$oPost->getDate()}</span>
 							<div class="sv-post_body">
 								{$oPost->getText()}
 							</div>

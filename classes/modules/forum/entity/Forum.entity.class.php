@@ -11,7 +11,7 @@ class PluginForum_ModuleForum_EntityForum extends EntityORM {
 		'tree',
 		'category'=>array('belongs_to','PluginForum_ModuleForum_EntityCategory','category_id'),
 		'user'=>array('belongs_to','ModuleUser_EntityUser','user_id'),
-		'topic'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','topic_id'),
+		'topic'=>array('belongs_to','PluginForum_ModuleForum_EntityTopic','topic_id'),
 		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','post_id'),
 	);
 	

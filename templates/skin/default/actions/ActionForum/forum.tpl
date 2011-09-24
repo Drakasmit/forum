@@ -69,7 +69,7 @@
 								<span class="sv-author"><a href="{$oUser->getUserWebPath()}">{$oUser->getLogin()}</a></span>
 							</td>
 							<td class="sv-answers">{$oTopic->getCountPosts()}</td>
-							<td class="sv-views">{$oTopic->getCountViews()}</td>
+							<td class="sv-views">{$oTopic->getViews()}</td>
 							<td class="sv-last_msg">
 								{if $oPost}
 								<span class="sv-date">{date_format date=$oPost->getDate() format='d.m.Y H:i'}</span>

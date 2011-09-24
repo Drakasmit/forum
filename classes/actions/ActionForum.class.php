@@ -165,7 +165,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Хука для счетчиков
 		 */
-		$this->Hook_Run('forum_topic_show',array("oTopic"=>$oTopic));
+		$oTopic->setViews($oTopic->getViews()+1);
+		$oTopic->Update();
 		/**
 		 * Получаем номер страницы
 		 */
@@ -445,8 +446,11 @@ class PluginForum_ActionForum extends ActionPlugin {
 		* Добавляем
 		*/
 		if ($oPost->Add()) {
-			//$this->PluginForum_ModuleForum_SetLastPostId($oPost->getId(),$oTopic->getId());
-			//$this->PluginForum_ModuleForum_UpdateForumLatestData($oPost->getId(),$oTopic->getId(),$this->oUserCurrent->getId(),$oForum->getId());
+			
+			$oForum->setPostId($oPost->getId());
+			$oForum->setTopicId($oTopic->getId());
+			$oForum->setUserId($this->oUserCurrent->getId());
+			$oForum->Update();
 			
 			$this->Viewer_AssignAjax('idPostLast',getRequest('last_post'));
 			$this->Viewer_AssignAjax('idForum',$oForum->getId());

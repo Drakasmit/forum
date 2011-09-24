@@ -12,7 +12,6 @@
  */
 class PluginForum_HookForum extends Hook {
 	public function RegisterHook() {
-		$this->AddHook('forum_topic_show','TopicShow');
 		$this->AddHook('template_main_menu','Menu');
 		$this->AddHook('template_topic_paging','TopicPaging');
 	}
@@ -21,23 +20,11 @@ class PluginForum_HookForum extends Hook {
 		return $this->Viewer_Fetch(Plugin::GetTemplatePath(__CLASS__).'main_menu.tpl');
 	}
 	
-	public function TopicShow($aParams) {
-		$oTopic=$aParams['oTopic'];
-        $do_count_visits=(!$this->User_IsAuthorization());
-        if (!$do_count_visits) {
-			$oUser=$this->User_GetUserCurrent();
-			$do_count_visits=$oUser->getId()!=$oTopic->getUserId();
-		}
-		if ($do_count_visits) {
-			$this->PluginForum_ModuleForum_SetCountViews($oTopic->getCountViews()+1,$oTopic->getId());
-		}
-	}
-	
 	public function TopicPaging($aParams) {
 		$oTopic=$aParams['topic'];
 		$oForum=$aParams['forum'];
 
-		/*$aResult=$this->PluginForum_ModuleForum_GetPostItemsByTopicId($oTopic->getId(),1,Config::Get('plugin.forum.posts.per_page'));
+		$aResult=$this->PluginForum_ModuleForum_GetPostItemsByTopicId($oTopic->getId(), array('#page'=>array(1,Config::Get('plugin.forum.posts.per_page'))));
 		$aPaging=$this->Viewer_MakePaging($aResult['count'],1,Config::Get('plugin.forum.posts.per_page'),4,Router::GetPath('forum').$oForum->getUrl().'/'.$oTopic->getId().'-'.$oTopic->getUrl().'.html');
 
 		if ($aResult['count']>Config::Get('plugin.forum.posts.per_page')) {
@@ -53,7 +40,7 @@ class PluginForum_HookForum extends Hook {
 			}
 			$oPages.=' ]';
 			return $oPages;
-		}*/
+		}
 	}
 	
 }

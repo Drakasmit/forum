@@ -9,7 +9,7 @@
 class PluginForum_ModuleForum_EntityPost extends EntityORM {
 	protected $aRelations = array(
 		'user'=>array('belongs_to','ModuleUser_EntityUser','user_id'),
-		'topic'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','topic_id'),
+		'topic'=>array('belongs_to','PluginForum_ModuleForum_EntityTopic','topic_id'),
 		'forum'=>array('belongs_to','PluginForum_ModuleForum_EntityForum','forum_id'),
 	);
 }

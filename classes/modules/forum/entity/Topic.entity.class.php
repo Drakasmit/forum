@@ -12,5 +12,10 @@ class PluginForum_ModuleForum_EntityTopic extends EntityORM {
 		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','post_id'),
 		'forum'=>array('belongs_to','PluginForum_ModuleForum_EntityForum','forum_id')
 	);
+	
+	public function getCountPosts() {
+		$aResult=$this->PluginForum_ModuleForum_GetPostItemsByTopicId($this->getId(), array('#page'=>array(1,1)));
+		return $aResult['count'];
+	}
 }
 ?>
