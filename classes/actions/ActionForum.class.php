@@ -45,9 +45,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Пользовательская часть
 		 */
-		$this->AddEvent('unread','EventUnread');
+		$this->AddEventPreg('forums','EventForums');
+		$this->AddEventpreg('/^unread$/i','/^(page(\d+))?$/i','EventUnread');
 		$this->AddEventPreg('/^add$/i','/^(\d+)$/i','EventAddTopic');
-		$this->AddEventPreg('/^forums$/i','/^(page(\d+))?$/i','EventForums');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(page(\d+))?$/i','EventShowForum');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)-(.*)\.html$/i','/^(page(\d+))?$/i','EventShowTopic');
 	}
