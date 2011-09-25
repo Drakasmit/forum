@@ -1,5 +1,5 @@
 	<ul class="sv-tom_menu">
-		<li class="active"><a href="{router page='forum'}admin/categories/">Категории форумов</a></li>
-		<li><a href="{router page='forum'}admin/forums/">Форумы</a></li>
-		<li><a href="{router page='forum'}admin/topics/">Топики</a></li>
+		<li class="active"><a href="{router page='forum'}admin/categories/">РљР°С‚РµРіРѕСЂРёРё С„РѕСЂСѓРјРѕРІ</a></li>
+		<li><a href="{router page='forum'}admin/forums/">Р¤РѕСЂСѓРјС‹</a></li>
+		<li><a href="{router page='forum'}admin/topics/">РўРѕРїРёРєРё</a></li>
 	</ul>

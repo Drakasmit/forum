@@ -11,7 +11,7 @@ class PluginForum_ModuleUser extends PluginForum_Inherit_ModuleUser {
 	public function GetUsersAdditionalData($aUserId,$aAllowData=array('vote','session','friend')) {
 		$aUsers=parent::GetUsersAdditionalData($aUserId,$aAllowData=array('vote','session','friend'));
 		/**
-		 * Äîáàâëÿåì äàííûå ê ðåçóëüòàòó
+		 * Ð”Ð¾Ð±Ð°Ð²Ð»ÑÐµÐ¼ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ðº Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ñƒ
 		 */
 		foreach ($aUsers as $oUser) {
 			$oUser->setCountPosts($this->PluginForum_ModuleUser_GetCountPosts($oUser->getId()));
