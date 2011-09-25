@@ -201,6 +201,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 				$oRead->Add();
 			}
 			$oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId());
+		} else {
+			$oRead=null;	
 		}
 		/**
 		 * Теперь все в шаблон
@@ -547,6 +549,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 				$oRead->Add();
 			}
 			$oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId());
+		} else {
+			$oRead=null;
 		}
 		
 		$oViewerLocal=$this->Viewer_GetLocalViewer();
