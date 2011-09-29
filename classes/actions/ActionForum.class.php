@@ -600,8 +600,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 			return parent::EventNotFound(); 
 		}
 		$iCategoryId=$this->GetRequestCheck('cat_id');
-		if ($iCategoryId && ($oCategory=$this->PluginForum_ModuleCategory_GetCategoryById($iCategoryId))) {
-			$this->PluginForum_ModuleCategory_DeleteCategory($iCategoryId);
+		if ($iCategoryId && ($oCategory=$this->PluginForum_ModuleForum_GetCategoryById($iCategoryId))) {
+			$oCategory->Delete();
 		}
         header('Location: '.Router::GetPath('forum').'admin/categories/');
 	}
@@ -634,6 +634,20 @@ class PluginForum_ActionForum extends ActionPlugin {
 			return parent::EventNotFound();
 		}
 		
+		if ($this->GetParam(0)=='categories' and $this->GetParam(1)=='delete') {
+			$this->EventCategoryDelete();
+		}
+				
+		if ($this->GetParam(0)=='categories' and isPost('category_title')) {
+			$oCategory=LS::ENT('PluginForum_Forum_Category');
+			$oCategory->setTitle(getRequest('category_title',null,'post'));
+			if($this->PluginForum_Forum_AddCategory($oCategory)) {
+				$this->Message_AddNotice($this->Lang_Get('category_create_submit_save_ok'));
+			} else {
+				$this->Message_AddError($this->Lang_Get('system_error'));
+			}
+		}
+		
 		if ($this->GetParam(0)=='categories') {
 		
 			$aCategories=$this->PluginForum_ModuleForum_GetCategoryItemsAll();
@@ -648,19 +662,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 			}
 
 			$this->Viewer_Assign('aCategories', $aList);
-		
 			$this->SetTemplateAction('admin-categories');
-		}
-		
-		if ($this->GetParam(0)=='categories' and isPost('category_title')) {
-			$oCategory=LS::ENT('PluginForum_Forum_Category');
-			$oCategory->setTitle(getRequest('category_title',null,'post'));
-			if($this->PluginForum_Forum_AddCategory($oCategory)) {
-				$this->Message_AddNotice($this->Lang_Get('category_create_submit_save_ok'));
-				$this->SetParam(0,null);
-			} else {
-				$this->Message_AddError($this->Lang_Get('system_error'));
-			}
+			return true;
 		}
 		
 		if ($this->GetParam(0)=='forums') {
@@ -673,12 +676,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		
 		if (!$this->GetParam(0)) {
 			$this->SetTemplateAction('admin');
-		}
-		
-		if ($this->GetParam(0)=='categories' and $this->GetParam(1)=='delete') {
-			$this->EventCategoryDelete();
-		}
-		
+		}		
 	}
 
 	/**
