@@ -636,7 +636,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		
 		if ($this->GetParam(0)=='categories') {
 		
-			$aCategories=$this->PluginForum_ModuleCategory_GetCategories();
+			$aCategories=$this->PluginForum_ModuleForum_GetCategoryItemsAll();
 			$aList = array();
 			foreach ($aCategories as $oCategory) {
 				$aResult=$this->PluginForum_ModuleForum_GetForumsByCategoryId($oCategory->getId());
