@@ -639,7 +639,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 			$aCategories=$this->PluginForum_ModuleForum_GetCategoryItemsAll();
 			$aList = array();
 			foreach ($aCategories as $oCategory) {
-				$aResult=$this->PluginForum_ModuleForum_GetForumsByCategoryId($oCategory->getId());
+				$aResult=$this->PluginForum_ModuleForum_GetForumByCategoryId($oCategory->getId());
 				$aForums=$aResult['collection'];
 				$aList[] = array(
 						'obj'=>$oCategory,
@@ -653,9 +653,9 @@ class PluginForum_ActionForum extends ActionPlugin {
 		}
 		
 		if ($this->GetParam(0)=='categories' and isPost('category_title')) {
-			$oCategory=Engine::GetEntity('PluginForum_Category');
+			$oCategory=LS::ENT('PluginForum_Forum_Category');
 			$oCategory->setTitle(getRequest('category_title',null,'post'));
-			if($this->PluginForum_Category_AddCategory($oCategory)) {
+			if($this->PluginForum_Forum_AddCategory($oCategory)) {
 				$this->Message_AddNotice($this->Lang_Get('category_create_submit_save_ok'));
 				$this->SetParam(0,null);
 			} else {
