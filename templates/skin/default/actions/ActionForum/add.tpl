@@ -57,7 +57,7 @@
 
 	<div class="forum-nav">
 		<h2>
-			<span><a href="{router page='forum'}">Форум</a></span> Новый топик
+			<span><a href="{router page='forum'}">{$aLang.forum}</a></span> {$aLang.forum_new_topic}
 		</h2>
 	</div>
 
@@ -65,7 +65,7 @@
 
 		<div class="sv-forum_header sv-forum_header-subject_page">
 			<div class="sv-left_bg">
-				<h2>Создание топика в <a href="{router page='forum'}{$oForum->getUrl()}/">{$oForum->getTitle()}</a></h2>
+				<h2>{$aLang.forum_new_topic_from} <a href="{router page='forum'}{$oForum->getUrl()}/">{$oForum->getTitle()}</a></h2>
 			</div>
 			<div class="sv-right_bg"></div>
 		</div>
@@ -92,8 +92,8 @@
 						
 						{if $oUserCurrent AND $oUserCurrent->isAdministrator()}
 						<p>
-							<label><input type="checkbox" name="topic_position" id="topic_position" />Закрепить?</label><br />
-							<label><input type="checkbox" name="topic_status" id="topic_status" />Закрыть?</label>
+							<label><input type="checkbox" name="topic_position" id="topic_position" /> {$aLang.forum_new_topic_pin}</label><br />
+							<label><input type="checkbox" name="topic_status" id="topic_status" /> {$aLang.forum_new_topic_close}</label>
 						</p>
 						{/if}
 						

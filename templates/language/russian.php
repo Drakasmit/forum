@@ -7,6 +7,19 @@
  *--------------------------------------------------------------------------------------*/
  
 return array(
+	'forum' => 'Форум',
+	'forums' => 'Форумы',
+
+	'forum_acp' => 'Управление форумом',
+
+	'forum_categories' => 'Категории',
+	'forum_topics' => 'Темы',
+	'forum_posts' => 'Сообщения',
+
+	'forum_new_topic' => 'Новая тема',
+	'forum_new_topic_from' => 'Создание новой темы в',
+	'forum_new_topic_pin' => 'Закрепить',
+	'forum_new_topic_close' => 'Закрыть',
 
 	'main_title' => 'Форум',
 	'by' => 'от',
