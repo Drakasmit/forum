@@ -21,7 +21,7 @@
 
 		<div class="sv-forum_header sv-forum_header-subject_page">
 			<div class="sv-left_bg">
-				<h2>Администрарование категорий</h2>
+				<h2>Администратирование категорий</h2>
 			</div>
 			<div class="sv-right_bg"></div>
 		</div>
