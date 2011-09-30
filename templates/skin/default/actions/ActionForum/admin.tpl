@@ -4,15 +4,13 @@
 <div id="forum">
 
 	<div class="forum-nav">
-		<h2>
-			Панель администратора
-		</h2>
+		<h2>{$aLang.forum_acp}</h2>
 	</div>
 	
 	<ul class="sv-tom_menu">
-		<li class="active"><a href="{router page='forum'}admin/categories/">Категории форумов</a></li>
-		<li><a href="{router page='forum'}admin/forums/">Форумы</a></li>
-		<li><a href="{router page='forum'}admin/topics/">Топики</a></li>
+		<li class="active"><a href="{router page='forum'}admin/categories/">{$aLang.forum_categories}</a></li>
+		<li><a href="{router page='forum'}admin/forums/">{$aLang.forums}</a></li>
+		<li><a href="{router page='forum'}admin/topics/">{$aLang.forum_topics}</a></li>
 	</ul>
 
 	<div class="sv-forum-block">

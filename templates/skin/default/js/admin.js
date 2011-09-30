@@ -58,3 +58,7 @@ function AdminCategoryDelete(msg, name, cat_id) {
     }
     return false;
 }
+
+function AdminForumAdd(cat_id,obj) {
+	$('#forum_add').insertBefore(obj).show();
+}
