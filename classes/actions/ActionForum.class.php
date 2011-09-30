@@ -202,11 +202,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 			}
 			$oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId());
 		} else {
-<<<<<<< HEAD
 			$oRead=null;
-=======
-			$oRead=null;	
->>>>>>> cf80341ca3f0771653e1afef79cab62ff13b379c
 		}
 		/**
 		 * Теперь все в шаблон
