@@ -19,5 +19,7 @@ $config['table']['forum_topics'] = '___db.table.prefix___forum_topic';
 $config['table']['forum_posts'] = '___db.table.prefix___forum_post';
 $config['table']['forum_read'] = '___db.table.prefix___forum_read';
 
+$config['deactivate']['delete'] = false; // Удаление таблиц при деактивации
+
 return $config;
 ?>

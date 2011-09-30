@@ -19,7 +19,7 @@ class PluginForum extends Plugin {
 
 
 	public function Activate() {
-		if (!$this->isTableExists('prefix_forum')) {
+		if (!$this->isTableExists('prefix_forum_list')) {
 			$this->ExportSQL(dirname(__FILE__).'/install.sql');
 		}
 		return true;
@@ -27,6 +27,9 @@ class PluginForum extends Plugin {
 
 
 	public function Deactivate()	{
+		if (Config::Get('plugin.forum.deactivate.delete')) {
+			$this->ExportSQL(dirname(__FILE__).'/deinstall.sql');	
+		}
 		return true;
 	}
 
