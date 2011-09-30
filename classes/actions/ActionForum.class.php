@@ -177,7 +177,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 */
 		$aResult=$this->PluginForum_ModuleForum_GetPostItemsByTopicId($oTopic->getId(), array('#page'=>array($iPage,Config::Get('plugin.forum.posts.per_page'))));
 		$aPost=$aResult['collection'];
-		$iMaxIdPost=$aResult['collection'][count($aResult['collection'])-1]->getId();
+		$iMaxIdPost=$oTopic->getPostId();
 		/**
 		 * Пагинация
 		 */
@@ -189,18 +189,20 @@ class PluginForum_ActionForum extends ActionPlugin {
 			if ($oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId())) {
 				$oRead->setTopicId($oTopic->getId());
 				$oRead->setUserId($this->oUserCurrent->getId());
-				$oRead->setPostIdLast($iMaxIdPost);
+				$oRead->setPostId($oTopic->getPostId());
 				$oRead->setDate(date("Y-m-d H:i:s"));
 				$oRead->Update();
 			} else {
 				$oRead=LS::Ent('PluginForum_ModuleForum_EntityRead');
 				$oRead->setTopicId($oTopic->getId());
 				$oRead->setUserId($this->oUserCurrent->getId());
-				$oRead->setPostIdLast($iMaxIdPost);
+				$oRead->setPostId($oTopic->getPostId());
 				$oRead->setDate(date("Y-m-d H:i:s"));
 				$oRead->Add();
 			}
 			$oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId());
+		} else {
+			$oRead=null;
 		}
 		/**
 		 * Теперь все в шаблон
@@ -235,9 +237,13 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 */
 		$iPage=$this->GetParamEventMatch(1,2) ? $this->GetParamEventMatch(1,2) : 1;
 		/**
-		 *	Получаем непрочтенные топики
+		 *	Получаем дату последней активности пользователя
 		 */
-		$aTopics=null;
+		$oUserLast=$this->PluginForum_ModuleForum_GetUserLastActiveById($this->oUserCurrent->getId());
+		/**
+		 * Получаем топики по этой дате
+		 */
+		$aTopics=$this->PluginForum_ModuleForum_GetTopicItemsAll(array('#where'=>array('topic_date >= ?' => array($oUserLast->getActive())),'#order'=>array('post_id'=>'desc')));
 		/**
 		 * В шаблон
 		 */
@@ -535,18 +541,20 @@ class PluginForum_ActionForum extends ActionPlugin {
 			if ($oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId())) {
 				$oRead->setTopicId($oTopic->getId());
 				$oRead->setUserId($this->oUserCurrent->getId());
-				$oRead->setPostIdLast($oTopic->getLastPostId());
+				$oRead->setPostId($oTopic->getPostId());
 				$oRead->setDate(date("Y-m-d H:i:s"));
 				$oRead->Update();
 			} else {
 				$oRead=LS::Ent('PluginForum_ModuleForum_EntityRead');
 				$oRead->setTopicId($oTopic->getId());
 				$oRead->setUserId($this->oUserCurrent->getId());
-				$oRead->setPostIdLast($oTopic->getLastPostId());
+				$oRead->setPostId($oTopic->getPostId());
 				$oRead->setDate(date("Y-m-d H:i:s"));
 				$oRead->Add();
 			}
 			$oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId());
+		} else {
+			$oRead=null;
 		}
 		
 		$oViewerLocal=$this->Viewer_GetLocalViewer();

@@ -36,21 +36,14 @@ class PluginForum_ModuleForum extends ModuleORM {
 			" " => "-", "." => "", "/" => "-",
 			"=" => "-"
 		);
-		
-		return false;
 
-		if ($sResIconv=@iconv("UTF-8", "ISO-8859-1//IGNORE//TRANSLIT", $sRes)) {
-			$sRes=$sResIconv;
-		}
+		$sUrl=strtr($sUrl,$aSymbols);
 
-		if (preg_match('/[^A-Za-z0-9_\-]/', $sRes)) {
-			$sRes = preg_replace('/[^A-Za-z0-9_\-]/', '', $sRes);
-			$sRes = preg_replace('/\-+/', '-', $sRes);
-		}
+		$sUrl=preg_replace('/[^A-Za-z0-9_\-]/', '', $sUrl);
+		$sUrl=preg_replace('/\-+/', '-', $sUrl);
+		$sUrl=preg_replace('/\-$/', '', $sUrl);
 		
-		var_dump($sRes); return false;
-		
-		return $sRes;
+		return $sUrl;
 	}
 
 }
