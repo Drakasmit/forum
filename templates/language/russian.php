@@ -9,6 +9,7 @@
 return array(
 	'forum' => 'Форум',
 	'forums' => 'Форумы',
+	'forums_no' => 'Форумов нет',
 
 	'forum_acp' => 'Управление форумом',
 
@@ -16,10 +17,19 @@ return array(
 	'forum_topics' => 'Темы',
 	'forum_posts' => 'Сообщения',
 
+	'forum_create_category' => 'Создать категорию',
+	'forum_create_category_ok' => 'Категория успешно создана',
+	'forum_create' => 'Создать форум',
+	'forum_create_ok' => 'Форум успешно создан',
+	'forum_create_warning' => 'Перед тем, как создать форум создайте хотя бы 1 категорию',
+
 	'forum_new_topic' => 'Новая тема',
 	'forum_new_topic_from' => 'Создание новой темы в',
 	'forum_new_topic_pin' => 'Закрепить',
 	'forum_new_topic_close' => 'Закрыть',
+
+	'forum_subforums' => 'Подфорумы',
+	'forum_themes_list' => 'Список тем',
 
 	'main_title' => 'Форум',
 	'by' => 'от',
@@ -45,7 +55,6 @@ return array(
 	'topics' => 'Топиков',
 	'posts' => 'Постов',
 
-	'category_create_submit_save_ok' => 'Новая категория добавлена',
 );
 
 ?>

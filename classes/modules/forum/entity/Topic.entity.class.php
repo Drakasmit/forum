@@ -8,9 +8,9 @@
 
 class PluginForum_ModuleForum_EntityTopic extends EntityORM {
 	protected $aRelations = array(
+		'forum'=>array('belongs_to','PluginForum_ModuleForum_EntityForum','forum_id'),
 		'user'=>array('belongs_to','ModuleUser_EntityUser','user_id'),
-		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','post_id'),
-		'forum'=>array('belongs_to','PluginForum_ModuleForum_EntityForum','forum_id')
+		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','last_post_id')
 	);
 	
 	public function getCountPosts() {

@@ -9,10 +9,9 @@
 class PluginForum_ModuleForum_EntityForum extends EntityORM {
 	protected $aRelations = array(
 		'tree',
-		'category'=>array('belongs_to','PluginForum_ModuleForum_EntityCategory','category_id'),
-		'user'=>array('belongs_to','ModuleUser_EntityUser','user_id'),
-		'topic'=>array('belongs_to','PluginForum_ModuleForum_EntityTopic','topic_id'),
-		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','post_id'),
+		'user'=>array('belongs_to','ModuleUser_EntityUser','last_user_id'),
+		'topic'=>array('belongs_to','PluginForum_ModuleForum_EntityTopic','last_topic_id'),
+		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','last_post_id'),
 	);
 	
 	public function getCountPosts() {

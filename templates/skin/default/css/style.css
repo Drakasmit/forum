@@ -76,4 +76,7 @@ table.sv-forum_body tr td.sv-views { width :106px; font-family :Arial,Helvetica,
 /* ~~~~ forum_stats (end) ~~~~ */
 .sv-forum-block { width:100%; float:left}
 /* ~~~~ clearfix ~~~~ */
-.clear { clear: both }
+.clear_fix:after { content: '.'; display: block; height: 0; clear: both; visibility: hidden }
+* html .clear_fix { height: 1% }
+.clear_fix { display: block }
+.clear { float: none; clear: both }

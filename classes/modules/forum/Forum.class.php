@@ -8,12 +8,29 @@
  
 class PluginForum_ModuleForum extends ModuleORM {
 	/**
+	 * Тип форума - категория (запрещено создание топиков)
+	 */
+	const FORUM_TYPE_CATEGORY	= 1;
+	/**
+	 * Тип форума - обычный
+	 */
+	const FORUM_TYPE_NORMAL		= 2;
+	/**
+	 * Тип форума - ссылка
+	 */
+	const FORUM_TYPE_LINK		= 3;
+	/**
+	 * Тип форума - запаролен
+	 */
+	const FORUM_TYPE_PASSWORD	= 4;
+
+	/**
 	 * Инициализация модуля
 	 */
 	public function Init() {
 		parent::Init();
 	}
-	
+
 	/**
 	 *	Генерация URL
 	 */
