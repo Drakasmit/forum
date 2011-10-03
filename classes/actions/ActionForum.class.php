@@ -56,8 +56,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->AddEventpreg('/^unread$/i','/^(page(\d+))?$/i','EventUnread');
 		$this->AddEventPreg('/^add$/i','/^(\d+)$/i','EventAddTopic');
 		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(page(\d+))?$/i','EventShowForum');
-		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)$/i','/^(page(\d+))?$/i','EventShowTopic');
-		$this->AddEventPreg('/^(\d+)$/i','/^(\d+)$/i','/^(page(\d+))?$/i','EventShowTopic');
+		$this->AddEventPreg('/^[\w\-\_]+$/i','/^(\d+)\-(.*).html$/i','/^(page(\d+))?$/i','EventShowTopic');
+		$this->AddEventPreg('/^(\d+)$/i','/^(\d+)\-(.*).html$/i','/^(page(\d+))?$/i','EventShowTopic');
 		$this->AddEventPreg('/^(\d+)$/i','/^(page(\d+))?$/i','EventShowForum');
 	}
 
@@ -156,15 +156,15 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Получаем URL топика из евента
 		 */
-		$sTitle=$this->GetParamEventMatch(0,2);
+		$sUrl=$this->GetParamEventMatch(0,2);
 		/**
 		 * Если они не совпадают, редиректим на валидный УРЛ
 		 */
-		if ($sTitle!=$oTopic->getUrl()) {
+		if ($sUrl!=$oTopic->getUrl()) {
 			Router::Location(Router::GetPath('forum').$sForumUrl.'/'.$sId.'-'.$oTopic->getUrl().'.html');
 		}
 		/**
-		 * Хука для счетчиков
+		 * Счетчик просмотров
 		 */
 		$oTopic->setViews($oTopic->getViews()+1);
 		$oTopic->Update();
@@ -187,16 +187,14 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 */
 		if ($this->oUserCurrent) {
 			if ($oRead=$this->PluginForum_ModuleForum_GetReadByTopicIdAndUserId($oTopic->getId(), $this->oUserCurrent->getId())) {
-				$oRead->setTopicId($oTopic->getId());
-				$oRead->setUserId($this->oUserCurrent->getId());
-				$oRead->setPostId($oTopic->getPostId());
+				$oRead->setPostId($oTopic->getLastPostId());
 				$oRead->setDate(date("Y-m-d H:i:s"));
 				$oRead->Update();
 			} else {
 				$oRead=LS::Ent('PluginForum_ModuleForum_EntityRead');
 				$oRead->setTopicId($oTopic->getId());
 				$oRead->setUserId($this->oUserCurrent->getId());
-				$oRead->setPostId($oTopic->getPostId());
+				$oRead->setPostId($oTopic->getLastPostId());
 				$oRead->setDate(date("Y-m-d H:i:s"));
 				$oRead->Add();
 			}
@@ -261,18 +259,18 @@ class PluginForum_ActionForum extends ActionPlugin {
 		if (!$this->oUserCurrent) {
 			return parent::EventNotFound();
 		}
-		/**
-		 * Проверяем отправлена ли форма с данными(хотяб одна кнопка)
-		 */
-		if (isPost('submit_topic_publish')) {
-			return $this->SubmitAdd();
-		}
-
+		
 		$sForumId=$this->GetParamEventMatch(0,1);
 
 		if (!$oForum=$this->PluginForum_ModuleForum_GetForumById($sForumId)) {
 			$this->Message_AddErrorSingle($this->Lang_Get('topic_create_blog_error_unknown'),$this->Lang_Get('error'));
 			return false;
+		}
+		/**
+		 * Проверяем отправлена ли форма с данными(хотяб одна кнопка)
+		 */
+		if (isPost('submit_topic_publish')) {
+			return $this->SubmitAdd($oForum);
 		}
 
 		$this->Viewer_Assign("oForum",$oForum);
@@ -281,7 +279,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 * Сабмит формы добавления топика
 	 */
-	public function SubmitAdd() {
+	public function SubmitAdd($oForum) {
 		/**
 		 * Проверка корректности полей формы
 		 */
@@ -335,7 +333,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 
 		$oPost=LS::Ent('PluginForum_ModuleForum_EntityPost');
 		$oPost->setUserId($this->oUserCurrent->getId());
-		$oPost->setDate(date("Y-m-d H:i:s"));
+		$oPost->setDateAdd(date("Y-m-d H:i:s"));
 		$oPost->setForumId($oForum->getId());
 
 		$oPost->setText($this->Text_Parser(getRequest('topic_text')));
@@ -358,7 +356,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 				 * Получаем пост, чтоб подцепить связанные данные
 				 */
 				$oPost=$this->PluginForum_ModuleForum_GetPostById($oPost->getId());
-				$oTopic->setPostId($oPost->getId());
+				$oTopic->setLastPostId($oPost->getId());
 				$oTopic->Update();
 
 				$oForum->setLastPostId($oPost->getId());
@@ -463,7 +461,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$oPost->setUserId($this->oUserCurrent->getId());
 		$oPost->setText($sText);
 		$oPost->setTextSource(getRequest('form_post_text'));
-		$oPost->setDate(date("Y-m-d H:i:s"));
+		$oPost->setDateAdd(date("Y-m-d H:i:s"));
 		/**
 		 * Добавляем
 		 */
@@ -474,8 +472,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 			$oForum->setLastUserId($this->oUserCurrent->getId());
 			$oForum->Update();
 
-			$oTopic->setPostId($oPost->getId());
-			$oTopic->setUserId($this->oUserCurrent->getId());
+			$oTopic->setLastPostId($oPost->getId());
 			$oTopic->Update();
 
 			$this->Viewer_AssignAjax('idPostLast',getRequest('last_post'));

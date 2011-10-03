@@ -22,7 +22,7 @@
 		{assign var='aSubForums' value=$oForum->getChildren()}
 		<div class="sv-forum_header">
 			<div class="sv-left_bg">
-				<h2><a href="{router page='forum'}{if $oForum->getUrl()}{$oForum->getUrl()}{else}{$oForum->getId()}{/if}">{$oForum->getTitle()}</a></h2>
+				<h2><a style="text-decoration: none; color: #FFFFD9;" href="{router page='forum'}{if $oForum->getUrl()}{$oForum->getUrl()}{else}{$oForum->getId()}{/if}">{$oForum->getTitle()}</a></h2>
 			</div>
 			<div class="sv-right_bg">
 				<span class="sv-last_msg">{$aLang.last_post}</span>
@@ -46,6 +46,17 @@
 						<td class="sv-main_col">
 							<h3><a href="{router page='forum'}{if $oSubForum->getUrl()}{$oSubForum->getUrl()}{else}{$oSubForum->getId()}{/if}">{$oSubForum->getTitle()}</a></h3>
 							<p class="sv-details">{$oSubForum->getDescription()}</p>
+							{if $oSubForum->getChildren()}
+								{assign var="aSubSecForums" value=$oSubForum->getChildren()}
+								<div class="sv-sections">
+									<span class="strong">Подразделы:</span>
+									<ul>
+									{foreach from=$aSubSecForums item=oSubSecForum}
+										<li><a href="{router page='forum'}{if $oSubSecForum->getUrl()}{$oSubSecForum->getUrl()}{else}{$oSubSecForum->getId()}{/if}">{$oSubSecForum->getTitle()}</a></li>
+									{/foreach}
+									</ul>
+								</div>
+							{/if}
 						</td>
 						<td class="sv-last_msg">
 							{if $oTopic}
