@@ -89,7 +89,7 @@ div.forum-rate ul { padding:0; }
 .sv-posts_block-rnd_corners span.sv-bl { left:10px; }
 .sv-posts_block-rnd_corners span.sv-br { right:10px; }
 .sv-forum_header-fast_answer { margin:40px 0 0 0; padding-top:5px; }
-.sv-fast_answer { margin :-5px 10px -5px 10px; padding :5px 6px 10px 6px; border :1px solid #d6dbcf; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; font-size :12px; line-height :1.3; }
+.sv-fast_answer { margin :-5px 10px -5px 10px; padding :5px 6px 10px 6px; border :1px solid #d6dbcf; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; font-size :12px; line-height :1.3; overflow: hidden; }
 .sv-fast_answer .sv-smiles { float :left; width :170px; }
 table.smiles-list img { cursor:pointer; }
 table.smiles-list { width:170px; text-align:center; padding:5px 15px 10px 15px !important; vertical-align:middle}
