@@ -33,27 +33,28 @@ ul.sv-top_menu li img { float: left; margin :-5px 5px 0 0 }
 
 /* ~~~~ forum-body (start) ~~~~ */
 /* ~~~~ ---- forum_header (start) ~~~~ */
-.sv-forum_header { height :43px; padding :0 350px 0 0; margin :0 0 0 0; position :relative; z-index :2; line-height :43px; color :#ffffd9 !important; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; }
-.sv-forum_header h2 { color :#ffffd9; line-height :42px; }
-.sv-wiki-header { padding:0 231px 0 0; }
-.sv-forum_header .sv-left_bg { height :43px; background :url(../images/panel.png) no-repeat; margin :0 0 -5px 0; }
-.sv-forum_header .sv-right_bg { float :right; margin :-38px -350px -5px 0; height :43px; width :350px; background :url(../images/panel.png) no-repeat right; font-family :Arial,Helvetica,sans-serif; font-size :10px; }
-.sv-wiki-header .sv-right_bg { width:231px; margin:-38px -231px -5px 0; }
-.sv-forum_header h2 { font-weight :normal; font-size :18px; margin :0 0 0 20px; overflow :hidden; height :43px; }
-.sv-forum_header .sv-last_msg { float :left; width :137px; padding :0 25px 0 0; text-align :right; }
-.sv-forum_header .sv-answers { float :left; width :70px; text-align :center; }
-.sv-forum_header .sv-views { float :left; width :106px; text-align :center; }
+.sv-forum_header { height: 43px; padding :0 350px 0 0; margin :0 0 0 0; position :relative; z-index :2; line-height :43px; color :#ffffd9 !important; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif }
+.sv-forum_header h2 { color: #FFFFD9; line-height: 42px }
+.sv-forum_header h2 a { color: #FFFFD9; text-decoration: none }
+.sv-wiki-header { padding: 0 231px 0 0 }
+.sv-forum_header .sv-left_bg { height: 43px; background: url(../images/panel.png) no-repeat; margin: 0 0 -5px 0 }
+.sv-forum_header .sv-right_bg { float: right; margin: -38px -350px -5px 0; height: 43px; width: 350px; background: url(../images/panel.png) no-repeat right; font-family: Arial,Helvetica,sans-serif; font-size: 10px }
+.sv-wiki-header .sv-right_bg { width: 231px; margin: -38px -231px -5px 0; }
+.sv-forum_header h2 { font-weight: normal; font-size: 18px; margin: 0 0 0 20px; overflow: hidden; height :43px }
+.sv-forum_header .sv-last_msg { float: left; width: 137px; padding: 0 25px 0 0; text-align: right }
+.sv-forum_header .sv-answers { float: left; width: 70px; text-align: center }
+.sv-forum_header .sv-views { float: left; width: 106px; text-align: center }
 /* ~~~~ ---- forum_header (end) ~~~~ */
-.sv-table_container { padding:0 9px; }
-table.sv-forum_body { width :100%; margin :-5px 0 -5px 0; border-collapse :collapse; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; text-align :left; }
-table.sv-forum_body tr td { border:1px solid #d6dbcf}
-table.sv-forum_body tr td.sv-icon_col { width :70px; background :center no-repeat; border-right :none; text-align:center; vertical-align:middle; }
-table.sv-forum_body tr td.sv-main_col { padding :5px 0 7px 0; border-left :none; border-right :none; }
-table.sv-wiki-body tr td.sv-main_col { border:1px solid #d6dbcf; padding-left:10px; }
-table.sv-forum_body tr td.sv-main_col h3 { font-size :16px; font-weight :100; margin-bottom :3px; }
-table.sv-wiki-body tr td.sv-main_col h3 { margin:1px 0; }
+.sv-table_container { padding: 0 9px; }
+table.sv-forum_body { width: 100%; margin: -5px 0 -5px 0; border-collapse: collapse; font-family: Verdana,Geneva,Arial,Helvetica,sans-serif; text-align: left }
+table.sv-forum_body tr td { border: 1px solid #d6dbcf }
+table.sv-forum_body tr td.sv-icon_col { width: 70px; background: center no-repeat; border-right :none; text-align: center; vertical-align: middle }
+table.sv-forum_body tr td.sv-main_col { padding: 5px 0 7px 0; border-left: none; border-right: none }
+table.sv-wiki-body tr td.sv-main_col { border: 1px solid #d6dbcf; padding-left: 10px }
+table.sv-forum_body tr td.sv-main_col h3 { font-size: 16px; font-weight: 100; margin-bottom: 3px; }
+table.sv-wiki-body tr td.sv-main_col h3 { margin: 1px 0 }
 table.sv-forum_body tr td.sv-main_col p.sv-details,
-table.sv-forum_body tr td.sv-main_col .sv-sections { margin :2px 0; font-family :Arial,Helvetica,sans-serif; font-size :10px; }
+table.sv-forum_body tr td.sv-main_col .sv-sections { margin: 2px 0; font-family: Arial,Helvetica,sans-serif; font-size: 10px }
 table.sv-forum_body tr td.sv-main_col .sv-sections .strong { font-weight:bold; }
 table.sv-forum_body tr td.sv-main_col .sv-sections ul,
 table.sv-forum_body tr td.sv-main_col .sv-sections li { display:inline; }

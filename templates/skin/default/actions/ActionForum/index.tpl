@@ -36,11 +36,6 @@
 	</div>
 	{/if}
 
-	<div class="sv-forum_stats right">
-		<span class="sv-small">lsBoard by <span class="sv-count"><a href="http://artemeff.ru">artemeff</a></span></span>
-		<span class="sv-small">sources on <a href="https://github.com/artemeff/forum">github</a></span>
-	</div>
-
 	<div class="sv-forum_stats">
 		<h2>{$aLang.forum_stat}</h2>
 		<div class="sv-topics">
@@ -49,6 +44,7 @@
 		</div>
 	</div>
 
+	{hook run='forum_copyring'}
 </div>
 
 {include file='footer.tpl'}

@@ -29,7 +29,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 * Хлебные крошки
 	 */
-	protected $aBreadcumbs=array();
+	protected $aBreadcrumbs=array();
 	/**
 	 * Заголовки
 	 */
@@ -54,6 +54,15 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 * Меню
 		 */
 		$this->Viewer_AddMenu('forum',$this->getTemplatePathPlugin().'menu.forum.tpl');
+		/**
+		 * Подключаем CSS
+		 */
+		$this->Viewer_AppendStyle($this->getTemplatePathPlugin().'css/inner.css');
+		$this->Viewer_AppendStyle($this->getTemplatePathPlugin().'css/style.css');
+		/**
+		 * Подключаем JS
+		 */
+		$this->Viewer_AppendScript($this->getTemplatePathPlugin().'js/forum.js');
 		/**
 		 * Заголовок
 		 */
@@ -171,7 +180,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Хлебные крошки
 		 */
-		$this->_breadcumbsCreate($oForum);
+		$this->_breadcrumbsCreate($oForum);
 		/**
 		 * Устанавливаем шаблон вывода
 		 */
@@ -243,8 +252,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Хлебные крошки
 		 */
-		$this->_breadcumbsCreate($oTopic,true);
-		$this->_breadcumbsCreate($oForum,false);
+		$this->_breadcrumbsCreate($oTopic,true);
+		$this->_breadcrumbsCreate($oForum,false);
 		/**
 		 * Задаем шаблон
 		 */
@@ -280,7 +289,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Хлебные крошки
 		 */
-		$this->_breadcumbsAdd($this->Lang_Get('forum_not_reading'),Router::GetPath('forum').'unread/');
+		$this->_breadcrumbsAdd($this->Lang_Get('forum_not_reading'),Router::GetPath('forum').'unread/');
 		/**
 		 * Заголовки
 		 */
@@ -325,7 +334,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Хлебные крошки
 		 */
-		$this->_breadcumbsCreate($oForum);
+		$this->_breadcrumbsCreate($oForum);
 		/**
 		 * Заголовки
 		 */
@@ -477,7 +486,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Хлебные крошки
 		 */
-		$this->_breadcumbsCreate($oForum);
+		$this->_breadcrumbsCreate($oForum);
 		/**
 		 * Заголовки
 		 */
@@ -683,6 +692,11 @@ class PluginForum_ActionForum extends ActionPlugin {
 		$this->sMenuItemSelect='admin';
 
 		/**
+		 * Подключаем JS
+		 */
+		$this->Viewer_AppendScript($this->getTemplatePathPlugin().'js/admin.js');
+
+		/**
 		 * Раздел админки
 		 */
 		switch ($this->GetParam(0)) {
@@ -788,24 +802,24 @@ class PluginForum_ActionForum extends ActionPlugin {
 	/**
 	 * Хлебные крошки для объектов (форум\топик\пост)
 	 */
-	private function _breadcumbsCreate($oItem,$bClear=true) {
+	private function _breadcrumbsCreate($oItem,$bClear=true) {
 		if (!($oItem instanceof EntityORM)) return;
 
-		if ($bClear) $this->aBreadcumbs=array();
+		if ($bClear) $this->aBreadcrumbs=array();
 
-		$this->aBreadcumbs[]=array('title'=>$oItem->getTitle(),'url'=>$oItem->getUrlFull(),'obj'=>$oItem);
+		$this->aBreadcrumbs[]=array('title'=>$oItem->getTitle(),'url'=>$oItem->getUrlFull(),'obj'=>$oItem);
 
 		if ($oItem->getParentId() && $oParent=$oItem->getParent()) {
-			$this->_breadcumbsCreate($oParent,false);
+			$this->_breadcrumbsCreate($oParent,false);
 		}
 	}
 	/**
 	 * Хлебные крошки для всего остального
 	 */
-	private function _breadcumbsAdd($sTitle,$sUrl,$bClear=false) {
-		if ($bClear) $this->aBreadcumbs=array();
+	private function _breadcrumbsAdd($sTitle,$sUrl,$bClear=false) {
+		if ($bClear) $this->aBreadcrumbs=array();
 
-		$this->aBreadcumbs[]=array('title'=>$sTitle,'url'=>$sUrl);
+		$this->aBreadcrumbs[]=array('title'=>$sTitle,'url'=>$sUrl);
 	}
 
 	/**
@@ -853,22 +867,22 @@ class PluginForum_ActionForum extends ActionPlugin {
 	 */
 	public function EventShutdown() {
 		/**
-		 * Titles. Before breadcumbs
+		 * Titles. Before breadcrumbs
 		 */
 		foreach ($this->aTitles['before'] as $sTitle) {
 			$this->Viewer_AddHtmlTitle($sTitle);
 		}
 		/**
-		 * Breadcumbs
+		 * Breadcrumbs
 		 */
-		if (!empty($this->aBreadcumbs)) {
-			$this->aBreadcumbs=array_reverse($this->aBreadcumbs);
-			foreach ($this->aBreadcumbs as $aItem) {
+		if (!empty($this->aBreadcrumbs)) {
+			$this->aBreadcrumbs=array_reverse($this->aBreadcrumbs);
+			foreach ($this->aBreadcrumbs as $aItem) {
 				$this->Viewer_AddHtmlTitle($aItem['title']);
 			}
 		}
 		/**
-		 * Titles. After breadcumbs
+		 * Titles. After breadcrumbs
 		 */
 		foreach ($this->aTitles['after'] as $sTitle) {
 			$this->Viewer_AddHtmlTitle($sTitle);
@@ -877,7 +891,7 @@ class PluginForum_ActionForum extends ActionPlugin {
 		 * Загружаем в шаблон необходимые переменные
 		 */
         $this->Viewer_Assign('menu','forum');
-		$this->Viewer_Assign('aBreadcumbs',$this->aBreadcumbs);
+		$this->Viewer_Assign('aBreadcrumbs',$this->aBreadcrumbs);
 		$this->Viewer_Assign('sMenuHeadItemSelect',$this->sMenuHeadItemSelect);
 		$this->Viewer_Assign('sMenuItemSelect',$this->sMenuItemSelect);
 		$this->Viewer_Assign('sMenuSubItemSelect',$this->sMenuSubItemSelect);

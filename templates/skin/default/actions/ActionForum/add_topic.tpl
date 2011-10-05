@@ -53,7 +53,7 @@
 	</div>
 
 	<div class="forum-nav">
-		<h2>{include file="$sTemplatePathPlugin/breadcumbs.tpl"}</h2>
+		<h2>{include file="$sTemplatePathPlugin/breadcrumbs.tpl"}</h2>
 	</div>
 
 	{include file="$sTemplatePathPlugin/switcher_top.tpl"}

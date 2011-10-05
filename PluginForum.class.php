@@ -11,13 +11,13 @@ if (!class_exists('Plugin')) {
 }
 
 class PluginForum extends Plugin {
-	protected $sTemplatesUrl = "";
-	
 	protected $aInherits=array(
 		'module' => array('ModuleUser'=>'PluginForum_ModuleUser')
 	);
 
-
+	/**
+	 * Активация плагина
+	 */
 	public function Activate() {
 		if (!$this->isTableExists('prefix_forum_list')) {
 			$this->ExportSQL(dirname(__FILE__).'/sql/install.sql');
@@ -25,30 +25,21 @@ class PluginForum extends Plugin {
 		return true;
 	}
 
-
+	/**
+	 * Деактивация плагина
+	 */
 	public function Deactivate() {
-		//if (Config::Get('plugin.forum.deactivate.delete')) {
+		if (Config::Get('plugin.forum.deactivate.delete')) {
 			$this->ExportSQL(dirname(__FILE__).'/sql/deinstall.sql');
-		//}
+		}
 		return true;
 	}
 
+	/**
+	 * Инициализация плагина
+	 */
 	public function Init() {
-		$sTemplatesUrl = Plugin::GetTemplatePath('PluginForum');
-		Config::Set('head.rules.forum', array(
-			'path'=>'___path.root.web___/',
-			'css' => array(
-				'include' => array(
-					Plugin::GetTemplateWebPath(__CLASS__)."css/style.css",
-					Plugin::GetTemplateWebPath(__CLASS__)."css/inner.css",
-				)
-			),
-			'js' => array(
-				'include' => array(
-					Plugin::GetTemplateWebPath(__CLASS__)."js/posts.js"
-				)
-			)
-		));
+		return true;
 	}
 
 }

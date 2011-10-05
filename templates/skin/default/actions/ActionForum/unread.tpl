@@ -3,7 +3,7 @@
 <div id="forum">
 
 	<div class="forum-nav">
-		<h2>{include file="$sTemplatePathPlugin/breadcumbs.tpl"}</h2>
+		<h2>{include file="$sTemplatePathPlugin/breadcrumbs.tpl"}</h2>
 	</div>
 
 	<div class="sv-forum-block">

@@ -2,20 +2,21 @@
 <plugin>
 	<name>
 		<lang name="default">Forum</lang>
+		<lang name="russian">Форум</lang>
 	</name>
 	<author>
-		<lang name="default">artemeff</lang>
+		<lang name="default">artemeff, Chiffa</lang>
 	</author>
 	<homepage>http://artemeff.ru</homepage>
-	<version>0.2b</version>
+	<version>0.3</version>
 	<settings>{forum}admin/</settings>
 	<requires>
-		<livestreet>0.5</livestreet>
+		<livestreet>0.5.1</livestreet>
 		<plugins>
 		</plugins>
 	</requires>
 	<description>
-		<lang name="default">forum</lang>
-		<lang name="russian">форум</lang>
+		<lang name="default">Forum</lang>
+		<lang name="russian">Форум</lang>
 	</description>
 </plugin>
