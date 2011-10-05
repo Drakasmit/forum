@@ -1,5 +1,5 @@
 {if $aPaging and $aPaging.iCountPage>1}
-<div class="sv-go_to_page">
+<span class="sv-go_to_page">
 [
 	{$aLang.forum_on_page}:
 	{if $aPaging.iCurrentPage>1}
@@ -16,5 +16,5 @@
 	<a href="{$aPaging.sBaseUrl}/page{$aPaging.iCountPage}">>> {$aPaging.iCountPage}</a>
 	{/if}
 ]
-</div>
+</span>
 {/if}

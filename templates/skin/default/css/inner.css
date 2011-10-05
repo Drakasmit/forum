@@ -1,3 +1,19 @@
+.forum { margin: 0px }
+
+.switcher { float: left }
+
+.forum-nav h2 { font-weight: 500; font-size: 24px }
+.forum-nav span { background: url(../images/rarr.gif) no-repeat scroll right 16px transparent; color: #4E96A8; padding: 0 22px 0 0 }
+
+a.bbl { background: url(../images/forums-icons.png) no-repeat; background-position: 0 -58px; display: block; width: 31px; height: 29px; margin: auto }
+a.bbl.info { background-position: -31px -58px }
+a.bbl.close { background-position: 0 -87px }
+a.bbl.info.close { background-position: -31px -87px }
+a.bbl.new { background-position: 0 0 }
+a.bbl.new.info { background-position: -31px 0 }
+a.bbl.new.close { background-position: 0 -29px }
+a.bbl.new.info.close { background-position: -31px -29px }
+
 /* FORUM_SECTION page (begin) */
 textarea#post-content, textarea#topic_text { background: #f7f8f9; }
 .sv-forum_header .sv-forum_list_link { font-family :Arial,Helvetica,sans-serif; font-size :14px; color :#fff; line-height :40px; float :left; margin :0 5px 0 0; }
@@ -20,15 +36,15 @@ table.sv-forum_body-section_page tr td.sv-last_msg img, .sv-main_col img { verti
 .sv-wiki-header .sv-weight { float :left; width :60px; text-align :center; }
 .sv-forum_header-section_page .sv-last_msg { float :left; width :160px; padding :0; text-align :center; }
 .sv-wiki-section-header .sv-weight { width:40px; }
-table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page { font-size:9px; cursor: default; }
-table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a { text-decoration:none}
-table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a:hover { text-decoration:underline}
-.sv-forum_nav { float :right; font-family :Arial,Helvetica,sans-serif; font-size :24px; height :30px; padding :10px 0 0 0; min-width:100px;}
+table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page { font-size: 9px; cursor: default }
+table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a { text-decoration:none }
+table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a:hover { text-decoration:underline }
+.sv-forum_nav { float: right; font-family: Arial,Helvetica,sans-serif; font-size :24px; height :30px; padding :10px 0 0 0; min-width:100px;}
 .sv-forum_nav .sv-larr,
 .sv-forum_nav .sv-rarr,
 .sv-forum_nav .sv-back,
-.sv-forum_nav .sv-forward { float:left; display:inline; padding:0 5px; }
-.sv-forum_nav .sv-numbers { float :left; font-size :12px; vertical-align :text-top; line-height :30px; padding :0 3px; }
+.sv-forum_nav .sv-forward { float: left; display: inline; padding:0 5px; }
+.sv-forum_nav .sv-numbers { float: left; font-size :12px; vertical-align :text-top; line-height :30px; padding :0 3px; }
 .sv-forum_nav .sv-numbers a { padding :1px 4px 2px 4px; }
 .sv-forum_nav .sv-numbers .sv-here { background :#000; text-decoration :none; color :#fff; font-weight :bold; }
 .sv-forum_nav .sv-larr,
@@ -43,7 +59,15 @@ table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a:hover { text-decoratio
 .sv-rnd_corners span.sv-br { top:-3px; right:9px; background-position :-8px -8px; }
 .sv-rnd_corners span.sv-tl { top:-5px; left:9px; background-position :0 0; }
 .sv-rnd_corners span.sv-tr { top:-5px; right:9px; background-position :-8px 0px; }
-.sv-bottom_menu { white-space:nowrap}
+ul.sv-top_menu,
+ul.sv-top_menu li { margin: 0; padding: 0; list-style: none !important; }
+ul.sv-top_menu { float: right; margin: 15px; display: inline; height: 35px; font-family: Arial,Helvetica,sans-serif; font-size: 11px }
+ul.sv-top_menu li { float: left; height: 25px; padding: 0 16px; line-height: 25px }
+ul.sv-top_menu li.sv-delim { width: 1px; height: 35px; padding: 0; margin: 0; font-size: 1px; background: url(../images/dotted.png) repeat-y }
+ul.sv-top_menu li a { color: #000 }
+ul.sv-top_menu li a:hover { color: #1083AA }
+ul.sv-top_menu li img { float: left; margin :-5px 5px 0 0 }
+.sv-bottom_menu { white-space: nowrap }
 ul.sv-bottom_menu,
 ul.sv-bottom_menu li { margin: 0; padding: 0; list-style: none !important }
 ul.sv-bottom_menu { float: right; margin: 10px 0 14px 15px; height: 25px; font-family: Arial,Helvetica,sans-serif; font-size: 11px }
@@ -51,7 +75,7 @@ ul.sv-bottom_menu li { float: left; height: 25px; padding: 0 16px; line-height: 
 ul.sv-bottom_menu li a { color: #000 }
 ul.sv-bottom_menu li a:hover { color: #1083aa }
 ul.sv-bottom_menu li.sv-delim { width: 1px; height: 25px; padding: 0; margin: 0; font-size: 1px; background: url(../images/sv-dotted.png) repeat-y }
-ul.sv-bottom_menu li img { float :left; margin :-5px 5px 0 0; }
+ul.sv-bottom_menu li img { float: left; margin :-5px 5px 0 0; }
 /* FORUM_SECTION page (end) */
 /* FORUM_SUBJECT page (begin) */
 .sv-forum_header-subject_page { padding-right:250px; }

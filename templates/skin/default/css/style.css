@@ -1,35 +1,7 @@
-.forum { margin: 0px }
-#content { background: transparent; }
 
-.switcher { float: left }
-
-.forum-nav h2 { font-weight: 500; font-size: 24px }
-.forum-nav span { background: url(../images/rarr.gif) no-repeat scroll right 16px transparent; color: #4E96A8; padding: 0 22px 0 0 }
 a.mrkread { background: url(../images/sv-icon_file-fresh.png) no-repeat; display: block; width: 27px; height: 35px; margin: auto }
-
-a.bbl { background: url(../images/forums-icons.png) no-repeat; background-position: 0 -58px; display: block; width: 31px; height: 29px; margin: auto }
-a.bbl.info { background-position: -31px -58px }
-a.bbl.close { background-position: 0 -87px }
-a.bbl.info.close { background-position: -31px -87px }
-a.bbl.new { background-position: 0 0 }
-a.bbl.new.info { background-position: -31px 0 }
-a.bbl.new.close { background-position: 0 -29px }
-a.bbl.new.info.close { background-position: -31px -29px }
-
 a.newest { background: url(../images/note.png) no-repeat left center; padding-left: 17px }
-
 a.topbutton { background: url(../images/new-topic.png) no-repeat left center; display: block; height: 35px; padding-left: 35px; line-height: 32px }
-
-/* ~~~~ bottom-menu (begin) ~~~~ */
-ul.sv-top_menu,
-ul.sv-top_menu li { margin: 0; padding: 0; list-style: none !important; }
-ul.sv-top_menu { float: right; margin: 15px; display: inline; height: 35px; font-family: Arial,Helvetica,sans-serif; font-size: 11px }
-ul.sv-top_menu li { float: left; height: 25px; padding: 0 16px; line-height: 25px }
-ul.sv-top_menu li.sv-delim { width: 1px; height: 35px; padding: 0; margin: 0; font-size: 1px; background: url(../images/dotted.png) repeat-y }
-ul.sv-top_menu li a { color: #000 }
-ul.sv-top_menu li a:hover { color: #1083AA }
-ul.sv-top_menu li img { float: left; margin :-5px 5px 0 0 }
-/* ~~~~ bottom-menu (end) ~~~~ */
 
 /* ~~~~ forum-body (start) ~~~~ */
 /* ~~~~ ---- forum_header (start) ~~~~ */
