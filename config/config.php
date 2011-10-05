@@ -22,6 +22,25 @@ $config['post_per_page']		= 10;
  */
 $config['post_max_length']		= 5000;
 
+
+/**
+ * Активация плагина
+ *
+ */
+$config['activate'] = array();
+
+/**
+ * Деактивация плагина
+ *
+ */
+$config['deactivate'] = array();
+
+/**
+ * Удаление таблиц при деактивации
+ */
+$config['deactivate']['delete'] = false;
+
+
 /**
  * Настройки роутера
  */
