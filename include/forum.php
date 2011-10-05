@@ -10,7 +10,7 @@
 */
 
 /**
- * Строит дерево форумов
+ * РЎС‚СЂРѕРёС‚ РґРµСЂРµРІРѕ С„РѕСЂСѓРјРѕРІ
  */
 if (!function_exists('create_forum_list')) {
 	function create_forum_list($aForums=array(),$aList=array(),$sDepthGuide="") {

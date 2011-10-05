@@ -10,18 +10,17 @@
 	<div class="sv-forum-block">
 		<div class="sv-forum_header sv-forum_header-subject_page">
 			<div class="sv-left_bg">
-				<h2>О плагине</h2>
+				<h2>{$aLang.forum_plugin_about}</h2>
 			</div>
 			<div class="sv-right_bg"></div>
 		</div>
 		
 		<div class="sv-fast_answer">
 			<div class="sv-fast_answer_form">
-				Данный плагин имеет открытый код и свободную форму распространения по лиценции GPLv2.
+				{$aLang.forum_plugin_about_text}
 			</div>
 			<div class="clear"></div>
 		</div>
-
 	</div>
 
 </div>

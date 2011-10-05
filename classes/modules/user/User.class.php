@@ -9,14 +9,14 @@
 class PluginForum_ModuleUser extends PluginForum_Inherit_ModuleUser {
 
 	/* ПЕРЕПИСАТЬ! */
-	/*public function GetUsersAdditionalData($aUserId,$aAllowData=array('vote','session','friend')) {
-		$aUsers=parent::GetUsersAdditionalData($aUserId,$aAllowData);
+	/*public function GetUsersAdditionalData($aUserId,$aAllowData) {
+		$aUsers=parent::GetUsersAdditionalData($aUserId,&$aAllowData);
 		//Добавляем данные к результату
 		foreach ($aUsers as $oUser) {
-			$oUser->setCountPosts($this->PluginForum_ModuleUser_GetCountPosts($oUser->getId()));
-			$oUser->setCountTopics($this->PluginForum_ModuleUser_GetCountTopics($oUser->getId()));
-			$oUser->setCountArticles($this->PluginForum_ModuleUser_GetCountArticles($oUser->getId()));
-			$oUser->setCountComments($this->PluginForum_ModuleUser_GetCountComments($oUser->getId()));
+			$oUser->setCountPosts($this->GetCountPosts($oUser->getId()));
+			$oUser->setCountTopics($this->GetCountTopics($oUser->getId()));
+			$oUser->setCountArticles($this->GetCountArticles($oUser->getId()));
+			$oUser->setCountComments($this->GetCountComments($oUser->getId()));
 		}
 		return $aUsers;
 	}*/
@@ -28,11 +28,11 @@ class PluginForum_ModuleUser extends PluginForum_Inherit_ModuleUser {
 	public function GetCountTopics($iUserId) {
 		return Engine::GetMapper('PluginForum_ModuleUser')->GetCountTopics($iUserId);
 	}
-	
+
 	public function GetCountArticles($iUserId) {
 		return Engine::GetMapper('PluginForum_ModuleUser')->GetCountArticles($iUserId);
 	}
-	
+
 	public function GetCountComments($iUserId) {
 		return Engine::GetMapper('PluginForum_ModuleUser')->GetCountComments($iUserId);
 	}

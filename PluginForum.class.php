@@ -16,7 +16,7 @@ class PluginForum extends Plugin {
 	);
 
 	/**
-	 * Активация плагина
+	 * РђРєС‚РёРІР°С†РёСЏ РїР»Р°РіРёРЅР°
 	 */
 	public function Activate() {
 		if (!$this->isTableExists('prefix_forum_list')) {
@@ -26,7 +26,7 @@ class PluginForum extends Plugin {
 	}
 
 	/**
-	 * Деактивация плагина
+	 * Р”РµР°РєС‚РёРІР°С†РёСЏ РїР»Р°РіРёРЅР°
 	 */
 	public function Deactivate() {
 		if (Config::Get('plugin.forum.deactivate.delete')) {
@@ -36,7 +36,7 @@ class PluginForum extends Plugin {
 	}
 
 	/**
-	 * Инициализация плагина
+	 * РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїР»Р°РіРёРЅР°
 	 */
 	public function Init() {
 		return true;

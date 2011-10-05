@@ -39,8 +39,8 @@
 	<div class="sv-forum_stats">
 		<h2>{$aLang.forum_stat}</h2>
 		<div class="sv-topics">
-			<span class="sv-now">Всего топиков/сообщений &mdash; <span class="sv-count">{$aForumStat.count_all_topics}/{$aForumStat.count_all_posts}</span></span>
-			<span class="sv-small">Сообщений за сегодня &mdash; {$aForumStat.count_today_posts}</span>
+			<span class="sv-now">{$aLang.forum_stat_all} &mdash; <span class="sv-count">{$aForumStat.count_all_topics}/{$aForumStat.count_all_posts}</span></span>
+			<span class="sv-small">{$aLang.forum_stat_post_today} &mdash; {$aForumStat.count_today_posts}</span>
 		</div>
 	</div>
 

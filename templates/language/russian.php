@@ -14,6 +14,9 @@ return array(
 	'forum_on_page' => 'На страницу',
 
 	'forum_stat' => 'Статистика форума',
+	'forum_stat_all' => 'Всего топиков/сообщений',
+	'forum_stat_post_today' => 'Сообщений за сегодня',
+
 	'forum_topic' => 'Тема',
 	'forum_post' => 'Сообщение',
 
@@ -69,6 +72,10 @@ return array(
 	'forum_not_reading' => 'Новые темы',
 
 	'forum_markread_all' => 'Отметить все темы как прочитанные',
+
+
+	'forum_plugin_about' => 'О плагине',
+	'forum_plugin_about_text' => 'Данный плагин имеет открытый код и свободную форму распространения по лиценции GPLv2.',
 
 	'by' => 'от',
 	'nothing' => 'Сюда еще никто не успел написать',

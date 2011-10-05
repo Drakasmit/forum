@@ -57,8 +57,8 @@ class PluginForum_ActionForum extends ActionPlugin {
 		/**
 		 * Подключаем CSS
 		 */
-		$this->Viewer_AppendStyle($this->getTemplatePathPlugin().'css/inner.css');
 		$this->Viewer_AppendStyle($this->getTemplatePathPlugin().'css/style.css');
+		$this->Viewer_AppendStyle($this->getTemplatePathPlugin().'css/inner.css');
 		/**
 		 * Подключаем JS
 		 */
