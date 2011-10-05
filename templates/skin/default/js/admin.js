@@ -1,64 +1,35 @@
-var js_admin = {
-    "info_phpinfo": {
-        action: function(n, close) {
-            var el=$('section_'+n);
-            var cl=$('close_'+n);
-            if (el) {
-                if (typeof(close)=="undefined") {
-                    close = !sections[n];
-                }
-                if (!close) {
-                    el.style.display='';
-                    sections[''+n]=0;
-                    if (cl) cl.set('html', '[&nbsp;-&nbsp;]');
-                    this.save();
-                } else {
-                    el.style.display='none';
-                    sections[''+n]=1;
-                    if (cl) cl.set('html', '[&nbsp;+&nbsp;]');
-                    this.save();
-                }
-            }
-        },
-        save: function() {
-            var s = JSON.encode(sections);
-            Cookie.write('adm_phpinfo_sec', s, {
-                duration: 365
-            });
-        },
-        load: function() {
-            var s = Cookie.read('adm_phpinfo_sec');
-            if (s) {
-                var a = JSON.decode(s);
-            }
-            if (is_object(a)) {
-                return a;
-            }
-            else {
-                return {};
+/*---------------------------------------------------------------------------
+* @Description: JS code for Forum
+* @Version: 0.1
+* @Author: Chiffa
+* @LiveStreet Version: 0.5.1
+* @File Name: admin.js
+* @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+*----------------------------------------------------------------------------
+*/
+
+var ls = ls || {};
+
+ls.forum = ls.forum || {};
+
+ls.forum.admin = {
+
+	deleteForum:function(idForum,sTitle){
+		if (!confirm(ls.lang.get('forum_delete_confirm',{'title':sTitle}) + '?')) return false;
+ 
+		var tree=$('forums-tree');
+		if (!tree) return;
+
+		ls.ajax(aRouter['forum']+'ajax/deleteforum/',{'idForum':idForum},function(data){
+			if (data.bStateError) {
+				ls.msg.error(data.sMsgTitle,data.sMsg);
+			} else {
+				$('#forum-'+idForum).remove();
+				ls.msg.notice(data.sMsgTitle,data.sMsg);
 			}
-		}
-	},
-	"ajax_url": function(url, query) {
-		var request_url = DIR_WEB_ROOT+url;
-		if (query)
-			request_url += '?'+query+'&security_ls_key='+LIVESTREET_SECURITY_KEY;
-		else
-			request_url += '?security_ls_key='+LIVESTREET_SECURITY_KEY;
-		return request_url;
+		});
+
+		return false;
 	}
-}
 
-function AdminCategoryDelete(msg, name, cat_id) {
-    if (name) msg = msg.replace('%%category%%', name);
-    if (confirm(msg)) {
-        var url = js_admin.ajax_url('/forum/admin/categories/delete/', 'cat_id='+cat_id);
-        document.location.href = url;
-        return true;
-    }
-    return false;
-}
-
-function AdminForumAdd(cat_id,obj) {
-	$('#forum_add').insertBefore(obj).show();
 }

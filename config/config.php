@@ -7,17 +7,25 @@
  *--------------------------------------------------------------------------------------*/
  
 $config=array();
- 
-$config['topics']['per_page']=10; // Количество топиков на страницу
-$config['posts']['per_page']=20; // Количество топиков на страницу
 
+/**
+ * Количество топиков на страницу
+ */
+$config['topic_per_page']		= 20;
+/**
+ * Количество постов на страницу
+ */
+$config['post_per_page']		= 10;
+
+/**
+ * Максимальный размер поста в символах
+ */
+$config['post_max_length']		= 5000;
+
+/**
+ * Настройки роутера
+ */
 Config::Set('router.page.forum', 'PluginForum_ActionForum');
-
-$config['table']['forum_list'] = '___db.table.prefix___forum';
-$config['table']['forum_category'] = '___db.table.prefix___forum_category';
-$config['table']['forum_topics'] = '___db.table.prefix___forum_topic';
-$config['table']['forum_posts'] = '___db.table.prefix___forum_post';
-$config['table']['forum_read'] = '___db.table.prefix___forum_read';
 
 return $config;
 ?>

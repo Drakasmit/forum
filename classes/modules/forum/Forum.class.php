@@ -8,21 +8,18 @@
  
 class PluginForum_ModuleForum extends ModuleORM {
 	/**
-	 * Тип форума - категория (запрещено создание топиков)
-	 */
-	const FORUM_TYPE_CATEGORY	= 1;
-	/**
 	 * Тип форума - обычный
 	 */
-	const FORUM_TYPE_NORMAL		= 2;
+	const FORUM_TYPE_NORMAL		= 1;
 	/**
-	 * Тип форума - ссылка
+	 * Тип форума - категория (запрещено создание топиков)
 	 */
-	const FORUM_TYPE_LINK		= 3;
+	const FORUM_TYPE_CATEGORY	= 2;
+
 	/**
-	 * Тип форума - запаролен
+	 * Префикс подфорумов для дерева
 	 */
-	const FORUM_TYPE_PASSWORD	= 4;
+	const DEPTH_GUIDE			= '--';
 
 	/**
 	 * Инициализация модуля
@@ -32,7 +29,7 @@ class PluginForum_ModuleForum extends ModuleORM {
 	}
 
 	/**
-	 *	Генерация URL
+	 * Генерация URL
 	 */
 	public function GenerateUrl($sUrl) {
 		$sUrl=mb_strtolower($sUrl);

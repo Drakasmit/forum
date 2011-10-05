@@ -1,32 +1,36 @@
-#forum { margin: 0 40px; }
+.forum { margin: 0px }
 #content { background: transparent; }
-.forum-nav h2 { font-weight: 500; font-size: 24px; }
-.forum-nav span { background: url("../images/rarr.gif") no-repeat scroll right 16px transparent; color: #4E96A8; padding: 0 22px 0 0; }
-a.mrkread { background: url(../images/sv-icon_file-fresh.png) no-repeat; display: block; width: 27px; height: 35px; margin: auto; }
 
-a.bbl { background: url(../images/forums-icons.png) no-repeat; background-position: 0 -58px; display: block; width: 31px; height: 29px; margin: auto; }
-a.bbl.info { background-position: -31px -58px; }
-a.bbl.close { background-position: 0 -87px; }
-a.bbl.info.close { background-position: -31px -87px; }
-a.bbl.new { background-position: 0 0; }
-a.bbl.new.info { background-position: -31px 0; }
-a.bbl.new.close { background-position: 0 -29px; }
-a.bbl.new.info.close { background-position: -31px -29px; }
+.switcher { float: left }
 
-a.newest { background: url(../images/note.png) no-repeat left center; padding-left: 17px; }
+.forum-nav h2 { font-weight: 500; font-size: 24px }
+.forum-nav span { background: url(../images/rarr.gif) no-repeat scroll right 16px transparent; color: #4E96A8; padding: 0 22px 0 0 }
+a.mrkread { background: url(../images/sv-icon_file-fresh.png) no-repeat; display: block; width: 27px; height: 35px; margin: auto }
 
-a..topbutton { background: url(../images/new-topic.png) no-repeat left center; display: block; height: 35px; padding-left: 35px; line-height: 32px; }
+a.bbl { background: url(../images/forums-icons.png) no-repeat; background-position: 0 -58px; display: block; width: 31px; height: 29px; margin: auto }
+a.bbl.info { background-position: -31px -58px }
+a.bbl.close { background-position: 0 -87px }
+a.bbl.info.close { background-position: -31px -87px }
+a.bbl.new { background-position: 0 0 }
+a.bbl.new.info { background-position: -31px 0 }
+a.bbl.new.close { background-position: 0 -29px }
+a.bbl.new.info.close { background-position: -31px -29px }
 
-/* ~~~~ top-menu (begin) ~~~~ */
-ul.sv-tom_menu,
-ul.sv-tom_menu li { margin :0; padding :0; list-style :none !important; }
-ul.sv-tom_menu { float :left; margin: 15px; display :inline; height: 35px; font-family :Arial,Helvetica,sans-serif; font-size :11px; }
-ul.sv-tom_menu li { float :left; height :25px; padding :0 16px; line-height :25px; }
-ul.sv-tom_menu li.sv-delim { width :1px; height :35px; padding :0; margin :0; font-size :1px; background :url(../images/dotted.png) repeat-y; }
-ul.sv-tom_menu li a { color:#000; }
-ul.sv-tom_menu li a:hover { color:#1083aa; }
-ul.sv-tom_menu li img { float :left; margin :-5px 5px 0 0; }
-/* ~~~~ top-menu (end) ~~~~ */
+a.newest { background: url(../images/note.png) no-repeat left center; padding-left: 17px }
+
+a.topbutton { background: url(../images/new-topic.png) no-repeat left center; display: block; height: 35px; padding-left: 35px; line-height: 32px }
+
+/* ~~~~ bottom-menu (begin) ~~~~ */
+ul.sv-top_menu,
+ul.sv-top_menu li { margin: 0; padding: 0; list-style: none !important; }
+ul.sv-top_menu { float: right; margin: 15px; display: inline; height: 35px; font-family: Arial,Helvetica,sans-serif; font-size: 11px }
+ul.sv-top_menu li { float: left; height: 25px; padding: 0 16px; line-height: 25px }
+ul.sv-top_menu li.sv-delim { width: 1px; height: 35px; padding: 0; margin: 0; font-size: 1px; background: url(../images/dotted.png) repeat-y }
+ul.sv-top_menu li a { color: #000 }
+ul.sv-top_menu li a:hover { color: #1083AA }
+ul.sv-top_menu li img { float: left; margin :-5px 5px 0 0 }
+/* ~~~~ bottom-menu (end) ~~~~ */
+
 /* ~~~~ forum-body (start) ~~~~ */
 /* ~~~~ ---- forum_header (start) ~~~~ */
 .sv-forum_header { height :43px; padding :0 350px 0 0; margin :0 0 0 0; position :relative; z-index :2; line-height :43px; color :#ffffd9 !important; font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; }
@@ -53,15 +57,15 @@ table.sv-forum_body tr td.sv-main_col .sv-sections { margin :2px 0; font-family 
 table.sv-forum_body tr td.sv-main_col .sv-sections .strong { font-weight:bold; }
 table.sv-forum_body tr td.sv-main_col .sv-sections ul,
 table.sv-forum_body tr td.sv-main_col .sv-sections li { display:inline; }
-table.sv-forum_body tr td.sv-last_msg { border-left :none; text-align :right; padding :0 25px 0 0; vertical-align:middle; }
-table.sv-forum_body tr td.sv-weight { border-left :none; text-align :center; vertical-align:middle; width:60px; }
-.sv-link_to_msg img { position:relative; _top:-11px}
-table.sv-forum_body tr td.sv-last_msg .sv-subj { font-weight :bold; font-size :11px; letter-spacing :1px; font-family :Tahoma,Verdana,Arial,Helvetica,sans-serif; }
+table.sv-forum_body tr td.sv-last_msg { border-left: none; text-align: right; padding: 0 25px 0 0; vertical-align: middle }
+table.sv-forum_body tr td.sv-weight { border-left: none; text-align: center; vertical-align: middle; width: 60px }
+.sv-link_to_msg { background: url(../images/sv-icon_link.png) no-repeat; display: inline-block; width: 16px; height: 9px; outline: none; _float: right }
+table.sv-forum_body tr td.sv-last_msg .sv-subj { font-weight: bold; font-size: 11px; letter-spacing: 1px; font-family: Tahoma,Verdana,Arial,Helvetica,sans-serif }
 table.sv-forum_body tr td.sv-last_msg .sv-author,
-table.sv-forum_body tr td.sv-last_msg .sv-date { font-size :11px; }
-table.sv-forum_body tr td.sv-answers { width :70px; font-family :Arial,Helvetica,sans-serif; font-size :14px; text-align :center; vertical-align:middle; }
-table.sv-forum_body tr td.sv-views { width :106px; font-family :Arial,Helvetica,sans-serif; font-size :14px; text-align :center; vertical-align:middle; }
-.sv-shadow { height :19px; margin :5px 15px -5px 15px; background :url(../images/shadow.png) no-repeat center top; }
+table.sv-forum_body tr td.sv-last_msg .sv-date { font-size: 11px; }
+table.sv-forum_body tr td.sv-answers { width: 70px; font-family :Arial,Helvetica,sans-serif; font-size: 14px; text-align: center; vertical-align: middle }
+table.sv-forum_body tr td.sv-views { width: 106px; font-family :Arial,Helvetica,sans-serif; font-size: 14px; text-align: center; vertical-align: middle }
+.sv-shadow { height: 19px; margin: 5px 15px -5px 15px; background: url(../images/shadow.png) no-repeat center top }
 /* ~~~~ forum-body (begin) ~~~~ */
 /* ~~~~ forum_stats (begin) ~~~~ */
 .sv-forum_stats { font-family :Verdana,Geneva,Arial,Helvetica,sans-serif; color :#323232; margin :30px 0 0 0; padding :0 20px; }

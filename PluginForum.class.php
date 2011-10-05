@@ -20,13 +20,16 @@ class PluginForum extends Plugin {
 
 	public function Activate() {
 		if (!$this->isTableExists('prefix_forum_list')) {
-			$this->ExportSQL(dirname(__FILE__).'/install.sql');
+			$this->ExportSQL(dirname(__FILE__).'/sql/install.sql');
 		}
 		return true;
 	}
 
 
-	public function Deactivate()	{
+	public function Deactivate() {
+		//if (Config::Get('plugin.forum.deactivate.delete')) {
+			$this->ExportSQL(dirname(__FILE__).'/sql/deinstall.sql');
+		//}
 		return true;
 	}
 

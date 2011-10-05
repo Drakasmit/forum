@@ -8,14 +8,24 @@
 
 class PluginForum_ModuleForum_EntityTopic extends EntityORM {
 	protected $aRelations = array(
-		'forum'=>array('belongs_to','PluginForum_ModuleForum_EntityForum','forum_id'),
 		'user'=>array('belongs_to','ModuleUser_EntityUser','user_id'),
+		'forum'=>array('belongs_to','PluginForum_ModuleForum_EntityForum','forum_id'),
 		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','last_post_id')
 	);
-	
-	public function getCountPosts() {
-		$aResult=$this->PluginForum_ModuleForum_GetPostItemsByTopicId($this->getId(), array('#page'=>array(1,1)));
-		return $aResult['count'];
+
+	public function getPaging() {
+		$oEngine=Engine::getInstance();
+		$oForum=$this->getForum();
+		$aPaging=$oEngine->Viewer_MakePaging(
+			$this->getCountPost(),
+			1,Config::Get('plugin.forum.post_per_page'),4,
+			Router::GetPath('forum')."topic/{$this->getId()}"
+		);
+		return $aPaging;
+	}
+
+	public function getUrlFull() {
+		return Router::GetPath('forum').'topic/'.$this->getId().'/';
 	}
 }
 ?>

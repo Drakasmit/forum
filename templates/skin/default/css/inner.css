@@ -45,12 +45,12 @@ table.sv-forum_body tr td.sv-main_col h3 .sv-go_to_page a:hover { text-decoratio
 .sv-rnd_corners span.sv-tr { top:-5px; right:9px; background-position :-8px 0px; }
 .sv-bottom_menu { white-space:nowrap}
 ul.sv-bottom_menu,
-ul.sv-bottom_menu li { margin :0; padding :0; list-style :none !important; }
-ul.sv-bottom_menu { float :left; margin :10px 0 14px 15px; height :25px; font-family :Arial,Helvetica,sans-serif; font-size :11px; }
-ul.sv-bottom_menu li { float :left; height :25px; padding :0 16px; line-height :25px; }
-ul.sv-bottom_menu li a { color:#000; }
-ul.sv-bottom_menu li a:hover { color:#1083aa; }
-ul.sv-bottom_menu li.sv-delim { width :1px; height :25px; padding :0; margin :0; font-size :1px; background :url(../images/sv-dotted.png) repeat-y; }
+ul.sv-bottom_menu li { margin: 0; padding: 0; list-style: none !important }
+ul.sv-bottom_menu { float: right; margin: 10px 0 14px 15px; height: 25px; font-family: Arial,Helvetica,sans-serif; font-size: 11px }
+ul.sv-bottom_menu li { float: left; height: 25px; padding: 0 16px; line-height: 25px }
+ul.sv-bottom_menu li a { color: #000 }
+ul.sv-bottom_menu li a:hover { color: #1083aa }
+ul.sv-bottom_menu li.sv-delim { width: 1px; height: 25px; padding: 0; margin: 0; font-size: 1px; background: url(../images/sv-dotted.png) repeat-y }
 ul.sv-bottom_menu li img { float :left; margin :-5px 5px 0 0; }
 /* FORUM_SECTION page (end) */
 /* FORUM_SUBJECT page (begin) */

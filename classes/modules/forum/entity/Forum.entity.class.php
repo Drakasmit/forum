@@ -13,16 +13,9 @@ class PluginForum_ModuleForum_EntityForum extends EntityORM {
 		'topic'=>array('belongs_to','PluginForum_ModuleForum_EntityTopic','last_topic_id'),
 		'post'=>array('belongs_to','PluginForum_ModuleForum_EntityPost','last_post_id'),
 	);
-	
-	public function getCountPosts() {
-		$aResult=$this->PluginForum_ModuleForum_GetPostItemsByForumId($this->getId(), array('#page'=>array(1,1)));
-		return $aResult['count'];
+
+	public function getUrlFull() {
+		return Router::GetPath('forum').($this->getUrl() ? $this->getUrl() : $this->getId()).'/';
 	}
-	
-	public function getCountTopics() {
-		$aResult=$this->PluginForum_ModuleForum_GetTopicItemsByForumId($this->getId(), array('#page'=>array(1,1)));
-		return $aResult['count'];
-	}
-	
 }
 ?>
